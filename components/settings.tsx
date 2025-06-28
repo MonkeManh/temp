@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,56 +15,65 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ISettings } from "@/models/interfaces/ISettings";
+import getSettings from "@/lib/utils";
+
+const settingsConfig = [
+  {
+    key: "advancedMode" as keyof ISettings,
+    label: "Advanced Mode",
+    description: "Enable advanced features and options",
+  },
+  {
+    key: "autoSave" as keyof ISettings,
+    label: "Auto Save",
+    description: "Automatically save changes",
+  },
+  {
+    key: "soundEffects" as keyof ISettings,
+    label: "Sound Effects",
+    description: "Play audio feedback for actions",
+  },
+  {
+    key: "quickSend" as keyof ISettings,
+    label: "Quick Send",
+    description: "Sends calls after a critical answer is received",
+  },
+  {
+    key: "multiService" as keyof ISettings,
+    label: "Multi Service",
+    description: "Allows cases to be sent to multiple services",
+  },
+  {
+    key: "gotoInstructions" as keyof ISettings,
+    label: "Post Dispatch Instructions",
+    description: "Goes do PDIs after a case is completed",
+  },
+];
 
 export default function SettingsMenu() {
   const [settings, setSettings] = useState<ISettings>({
     advancedMode: false,
-    autoSave: true,
-    soundEffects: true,
+    autoSave: false,
+    soundEffects: false,
     quickSend: false,
     multiService: false,
-    gotoInstructions: true,
+    gotoInstructions: false,
   });
 
-  const updateSetting = (key: keyof ISettings, value: boolean) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+  const updateSetting = useCallback((key: keyof ISettings, value: boolean) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
-  const settingsConfig = [
-    {
-      key: "advancedMode" as keyof ISettings,
-      label: "Advanced Mode",
-      description: "Enable advanced features and options",
-    },
-    {
-      key: "autoSave" as keyof ISettings,
-      label: "Auto Save",
-      description: "Automatically save changes",
-    },
-    {
-      key: "soundEffects" as keyof ISettings,
-      label: "Sound Effects",
-      description: "Play audio feedback for actions",
-    },
-    {
-      key: "quickSend" as keyof ISettings,
-      label: "Quick Send",
-      description: "Send messages with Enter key",
-    },
-    {
-      key: "multiService" as keyof ISettings,
-      label: "Multi Service",
-      description: "Enable multiple service connections",
-    },
-    {
-      key: "gotoInstructions" as keyof ISettings,
-      label: "Go to Instructions",
-      description: "Show navigation to instructions",
-    },
-  ];
+  // Load settings from localStorage on component mount
+  useEffect(() => {
+    const savedSettings = getSettings();
+    setSettings(savedSettings);
+  }, []);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("SETTINGS", JSON.stringify(settings));
+  }, [settings]);
 
   return (
     <DropdownMenu>
@@ -78,29 +87,28 @@ export default function SettingsMenu() {
         <DropdownMenuLabel>Settings</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="space-y-1">
-          {settingsConfig.map((setting) => (
+          {settingsConfig.map(({ key, label, description }) => (
             <DropdownMenuItem
-              key={setting.key}
+              key={key}
               className="flex items-center justify-between p-3 cursor-pointer"
-              onSelect={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                updateSetting(key, !settings[key]);
+              }}
             >
               <div className="flex flex-col space-y-1 flex-1">
                 <Label
-                  htmlFor={setting.key}
+                  htmlFor={key}
                   className="text-sm font-medium cursor-pointer"
                 >
-                  {setting.label}
+                  {label}
                 </Label>
-                <p className="text-xs text-muted-foreground">
-                  {setting.description}
-                </p>
+                <p className="text-xs text-muted-foreground">{description}</p>
               </div>
               <Switch
-                id={setting.key}
-                checked={settings[setting.key]}
-                onCheckedChange={(checked) =>
-                  updateSetting(setting.key, checked)
-                }
+                id={key}
+                checked={settings[key]}
+                onCheckedChange={(checked) => updateSetting(key, checked)}
                 className="ml-3"
               />
             </DropdownMenuItem>
