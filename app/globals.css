@@ -158,3 +158,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes blink-red {
+  0%, 100% {
+    color: transparent;
+  }
+  50% {
+    color: #ef4444;
+  }
+}
+
+.blink-red {
+  animation: blink-red 1.5s infinite;
+}

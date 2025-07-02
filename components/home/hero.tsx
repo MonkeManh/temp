@@ -11,7 +11,7 @@ export default function Hero() {
           alt="Emergency dispatch center"
           fill
           className="object-cover brightness-25"
-          objectPosition="50% 30%"
+          style={{ objectPosition: "50% 30%" }}
           priority
         />
       </div>

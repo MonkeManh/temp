@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function ClientNavInfo() {
   const pathname = usePathname();
   const [callsign, setCallsign] = useState<string | null>("C-000");
   const [zuluTime, setZuluTime] = useState<string>("00:00");
+  const router = useRouter();
 
   const dispatchPaths = ["/dispatch", "/create-call", "/summary"];
   const isDispatchPage = dispatchPaths.some((path) =>
@@ -17,6 +18,9 @@ export default function ClientNavInfo() {
   useEffect(() => {
     if (isDispatchPage) {
       const storedCallsign = localStorage.getItem("CALLSIGN");
+      if(!storedCallsign) {
+        router.push('/start');
+      }
       setCallsign(storedCallsign);
     }
   }, [isDispatchPage]);

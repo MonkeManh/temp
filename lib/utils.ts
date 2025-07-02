@@ -6,15 +6,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const DEFAULT_SETTINGS: ISettings = {
+  advancedMode: false,
+  autoSave: false,
+  soundEffects: false,
+  quickSend: true,
+  multiService: false,
+  gotoInstructions: false,
+}
+
 export default function getSettings(): ISettings {
-  const defaultSettings: ISettings = {
-    advancedMode: false,
-    autoSave: false,
-    soundEffects: false,
-    quickSend: false,
-    multiService: false,
-    gotoInstructions: false,
-  };
-  const storedSettings = localStorage.getItem("SETTINGS");
-  return storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+  const stored = localStorage.getItem("SETTINGS");
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (err) {
+      console.warn("Failed to parse stored settings", err);
+    }
+  }
+  return DEFAULT_SETTINGS;
 }
