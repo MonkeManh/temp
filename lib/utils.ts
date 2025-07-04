@@ -26,3 +26,5 @@ export default function getSettings(): ISettings {
   }
   return DEFAULT_SETTINGS;
 }
+
+export const PRIORITY_ORDER = ["O", "A", "B", "C", "D", "E"];

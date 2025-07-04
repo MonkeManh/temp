@@ -15,6 +15,7 @@ import {
   replacePronounInNode,
 } from "@/lib/utils/emsHelpers";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
+import { ISettings } from "@/models/interfaces/ISettings";
 import { IEMSAnswers } from "@/models/interfaces/protocols/ems/IEMSAnswers";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { IAnswerData } from "@/models/interfaces/protocols/ems/IEMSQuestions";
@@ -27,6 +28,7 @@ interface IEMSKeyQuestionsProps {
   protocol: IEMSComplaint;
   answers: IAnswerData[];
   codeHasBeenSent: boolean;
+  settings: ISettings;
   handleUpdateCode: (code: string) => void;
   handleUpdateSuffix: (suffix: string) => void;
   handleCodeSend: (code: string) => void;
@@ -39,11 +41,12 @@ export default function EMSKeyQuestions({
   protocol,
   answers,
   codeHasBeenSent,
+  settings,
   handleUpdateCode,
   handleUpdateSuffix,
   handleCodeSend,
   handleUpdateAnswers,
-  handleProtocolChange
+  handleProtocolChange,
 }: IEMSKeyQuestionsProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<string>("qa");
@@ -64,8 +67,8 @@ export default function EMSKeyQuestions({
     const answerObj = JSON.parse(answerObjRaw) as IEMSAnswers;
 
     const answer = answerObj.answer;
-    const display = answerObj.display
-    const questionDisplay = answerObj.questionDisplay
+    const display = answerObj.display;
+    const questionDisplay = answerObj.questionDisplay;
 
     const answerToSave: IAnswerData = {
       question: processQuestionText(
@@ -89,20 +92,24 @@ export default function EMSKeyQuestions({
     };
     handleUpdateAnswers(answerToSave);
 
-    if(answerObj.gotoProtocol) {
+    if (answerObj.gotoProtocol) {
       return handleProtocolChange(answerObj.gotoProtocol);
     }
 
-    if(answerObj.send && answerObj.updateCode && !codeHasBeenSent) {
-      handleCodeSend(answerObj.updateCode);
-    } else if(answerObj.updateCode) {
-      handleUpdateCode(answerObj.updateCode);
-    } 
-
-    if(answerObj.updateSuffix) {
+    if (answerObj.updateSuffix) {
       handleUpdateSuffix(answerObj.updateSuffix);
     }
 
+    if (
+      answerObj.send &&
+      settings.quickSend &&
+      answerObj.updateCode &&
+      !codeHasBeenSent
+    ) {
+      return handleCodeSend(answerObj.updateCode);
+    } else if (answerObj.updateCode) {
+      handleUpdateCode(answerObj.updateCode);
+    }
 
     setCurrentQuestionIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
@@ -115,7 +122,7 @@ export default function EMSKeyQuestions({
   }
 
   useEffect(() => {
-    if(currentQuestion.defaultTab !== activeTab) {
+    if (currentQuestion.defaultTab !== activeTab) {
       setActiveTab(currentQuestion.defaultTab || "qa");
     }
   }, [currentQuestion]);
@@ -147,7 +154,7 @@ export default function EMSKeyQuestions({
 
                   return (
                     <SelectItem
-                      key={index}
+                      key={`${index}-${customID}`}
                       value={`${JSON.stringify(answer)}-${customID}`}
                     >
                       {answer.answer}
@@ -183,8 +190,8 @@ export default function EMSKeyQuestions({
             <div className="p-6 h-full">
               <TabsContent value="qa" className="h-full space-y-1">
                 {answers.map((answer, index) => {
-
-                  const questionText = answer.questionDisplay.charAt(0).toUpperCase() +
+                  const questionText =
+                    answer.questionDisplay.charAt(0).toUpperCase() +
                     answer.questionDisplay.slice(1);
 
                   return (
@@ -195,7 +202,8 @@ export default function EMSKeyQuestions({
                         console.log("Clicked on answer:", answer.questionIndex);
                       }}
                     >
-                      {answer.questionIndex + 1}.<p>{questionText}</p>
+                      <span>{answer.questionIndex + 1}.</span>
+                      <p>{questionText}</p>
                     </div>
                   );
                 })}

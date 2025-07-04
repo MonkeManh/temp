@@ -161,3 +161,18 @@ export function processQuestionText(text: React.ReactNode): string {
   }
   return "";
 };
+
+export function getPriorityFromCode(code: string): string {
+  return code.charAt(2);
+};
+
+export function isPriorityHigher(priority1: string, priority2: string): boolean {
+  const priorityOrder = ["O", "A", "B", "C", "D", "E"];
+  const index1 = priorityOrder.indexOf(priority1);
+  const index2 = priorityOrder.indexOf(priority2);
+  return index1 > index2;
+};
+
+export function isOverrideCode(code: string): boolean {
+  return code.endsWith("00");
+};

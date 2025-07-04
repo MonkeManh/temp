@@ -16,4 +16,5 @@ export interface IEMSCaseEntry {
     currentCode?: string;
     currentSuffix?: string;
     answers?: IAnswerData[];
+    hasBeenSent: boolean;
 }

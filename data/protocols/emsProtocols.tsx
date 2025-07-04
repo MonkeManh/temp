@@ -189,7 +189,10 @@ export const emsProtocols: IEMSComplaint[] = [
 
       {
         text: (
-          <p>Does **pronoun** appear ashen or gray (compared to usual color)</p>
+          <p>
+            Does **pronoun** appear ashen or gray?{" "}
+            <span className="text-blue-400">(Compared to usual color)</span>
+          </p>
         ),
         preRenderInstructions: (patient) => {
           const { patientAge: age } = patient;
@@ -246,7 +249,12 @@ export const emsProtocols: IEMSComplaint[] = [
       },
 
       {
-        text: <p>Did **pronoun** faint or pass out? (nearly)</p>,
+        text: (
+          <p>
+            Did **pronoun** faint or pass out?{" "}
+            <span className="text-blue-400">(Nearly)</span>
+          </p>
+        ),
         questionType: "select",
         answers: [
           {
@@ -318,6 +326,34 @@ export const emsProtocols: IEMSComplaint[] = [
       {
         text: <p>Can you have the patient describe the pain?</p>,
         questionType: "select",
+        additionalInstructions: (
+          <div>
+            <h4 className="text-lg font-bold text-green-400">
+              PAIN QUALITY – BE ALERT FOR KEY DESCRIPTORS
+            </h4>
+            <p>
+              The way the patient describes their pain can reveal
+              life-threatening conditions.
+            </p>
+            <p className="mt-3">
+              If the pain is described as <b>ripping or tearing</b>, especially
+              in the back, chest, or abdomen, and the patient is{" "}
+              <b>50 or older</b>, this may indicate a possible aortic
+              dissection—a rare but deadly vascular emergency.
+            </p>
+            <p>
+              This pain quality significantly increases concern for cardiac or
+              vascular involvement and should be prioritized for emergency
+              response.
+            </p>
+
+            <p className="mt-2 text-red-400">
+              If "ripping/tearing" pain is mentioned by a patient aged 50 or
+              older, it will trigger a higher-level response code.
+            </p>
+          </div>
+        ),
+        defaultTab: "ai",
         answers: [
           {
             answer: "Pain:",
@@ -355,6 +391,47 @@ export const emsProtocols: IEMSComplaint[] = [
       {
         text: <p>Where is the pain located?</p>,
         questionType: "select",
+        additionalInstructions: (
+          <div>
+            <h4 className="text-lg font-bold text-green-400">
+              PAIN LOCATION MATTERS
+            </h4>
+            <p>
+              The <b>navel</b> (belly button) is the small, central point on the
+              abdomen where the umbilical cord was attached. It’s a useful
+              reference to help identify the pain location.
+            </p>
+            <p className="mt-3">
+              Pain <b>above the navel</b> is more likely to involve the heart,
+              aorta, or other major organs. This can signal a serious medical
+              emergency—especially in patients at increased cardiac risk.
+            </p>
+            <p>
+              Pain <b>below the navel</b> is more often linked to
+              gastrointestinal, urinary, or reproductive causes and is generally
+              lower in immediate clinical risk.
+            </p>
+
+            <h5 className="text-sm font-semibold mt-4 text-muted-foreground">
+              Increased Cardiac Risk:
+            </h5>
+            <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
+              <li>
+                <b>Males ≥ 35</b> with pain above the navel
+              </li>
+              <li>
+                <b>Females ≥ 45</b> with pain above the navel
+              </li>
+            </ul>
+
+            <p className="mt-2 text-red-400">
+              Do <b>not coach or lead</b> the caller by asking, “Well, is it
+              above or below the belly button?” If they don’t know or can’t
+              describe it, choose “Unknown.”
+            </p>
+          </div>
+        ),
+        defaultTab: "ai",
         answers: [
           {
             answer: "Below the navel",

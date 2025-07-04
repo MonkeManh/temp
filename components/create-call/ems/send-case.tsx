@@ -1,49 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { getEmsResponsePlan } from "@/data/plans/emsPlans";
+import {
+  getPriorityFromCode,
+  isOverrideCode,
+  isPriorityHigher,
+} from "@/lib/utils/emsHelpers";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { ArrowLeft, ArrowRight, ChartPie } from "lucide-react";
 
 interface IEMSCaseProps {
   recommendedCode: string;
-  emsCase: IEMSCaseEntry;
+  selectableCodes: string[];
   protocol: IEMSComplaint;
-  updateCode: (code: string, copyCase?: boolean) => void;
-  onDelaySendContinue?: () => void;
-  onBackToQuestions?: () => void;
+  emsCase: IEMSCaseEntry;
+  handleSend: (code: string) => void;
+  handleDelaySendContinue: (code: string) => void;
+  handleBack: () => void;
 }
 
 const colorDictionary: Record<string, string> = {
   O: "text-slate-500",
   A: "text-green-500",
   B: "text-blue-500",
-  C: "text-yellow-500",
+  C: "text-orange-500",
   D: "text-red-500",
   E: "text-purple-500",
 };
 
-const getPriorityFromCode = (code: string): string => {
-  return code.charAt(2);
-};
-
-const isPriorityHigher = (priority1: string, priority2: string): boolean => {
-  const priorityOrder = ["O", "A", "B", "C", "D", "E"];
-  const index1 = priorityOrder.indexOf(priority1);
-  const index2 = priorityOrder.indexOf(priority2);
-  return index1 > index2;
-};
-
-const isOverrideCode = (code: string): boolean => {
-  return code.endsWith("00");
-};
-
 export default function SendEMSCase({
   recommendedCode,
-  emsCase,
+  selectableCodes,
   protocol,
-  updateCode,
-  onDelaySendContinue,
-  onBackToQuestions,
+  emsCase,
+  handleSend,
+  handleDelaySendContinue: onDelaySendContinue,
+  handleBack,
 }: IEMSCaseProps) {
   const tableRows = protocol.determinants.flatMap((determinant) =>
     determinant.codes.map((code, codeIndex) => ({
@@ -63,20 +55,20 @@ export default function SendEMSCase({
           className="col-span-2"
           variant="outline"
           onClick={() => {
-            updateCode(recommendedCode, true);
+            onDelaySendContinue(recommendedCode);
           }}
         >
           <ChartPie className="w-6 h-6 text-red-500" />
           Delay Send & continue
         </Button>
-        <Button variant="outline" onClick={onBackToQuestions}>
+        <Button variant="outline" onClick={handleBack}>
           <ArrowLeft className="w-6 h-6 text-red-500" />
         </Button>
         <Button
           className="col-span-2"
           variant="outline"
           onClick={() => {
-            updateCode(recommendedCode);
+            handleSend(recommendedCode);
           }}
         >
           Send:{" "}
@@ -133,19 +125,26 @@ export default function SendEMSCase({
                 isOverrideCode(row.code) &&
                 isPriorityHigher(rowPriority, currentPriority);
 
+              // Only allow the selectable code if it is the same priority as the recommended code
+              const isSamePriority = rowPriority === currentPriority;
+              const isSelectable =
+                (selectableCodes.includes(row.code) && isSamePriority) ||
+                (isSamePriority && isOverrideCode(row.code)) ||
+                isHigherPriorityOverride;
+
               return (
                 <tr
                   key={`${row.code}-${index}`}
                   className={`rounded-lg font-semibold ${
                     isRecommended
                       ? "bg-green-500 text-black cursor-pointer hover:bg-green-600"
-                      : isHigherPriorityOverride
+                      : isSelectable
                       ? "bg-yellow-500 text-black cursor-pointer hover:bg-yellow-600"
                       : "text-muted-foreground hover:bg-muted/25"
                   }`}
                   onClick={() => {
                     if (isRecommended || isHigherPriorityOverride) {
-                      updateCode(row.code);
+                      handleSend(row.code);
                     }
                   }}
                 >
