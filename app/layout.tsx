@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ProQA Plus",
-  description: "A tool used for generating 911 calls and other emergency calls.",
+  title: "FiveQA",
+  description: "A tool used for generating 911 calls and other emergency calls for FiveM",
   icons: {
     icon: "/favicon.ico",
   }

@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { getPostal } from "@/data/locations/postals";
 import { getEmsResponsePlan } from "@/data/plans/emsPlans";
-import { DEFAULT_SETTINGS } from "@/lib/utils";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { INewCallData } from "@/models/interfaces/INewCallData";
-import { ISettings } from "@/models/interfaces/ISettings";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -17,7 +15,7 @@ interface IEMSCaseSummaryProps {
   callDetails: INewCallData;
   emsCase: IEMSCaseEntry;
   protocol: IEMSComplaint;
-  handleClick: (text: string) => void;
+  handleClick: (text: string, navigateTo?: string) => void;
 }
 
 export default function EMSCaseSummary({
@@ -25,12 +23,14 @@ export default function EMSCaseSummary({
   emsCase,
   protocol,
   reconfigured,
+  hasCallback,
   handleClick,
-  hasCallback
 }: IEMSCaseSummaryProps) {
   const [summaryText, setSummaryText] = useState<string>("");
 
   useEffect(() => {
+    console.log(hasCallback);
+
     const township = getPostal(callDetails.postal)?.twp;
 
     const location = `Location: ${callDetails.postal} ${callDetails.street}${
@@ -127,25 +127,23 @@ export default function EMSCaseSummary({
         .join(", ") || "No Response Units";
 
     const text = [
-      `Code: ${emsCase.currentCode}`,
+      `Code: ${emsCase.currentCode}${
+        subCodeMatch?.suffix && emsCase.currentSuffix !== "DEFAULT_SUFFIX"
+          ? `${emsCase.currentSuffix}`
+          : ""
+      }`,
       location,
       crossStreets,
       `Recc: ${responseUnits}`,
       `Disp: Pending`,
-      `Problem: ${protocol.shortName} - ${
-        subCodeMatch?.text ?? codeMatch?.text
-      }${
+      `Problem: ${protocol.shortName} - ${codeMatch?.text}${
         emsCase.currentSuffix
-          ? `${
-              emsCase.currentSuffix !== "DEFAULT_SUFFIX"
-                ? ` - ${emsCase.currentSuffix}`
-                : ""
-            }`
+          ? `${subCodeMatch?.text ? ` - ${subCodeMatch?.text}` : ""}`
           : ""
       }`,
       `Caller Statement: ${callDetails.callerStatement}`,
       "==============================",
-      `Scene Status: Secure`,
+      `Scene Status: ${emsCase.secureScene ? "Secure" : "Not Secure"}`,
       "Scene Com: Not Established",
       "Channel: Fire Response",
       "Staging Location: N/A",
@@ -155,7 +153,7 @@ export default function EMSCaseSummary({
       patientInfo,
       reconfiguration,
       answers,
-      hasCallback && dispatch,
+      emsCase.questionsCompleted && dispatch,
     ]
       .flat()
       .filter(Boolean)
@@ -174,8 +172,17 @@ export default function EMSCaseSummary({
         spellCheck={false}
       />
       <div className="flex justify-end space=x-2 pt-4">
-        <Button variant="outline" onClick={() => handleClick(summaryText)}>
-          Dispatch Case
+        <Button
+          variant="outline"
+          onClick={() => {
+            handleClick(
+              summaryText,
+              !emsCase.questionsCompleted ? "kq" : "pdi-cei"
+            )
+          }
+        }
+        >
+          {emsCase.hasCompletedDisconnect ? "Close Case" : "Dispatch Case"}
           <ArrowRight className="h-4 w-4 text-green-500" />
         </Button>
       </div>

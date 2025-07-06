@@ -1,6 +1,6 @@
 "use client";
 
-import { postalData } from "@/data/locations/postals";
+import { getPostal, postalData } from "@/data/locations/postals";
 import { IPostal } from "@/models/interfaces/locations/IPostal";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -135,12 +135,9 @@ export default function CreateCallForm() {
       data.street &&
       data.crossStreet1 &&
       data.crossStreet2 &&
+      data.callerStatement &&
       data.service
     );
-  };
-
-  const getPostal = (p: string): IPostal | undefined => {
-    return postalData.find((postal) => postal.postal === p);
   };
 
   const handlePostalChange = (postal: string): void => {
@@ -224,7 +221,6 @@ export default function CreateCallForm() {
     setIsLoading(false);
   }, [form]);
 
-  // Set the postal to fill the cross streets - possible redundency from last useEffect, will look into it
   useEffect(() => {
     if (initialValues.postal) {
       const matchedPostal = getPostal(initialValues.postal);
@@ -233,13 +229,6 @@ export default function CreateCallForm() {
       }
     }
   }, [initialValues.postal]);
-
-  //   I feel like this may be redundant as well
-  useEffect(() => {
-    if (initialValues.street) {
-      setSelectedStreet(initialValues.street);
-    }
-  }, [initialValues.street]);
 
   //   Handle street selection???
   useEffect(() => {
@@ -713,8 +702,10 @@ export default function CreateCallForm() {
                 <DialogTitle>Cancel Call Creation?</DialogTitle>
               </DialogHeader>
               <p>
-                This will delete all entered details. Are you sure you want to
-                cancel?
+                This will delete all entered details for Call #
+                {localStorage.getItem("RUN_NUMBER") ||
+                  `${(new Date().getFullYear() % 100).toString()}-00001`}
+                . Are you sure you want to delete the case?
               </p>
               <DialogFooter className="mt-4 flex justify-end gap-2">
                 <Button
@@ -728,8 +719,38 @@ export default function CreateCallForm() {
                   variant="destructive"
                   onClick={() => {
                     setShowCancelModal(false);
-                    localStorage.removeItem("NEW_CALL");
 
+                    const wasNewCall = localStorage.getItem("NEW_CALL");
+                    if (wasNewCall) {
+                      const RUN_NUMBER = localStorage.getItem("RUN_NUMBER");
+                      const CALL_NUMBER = localStorage.getItem("CALL_NUMBER");
+                      const yearSuffix = (
+                        new Date().getFullYear() % 100
+                      ).toString();
+
+                      if (RUN_NUMBER && CALL_NUMBER) {
+                        const nextCallNumber = parseInt(CALL_NUMBER, 10) + 1;
+                        localStorage.setItem(
+                          "CALL_NUMBER",
+                          nextCallNumber.toString()
+                        );
+
+                        const padded = nextCallNumber
+                          .toString()
+                          .padStart(5, "0");
+                        const newRunNumber = `${yearSuffix}-${padded}`;
+
+                        localStorage.setItem("RUN_NUMBER", newRunNumber);
+                      } else {
+                        localStorage.setItem("CALL_NUMBER", "1");
+                        localStorage.setItem(
+                          "RUN_NUMBER",
+                          `${yearSuffix}-00001`
+                        );
+                      }
+                    }
+
+                    localStorage.removeItem("NEW_CALL");
                     localStorage.removeItem("EMS_PROQA_DATA");
                     localStorage.removeItem("EMS_CASE");
                     localStorage.removeItem("CASE_TIME");

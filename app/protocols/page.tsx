@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { emsProtocols } from "@/data/protocols/emsProtocols";
 
 const protocolServices = [
   {
@@ -37,7 +38,7 @@ const protocolServices = [
     icon: Ambulance,
     description:
       "Emergency medical service protocols for patient care, transport, and life-saving interventions.",
-    protocolCount: 34,
+    protocolCount: emsProtocols.length,
     href: "/protocols/ems",
     color: "text-green-600",
     bg: "bg-green-500/10",

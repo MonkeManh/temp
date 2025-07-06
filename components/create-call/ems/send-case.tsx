@@ -14,16 +14,17 @@ interface IEMSCaseProps {
   selectableCodes: string[];
   protocol: IEMSComplaint;
   emsCase: IEMSCaseEntry;
-  handleSend: (code: string) => void;
+  hasCallback: boolean;
+  handleSend: (code: string, hasCallback: boolean) => void;
   handleDelaySendContinue: (code: string) => void;
   handleBack: () => void;
 }
 
 const colorDictionary: Record<string, string> = {
   O: "text-slate-500",
-  A: "text-green-500",
+  A: "text-emerald-700",
   B: "text-blue-500",
-  C: "text-orange-500",
+  C: "text-amber-700",
   D: "text-red-500",
   E: "text-purple-500",
 };
@@ -33,10 +34,32 @@ export default function SendEMSCase({
   selectableCodes,
   protocol,
   emsCase,
+  hasCallback,
   handleSend,
   handleDelaySendContinue: onDelaySendContinue,
   handleBack,
 }: IEMSCaseProps) {
+  // Helper function to get the appropriate recResponse for a code with suffix
+  const getRecResponseForCode = (codeString: string, suffix?: string): number => {
+    // Find the code object in the protocol determinants
+    const codeObj = protocol.determinants
+      .flatMap(det => det.codes)
+      .find(code => code.code === codeString);
+    
+    if (!codeObj) return 1; // Default fallback
+    
+    // If we have a suffix and the code has subcodes, look for the suffix
+    if (suffix && suffix !== "DEFAULT_SUFFIX" && codeObj.subCodes) {
+      const subCode = codeObj.subCodes.find(sub => sub.suffix === suffix);
+      if (subCode && subCode.recResponse !== undefined) {
+        return subCode.recResponse;
+      }
+    }
+    
+    // Return the default recResponse for the code
+    return codeObj.recResponse;
+  };
+
   const tableRows = protocol.determinants.flatMap((determinant) =>
     determinant.codes.map((code, codeIndex) => ({
       priority: codeIndex === 0 ? determinant.priority : null,
@@ -51,24 +74,31 @@ export default function SendEMSCase({
     <div className="p-4 space-y-8">
       {/* Grid of 5 cols */}
       <div className="grid grid-cols-5 gap-4">
+        {emsCase.questionsCompleted ? (
+          <div className="col-span-3"></div>
+        ) : (
+          <>
+            <Button
+              className="col-span-2"
+              variant="outline"
+              onClick={() => {
+                onDelaySendContinue(recommendedCode);
+              }}
+            >
+              <ChartPie className="w-6 h-6 text-red-500" />
+              Delay Send & continue
+            </Button>
+            <Button variant="outline" onClick={handleBack}>
+              <ArrowLeft className="w-6 h-6 text-red-500" />
+            </Button>
+          </>
+        )}
+
         <Button
           className="col-span-2"
           variant="outline"
           onClick={() => {
-            onDelaySendContinue(recommendedCode);
-          }}
-        >
-          <ChartPie className="w-6 h-6 text-red-500" />
-          Delay Send & continue
-        </Button>
-        <Button variant="outline" onClick={handleBack}>
-          <ArrowLeft className="w-6 h-6 text-red-500" />
-        </Button>
-        <Button
-          className="col-span-2"
-          variant="outline"
-          onClick={() => {
-            handleSend(recommendedCode);
+            handleSend(recommendedCode, hasCallback);
           }}
         >
           Send:{" "}
@@ -110,7 +140,7 @@ export default function SendEMSCase({
                 Determinants
               </th>
               <th className="text-left py-4 px-4 font-semibold text-muted-foreground border-l-4 border-gray-400">
-                Responses (user-defined)
+                Responses
               </th>
             </tr>
           </thead>
@@ -144,11 +174,11 @@ export default function SendEMSCase({
                   }`}
                   onClick={() => {
                     if (isRecommended || isHigherPriorityOverride) {
-                      handleSend(row.code);
+                      handleSend(row.code, hasCallback);
                     }
                   }}
                 >
-                  <td className="py-3 px-4 w-12">
+                  <td className="py-2 px-2 w-12">
                     {row.priority && (
                       <span
                         className={`ml-4 font-bold text-lg ${
@@ -159,11 +189,17 @@ export default function SendEMSCase({
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-2 px-2">
                     {parseInt(row.code.slice(-2), 10)} {row.text}
                   </td>
-                  <td className="py-3 px-4 border-l-4 border-gray-400 text-left">
-                    {getEmsResponsePlan(row.recResponse)?.incidentType}
+                  <td className="flex items-center py-2 px-2 border-l-4 border-gray-400 text-left">
+                    {emsCase.currentSuffix &&
+                      emsCase.currentSuffix !== "DEFAULT_SUFFIX" && (
+                        <p className="mr-4">{emsCase.currentSuffix}</p>
+                      )}
+                    {getEmsResponsePlan(
+                      getRecResponseForCode(row.code, emsCase.currentSuffix)
+                    )?.incidentType}
                   </td>
                 </tr>
               );

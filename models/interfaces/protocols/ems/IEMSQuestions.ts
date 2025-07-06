@@ -10,7 +10,7 @@ export interface IEMSQuestions {
     currentCode: string
   ) => boolean;
   questionType: "select" | "input";
-  preRenderDependenices?: string[];
+  preRenderDependencies?: string[];
   preRenderLogic?: string;
   additionalInstructions?: ReactNode;
   defaultTab?: string;

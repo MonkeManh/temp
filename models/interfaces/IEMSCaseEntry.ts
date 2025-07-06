@@ -12,9 +12,14 @@ export interface IEMSCaseEntry {
     patientConsciousness: string;
     patientBreathing: string;
     chiefComplaint: string;
-    reconfigured?: string;
-    currentCode?: string;
-    currentSuffix?: string;
-    answers?: IAnswerData[];
+    currentCode: string;
+    currentSuffix: string;
+    answers: IAnswerData[];
     hasBeenSent: boolean;
+    questionsCompleted: boolean;
+    hasCompletedDisconnect: boolean;
+    gotoPDI?: number;
+    reconfigured?: string;
+    secureScene: boolean;
+    selectableCodes: string[];
 }

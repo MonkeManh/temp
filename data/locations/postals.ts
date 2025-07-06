@@ -2184,10 +2184,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 1 SB": {
           crossStreet1: "Rt 1 MM07.00",
-          crossStreet2: "Rt 13",
+          crossStreet2: "Rt 13 NB to Rt 1 SB",
         },
         "Rt 1 NB": {
-          crossStreet1: "Rt 13",
+          crossStreet1: "Rt 1 NB to Rt 13 SB",
           crossStreet2: "Rt 1 MM07.00",
         },
       },
@@ -2214,10 +2214,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 1 SB": {
           crossStreet1: "Rt 1 MM07.00",
-          crossStreet2: "Rt 13",
+          crossStreet2: "Rt 13 NB to Rt 1 SB",
         },
         "Rt 1 NB": {
-          crossStreet1: "Rt 13",
+          crossStreet1: "Rt 1 NB to Rt 13 SB",
           crossStreet2: "Rt 1 MM07.00",
         },
       },
@@ -2244,10 +2244,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 1 SB": {
           crossStreet1: "Rt 1 MM07.00",
-          crossStreet2: "Rt 13",
+          crossStreet2: "Rt 13 NB to Rt 1 SB",
         },
         "Rt 1 NB": {
-          crossStreet1: "Rt 13",
+          crossStreet1: "Rt 1 NB to Rt 13 SB",
           crossStreet2: "Rt 1 MM07.00",
         },
       },
@@ -2274,10 +2274,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 1 SB": {
           crossStreet1: "Rt 1 MM07.00",
-          crossStreet2: "Rt 13",
+          crossStreet2: "Rt 13 NB to Rt 1 SB",
         },
         "Rt 1 NB": {
-          crossStreet1: "Rt 13",
+          crossStreet1: "Rt 1 NB to Rt 13 SB",
           crossStreet2: "Rt 1 MM07.00",
         },
       },
@@ -2304,10 +2304,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 13 SB": {
           crossStreet1: "Rt 13 MM01.00",
-          crossStreet2: "Rt 1 SB to Rt 13 SB",
+          crossStreet2: "Rt 1 NB to Rt 13 SB",
         },
         "Rt 13 NB": {
-          crossStreet1: "Rt 13 NB to Rt 1 NB",
+          crossStreet1: "Rt 13 NB to Rt 1 SB",
           crossStreet2: "Rt 13 MM01.00",
         },
       },
@@ -3373,10 +3373,24 @@ export const postalData: IPostal[] = [
       "LSPD",
     ],
     streets: {
-      autoFill: true,
-      mainStreet: "Joad Ln",
-      crossStreet1: "Seaview Rd",
-      crossStreet2: "O'Neil Way",
+      availableRoads: {
+        "Joad Ln": {
+          crossStreet1: "Seaview Rd",
+          crossStreet2: "O'Neil Way",
+        },
+        "O'Neil Way": {
+          crossStreet1: "Joad Ln",
+          crossStreet2: "Cattle Rd"
+        },
+        "Cattle Rd": {
+          crossStreet1: "Rancher Rd",
+          crossStreet2: "O'Neil Way",
+        },
+        "Rancher Rd": {
+          crossStreet1: "Cattle Rd",
+          crossStreet2: "Dead End"
+        }
+      }
     },
   },
   {
@@ -3399,7 +3413,7 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "Cattle Rd": {
-          crossStreet1: "O'Neil Ln",
+          crossStreet1: "O'Neil Way",
           crossStreet2: "Swine Rd",
         },
         "Dots Ln": {
@@ -5155,10 +5169,16 @@ export const postalData: IPostal[] = [
       "LSPD",
     ],
     streets: {
-      autoFill: true,
-      mainStreet: "Hanger Terrace",
-      crossStreet1: "Karin Dr",
-      crossStreet2: "Hanger Trail",
+      availableRoads: {
+        "Hanger Terrace": {
+          crossStreet1: "Karin Dr",
+          crossStreet2: "Hanger Trail",
+        },
+        "Cult Ln": {
+          crossStreet1: "Pine Tree Rd",
+          crossStreet2: "Dead End"
+        }
+      }
     },
   },
   {
@@ -5247,10 +5267,20 @@ export const postalData: IPostal[] = [
       "LSPD",
     ],
     streets: {
-      autoFill: true,
-      mainStreet: "Hanger Trail",
-      crossStreet1: "Hanger Terrace",
-      crossStreet2: "Ridgeline Loop Trail",
+      availableRoads: {
+        "Hanger Trail": {
+          crossStreet1: "Hanger Terrace",
+          crossStreet2: "Ridgeline Loop Trail",
+        },
+        "Hanger Terrace": {
+          crossStreet1: "Karin Dr",
+          crossStreet2: "Hanger Trail",
+        },
+        "Basin Dr": {
+          crossStreet1: "Beaver Trail",
+          crossStreet2: "N. Calfia Way",
+        }
+      }
     },
   },
   {
@@ -21330,15 +21360,27 @@ export const postalData: IPostal[] = [
         },
         "Rt 15 SB to I2 WB Ramp": {
           crossStreet1: "Rt 15 SB",
-          crossStreet2: "I2 WB",
-        },
-        "I4 EB to I2 WB Ramp": {
-          crossStreet1: "I4 EB",
-          crossStreet2: "I2 WB",
+          crossStreet2: "I2 WB"
         },
         "Rt 15 SB to Rt 20 SB Ramp": {
           crossStreet1: "Rt 15 SB",
-          crossStreet2: "Rt 20 SB",
+          crossStreet2: "Rt 20 SB"
+        },
+        "I2 EB to Rt 15 NB Ramp": {
+          crossStreet1: "I2 EB",
+          crossStreet2: "Rt 15 NB"
+        },
+        "I2 EB to I4 WB Ramp": {
+          crossStreet1: "I2 EB",
+          crossStreet2: "I4 WB"
+        },
+        "I4 EB to Rt 20 SB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Rt 20 SB"
+        },
+        "I4 EB to I2 WB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "I2 WB"
         },
         "Mirror Park Blvd": {
           crossStreet1: "Capital Blvd",
@@ -21361,17 +21403,61 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 2": {
-          crossStreet1: "I4 Interchange",
-          crossStreet2: "I2 MM03.00",
+        "I2 EB": {
+          crossStreet1: "I2 EB to Rt 20 SB",
+          crossStreet2: "I2 EB to I4 WB Exit"
         },
-        "Interstate 4": {
-          crossStreet1: "I2 Interchange",
-          crossStreet2: "Rt 15 MM01.00",
+        "I2 WB": {
+          crossStreet1: "Rt 20 NB to I2 WB",
+          crossStreet2: "Rt 15 SB to I2 WB Entrance",
         },
-        "Rt 20": {
-          crossStreet1: "I2 Change",
-          crossStreet2: "Murrieta Exit",
+        "I4 EB": {
+          crossStreet1: "I4 EB to Rt 15 NB",
+          crossStreet2: "I4 EB to Rt 20 SB Exit"
+        },
+        "I4 WB": {
+          crossStreet1: "Rt 15 SB to I4 WB",
+          crossStreet2: "I2 EB to I4 WB Entrance"
+        },
+        "Rt 20 NB": {
+          crossStreet1: "Rt 20 NB to I2 WB",
+          crossStreet2: "East LS Entrance"
+        },
+        "Rt 20 SB": {
+          crossStreet1: "I2 EB to Rt 20 SB",
+          crossStreet2: "East LS Exit"
+        },
+        "Rt 15 SB to I2 WB Ramp": {
+          crossStreet1: "Rt 15 SB",
+          crossStreet2: "I2 WB"
+        },
+        "Rt 15 SB to Rt 20 SB Ramp": {
+          crossStreet1: "Rt 15 SB",
+          crossStreet2: "Rt 20 SB"
+        },
+        "I2 EB to Rt 15 NB Ramp": {
+          crossStreet1: "I2 EB",
+          crossStreet2: "Rt 15 NB"
+        },
+        "I2 EB to I4 WB Ramp": {
+          crossStreet1: "I2 EB",
+          crossStreet2: "I4 WB"
+        },
+        "I4 EB to Rt 20 SB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Rt 20 SB"
+        },
+        "I4 EB to I2 WB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "I2 WB"
+        },
+        "Rt 20 NB to Rt 15 NB Ramp": {
+          crossStreet1: "Rt 20 NB",
+          crossStreet2: "Rt 15 NB"
+        },
+        "Rt 20 NB to I4 WB Ramp": {
+          crossStreet1: "Rt 20 NB",
+          crossStreet2: "I4 WB"
         },
         "El Rancho Blvd": {
           crossStreet1: "Capital Blvd",
@@ -21416,7 +21502,7 @@ export const postalData: IPostal[] = [
           crossStreet2: "El Burro Blvd",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21437,7 +21523,7 @@ export const postalData: IPostal[] = [
           crossStreet2: "El Burro Blvd",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21458,7 +21544,7 @@ export const postalData: IPostal[] = [
           crossStreet2: "Noose Approach",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21475,7 +21561,7 @@ export const postalData: IPostal[] = [
     streets: {
       autoFill: true,
       mainStreet: "El Burro Blvd",
-      crossStreet1: "Rt 20",
+      crossStreet1: "Rt 20 NB",
       crossStreet2: "Sustancia Rd",
     },
   },
@@ -21490,7 +21576,7 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "El Rancho Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
         "Sustancia Rd": {
@@ -21498,7 +21584,7 @@ export const postalData: IPostal[] = [
           crossStreet2: "El Burro Blvd",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21515,7 +21601,7 @@ export const postalData: IPostal[] = [
     streets: {
       autoFill: true,
       mainStreet: "El Burro Blvd",
-      crossStreet1: "Rt 20",
+      crossStreet1: "Rt 20 NB",
       crossStreet2: "Sustancia Rd",
     },
   },
@@ -21530,11 +21616,11 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "El Rancho Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Labor Pl",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21551,15 +21637,11 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "El Rancho Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Labor Pl",
         },
-        "Rt 20": {
-          crossStreet1: "El Burro Blvd",
-          crossStreet2: "El Rancho Blvd",
-        },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21576,7 +21658,7 @@ export const postalData: IPostal[] = [
     streets: {
       autoFill: true,
       mainStreet: "El Burro Blvd",
-      crossStreet1: "Rt 20",
+      crossStreet1: "Rt 20 NB",
       crossStreet2: "Sustancia Rd",
     },
   },
@@ -21590,7 +21672,11 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
+          crossStreet1: "El Burro Blvd",
+          crossStreet2: "El Rancho Blvd",
+        },
+        "Rt 20 SB": {
           crossStreet1: "El Burro Blvd",
           crossStreet2: "El Rancho Blvd",
         },
@@ -21612,7 +21698,7 @@ export const postalData: IPostal[] = [
     streets: {
       autoFill: true,
       mainStreet: "El Burro Blvd",
-      crossStreet1: "Rt 20",
+      crossStreet1: "Rt 20 NB",
       crossStreet2: "Sustancia Rd",
     },
   },
@@ -21627,7 +21713,7 @@ export const postalData: IPostal[] = [
     streets: {
       autoFill: true,
       mainStreet: "El Burro Blvd",
-      crossStreet1: "Rt 20",
+      crossStreet1: "Rt 20 NB",
       crossStreet2: "Sustancia Rd",
     },
   },
@@ -21641,12 +21727,16 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
-          crossStreet1: "El Burro Blvd",
+        "Rt 20 NB": {
+          crossStreet1: "Rt 20 MM01.00",
+          crossStreet2: "El Rancho Blvd",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM01.00",
           crossStreet2: "El Rancho Blvd",
         },
         "El Burro Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Sustancia Rd",
         },
       },
@@ -21661,10 +21751,16 @@ export const postalData: IPostal[] = [
     fdRunOrder: ["7", "6", "10", "5", "1", "8", "9", "2", "4", "3", "11"],
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
-      autoFill: true,
-      mainStreet: "Rt 20",
-      crossStreet1: "Rt 20 MM01.00",
-      crossStreet2: "El Rancho Blvd",
+      availableRoads: {
+        "Rt 20 NB": {
+          crossStreet1: "Rt 20 MM01.00",
+          crossStreet2: "El Rancho Blvd",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM01.00",
+          crossStreet2: "El Rancho Blvd",
+        },
+      }
     },
   },
   {
@@ -21681,7 +21777,11 @@ export const postalData: IPostal[] = [
           crossStreet1: "Hanger Way",
           crossStreet2: "El Rancho Blvd",
         },
-        "Rt 20": {
+        "Rt 20 NB": {
+          crossStreet1: "El Burro Blvd",
+          crossStreet2: "El Rancho Blvd",
+        },
+        "Rt 20 SB": {
           crossStreet1: "El Burro Blvd",
           crossStreet2: "El Rancho Blvd",
         },
@@ -21698,7 +21798,11 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
+          crossStreet1: "El Burro Blvd",
+          crossStreet2: "Rt 20 MM02.00",
+        },
+        "Rt 20 SB": {
           crossStreet1: "El Burro Blvd",
           crossStreet2: "Rt 20 MM02.00",
         },
@@ -21719,16 +21823,20 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 SB": {
+          crossStreet1: "East LS Entrance",
+          crossStreet2: "El Rancho Blvd",
+        },
+        "Rt 20 NB": {
           crossStreet1: "El Rancho Blvd",
-          crossStreet2: "Murrieta Exit",
+          crossStreet2: "East LS Exit"
         },
         "Labor Pl": {
           crossStreet1: "Amarillo Way",
           crossStreet2: "El Rancho Blvd",
         },
         "El Rancho Blvd": {
-          crossStreet1: "Rt 20",
+          crossStreet1: "Rt 20 NB",
           crossStreet2: "Labor Pl",
         },
         "Amarillo Way": {
@@ -21748,6 +21856,14 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
+        "Rt 20 NB": {
+          crossStreet1: "Rt 20 MM02.00",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM02.00",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance"
+        },
         "Amarillo Way": {
           crossStreet1: "Labor Pl",
           crossStreet2: "Innocence Blvd",
@@ -21763,10 +21879,6 @@ export const postalData: IPostal[] = [
         "Labor Pl": {
           crossStreet1: "Amarillo Way",
           crossStreet2: "El Rancho Blvd",
-        },
-        "Rt 20": {
-          crossStreet1: "Rt 20 MM02.00",
-          crossStreet2: "I4 Interchange",
         },
         "El Rancho Blvd": {
           crossStreet1: "Labor Pl",
@@ -21785,9 +21897,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
           crossStreet1: "Rt 20 MM02.00",
-          crossStreet2: "I4 Interchange",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM02.00",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance"
         },
         "El Rancho Blvd": {
           crossStreet1: "Innocence Blvd",
@@ -21810,9 +21926,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
           crossStreet1: "Rt 20 MM02.00",
-          crossStreet2: "I4 Interchange",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM02.00",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance"
         },
         "Capital Blvd": {
           crossStreet1: "Popular St",
@@ -21835,17 +21955,25 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
+        "I4 EB": {
           crossStreet1: "I4 MM01.00",
-          crossStreet2: "Rt 15 MM01.00",
+          crossStreet2: "I4 EB to Rt 15 NB"
         },
-        "I4 EB Entrance": {
-          crossStreet1: "Popular St",
-          crossStreet2: "Interstate 4",
+        "I4 WB": {
+          crossStreet1: "Rt 15 SB to I4 WB",
+          crossStreet2: "I4 MM01.00"
         },
-        "Rt 20": {
-          crossStreet1: "Murrieta Exit",
-          crossStreet2: "I4 Interchange",
+        "I4 EB to Rt 20 SB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Rt 20 SB",
+        },
+        "I4 EB to I2 WB Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "I2 WB",
+        },
+        "Rt 15 SB to Rt 20 SB Ramp": {
+          crossStreet1: "Rt 15 SB",
+          crossStreet2: "Rt 20 SB",
         },
         "Popular St": {
           crossStreet1: "Capital Blvd",
@@ -21868,9 +21996,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
-          crossStreet1: "Murrieta Exit",
-          crossStreet2: "I4 Interchange",
+        "Rt 20 NB": {
+          crossStreet1: "East LS Entrance",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "East LS Exit",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance",
         },
         "Popular St": {
           crossStreet1: "Innocence Blvd",
@@ -21893,9 +22025,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
-          crossStreet1: "Murrieta Exit",
-          crossStreet2: "I4 Interchange",
+        "Rt 20 NB": {
+          crossStreet1: "East LS Entrance",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "East LS Exit",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance",
         },
         "Popular St": {
           crossStreet1: "Innocence Blvd",
@@ -21922,9 +22058,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
           crossStreet1: "Rt 20 MM02.00",
-          crossStreet2: "I4 Interchange",
+          crossStreet2: "Rt 20 NB to I4 WB/Rt 15 NB Exit",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM02.00",
+          crossStreet2: "I4 EB/Rt 15 SB to Rt 20 SB Entrance",
         },
         "Innocence Blvd": {
           crossStreet1: "Popular St",
@@ -21984,13 +22124,17 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
           crossStreet1: "El Rancho Blvd",
-          crossStreet2: "Murrieta Exit",
+          crossStreet2: "East LS Exit"
+        },
+        "Rt 20 SB": {
+          crossStreet1: "El Rancho Blvd",
+          crossStreet2: "East LS Entrance"
         },
         "El Rancho Blvd": {
           crossStreet1: "S. Shambles St",
-          crossStreet2: "Rt 20",
+          crossStreet2: "Rt 20 SB",
         },
       },
     },
@@ -22011,7 +22155,7 @@ export const postalData: IPostal[] = [
         },
         "El Rancho Blvd": {
           crossStreet1: "S. Shambles St",
-          crossStreet2: "Rt 20",
+          crossStreet2: "Rt 20 SB",
         },
       },
     },
@@ -22076,7 +22220,11 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
+          crossStreet1: "Rt 20 MM01.00",
+          crossStreet2: "El Burro Blvd",
+        },
+        "Rt 20 SB": {
           crossStreet1: "Rt 20 MM01.00",
           crossStreet2: "El Burro Blvd",
         },
@@ -22101,9 +22249,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Rt 20": {
+        "Rt 20 NB": {
           crossStreet1: "LS Ports Exit",
           crossStreet2: "Rt 20 MM01.00",
+        },
+        "Rt 20 SB": {
+          crossStreet1: "Rt 20 MM01.00",
+          crossStreet2: "LS Ports Exit",
         },
         "Hanger Way": {
           crossStreet1: "Popular St",
@@ -22234,9 +22386,21 @@ export const postalData: IPostal[] = [
           crossStreet1: "Capital Blvd",
           crossStreet2: "Supply St",
         },
-        "Interstate 4": {
+        "I4 WB": {
+          crossStreet1: "Rt 20 NB/I2 EB to I4 WB Entrance",
+          crossStreet2: "I4 MM01.00"
+        },
+        "I4 EB": {
           crossStreet1: "I4 MM01.00",
-          crossStreet2: "Rt 15 MM01.00",
+          crossStreet2: "I4 WB to Rt 20 SB/I2 WB Exit"
+        },
+        "Popular St to I4 EB Ramp": {
+          crossStreet1: "Popular St",
+          crossStreet2: "I4 EB"
+        },
+        "I4 EB to Popular St Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Popular St"
         },
         "Capital Blvd": {
           crossStreet1: "Little Bighorn Ave",
@@ -22255,9 +22419,17 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "Strawberry Exit",
-          crossStreet2: "La Mesa Exit",
+        "I4 EB": {
+          crossStreet1: "Elgin Ave to I4 EB Entrance",
+          crossStreet2: "I4 EB to Popular St Ramp",
+        },
+        "I4 WB": {
+          crossStreet1: "Popular St to I4 WB Ramp",
+          crossStreet2: "I4 WB to Elgin Ave Exit",
+        },
+        "I4 EB to Popular St Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Popular St",
         },
         "Little Bighorn Ave": {
           crossStreet1: "Capital Blvd",
@@ -22598,9 +22770,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "Strawberry Exit",
-          crossStreet2: "I4 MM01.00",
+        "I4 EB": {
+          crossStreet1: "Elgin Ave to I4 EB Entrance",
+          crossStreet2: "I4 MM01.00"
+        },
+        "I4 WB": {
+          crossStreet1: "I4 MM01.00",
+          crossStreet2: "I4 WB to Elgin Ave Exit",
         },
         "Capital Blvd": {
           crossStreet1: "Crusade Rd",
@@ -22830,9 +23006,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "Strawberry Exit",
-          crossStreet2: "I4 MM01.00",
+        "I4 EB": {
+          crossStreet1: "Elgin Ave to I4 EB Entrance",
+          crossStreet2: "I4 MM01.00"
+        },
+        "I4 WB": {
+          crossStreet1: "I4 MM01.00",
+          crossStreet2: "I4 WB to Elgin Ave Exit",
         },
         "Strawberry Ave": {
           crossStreet1: "Capital Blvd",
@@ -22859,9 +23039,17 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "I5 Interchange",
-          crossStreet2: "I4 MM01.00",
+        "I4 EB": {
+          crossStreet1: "I5 SB to I4 EB Entrance",
+          crossStreet2: "I4 MM01.00"
+        },
+        "I4 WB": {
+          crossStreet1: "I4 MM01.00",
+          crossStreet2: "I4 WB to I5 NB Exit",
+        },
+        "Elgin Ave to I4 EB Ramp": {
+          crossStreet1: "Elgin Ave",
+          crossStreet2: "I4 EB",
         },
         "Elgin Ave": {
           crossStreet1: "Innocence Blvd",
@@ -23183,7 +23371,7 @@ export const postalData: IPostal[] = [
           crossStreet1: "Brogue Ave",
           crossStreet2: "Davis Ave",
         },
-        Alleyway: {
+        "Alleyway": {
           crossStreet1: "Brogue Ave",
           crossStreet2: "Davis Ave",
         },
@@ -23270,9 +23458,17 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "I5 Interchange",
-          crossStreet2: "Strawberry Exit",
+        "I4 EB": {
+          crossStreet1: "I5 SB to I4 EB Entrance",
+          crossStreet2: "Elgin Ave to I4 EB Entrance",
+        },
+        "I4 WB": {
+          crossStreet1: "I4 MM01.00",
+          crossStreet2: "I4 WB to Elgin Ave Exit",
+        },
+        "I4 EB to Elgin Ave Ramp": {
+          crossStreet1: "I4 EB",
+          crossStreet2: "Elgin Ave"
         },
         "Power St": {
           crossStreet1: "Innocence Blvd",
@@ -23299,9 +23495,13 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "I5 Interchange",
-          crossStreet2: "Strawberry Exit",
+        "I4 EB": {
+          crossStreet1: "I5 SB to I4 EB Entrance",
+          crossStreet2: "I4 EB to Elgin Ave Exit"
+        },
+        "I4 WB": {
+          crossStreet1: "Elgin Ave to I4 WB Entrance",
+          crossStreet2: "I4 WB to I5 NB Exit",
         },
         "Alta St": {
           crossStreet1: "Innocence Blvd",
@@ -23550,6 +23750,58 @@ export const postalData: IPostal[] = [
           crossStreet1: "LSIA Exit",
           crossStreet2: "Autopia Pkwy",
         },
+        "Davis Ave": {
+          crossStreet1: "Dutch London St",
+          crossStreet2: "Alta St",
+        },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
+        },
         "Autopia Pkwy": {
           crossStreet1: "Exceptionalists Way",
           crossStreet2: "Davis Ave",
@@ -23578,6 +23830,54 @@ export const postalData: IPostal[] = [
         "Dutch London St": {
           crossStreet1: "LSIA Exit",
           crossStreet2: "Autopia Pkwy",
+        },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
         },
       },
     },
@@ -23613,17 +23913,57 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 4": {
-          crossStreet1: "I5 Interchange",
-          crossStreet2: "Strawberry Exit",
+        "I4 EB": {
+          crossStreet1: "I5 SB to I4 EB Entrance",
+          crossStreet2: "I4 EB to Elgin Ave Exit",
         },
-        "Interstate 5 [U]": {
-          crossStreet1: "La Puerta Exit",
-          crossStreet2: "I5 MM01.00",
+        "I4 WB": {
+          crossStreet1: "Elgin Ave to I4 WB Entrance",
+          crossStreet2: "I4 WB to I5 NB Exit",
         },
-        "Interstate 5 [L]": {
+        "I5 NB [U]": {
+          crossStreet1: "I5 NB to Innocence Blvd Exit",
+          crossStreet2: "I5 MM01.00"
+        },
+        "I5 SB [U]": {
+          crossStreet1: "I5 MM01.00",
+          crossStreet2: "Innocence Blvd to I5 SB Entrance",
+        },
+        "I5 NB [L]": {
+          crossStreet1: "Innocence Blvd to I5 NB [L] Entrance",
+          crossStreet2: "I5 NB [L] to I5 NB [U]"
+        },
+        "I5 SB [L]": {
+          crossStreet1: "I5 SB [U] to I5 SB [L]",
+          crossStreet2: "I5 SB to Innocence Blvd Exit"
+        },
+        "I5 NB to I4 EB Ramp": {
+          crossStreet1: "I5 NB",
+          crossStreet2: "I4 EB"
+        },
+        "I5 SB to I4 EB Ramp": {
+          crossStreet1: "I5 SB",
+          crossStreet2: "I4 EB"
+        },
+        "Innocence Blvd to I4 EB Ramp": {
           crossStreet1: "Innocence Blvd",
-          crossStreet2: "I2 Interchange",
+          crossStreet2: "I5 NB to I4 EB Ramp"
+        },
+        "Innocence Blvd to I5 NB [L] Ramp": {
+          crossStreet1: "Innocence Blvd",
+          crossStreet2: "I5 NB [L]"
+        },
+        "I5 SB [L] to Innocence Blvd Ramp": {
+          crossStreet1: "I5 SB [L]",
+          crossStreet2: "Innocence Blvd"
+        },
+        "I4 WB to I5 SB Ramp": {
+          crossStreet1: "I4 WB",
+          crossStreet2: "I5 SB"
+        },
+        "I4 WB to Innocence Blvd Ramp": {
+          crossStreet1: "I4 WB",
+          crossStreet2: "Innocence Blvd"
         },
         "Alta St": {
           crossStreet1: "Innocence Blvd",
@@ -23646,9 +23986,29 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 5": {
-          crossStreet1: "La Puerta Exit",
-          crossStreet2: "I5 MM01.00",
+        "I5 NB [U]": {
+          crossStreet1: "I5 NB [U] to I5 NB [L]",
+          crossStreet2: "I5 NB [U] to I4 EB Exit"
+        },
+        "I5 SB [U]": {
+          crossStreet1: "I4 WB to I5 SB [U] Entrance",
+          crossStreet2: "I5 SB [L] to I5 SB [U]"
+        },
+        "I5 NB [L]": {
+          crossStreet1: "I5 NB [U] to I5 NB [L]",
+          crossStreet2: "I5 NB [U] to Innocence Blvd Entrance"
+        },
+        "I5 SB [L]": {
+          crossStreet1: "I5 SB [L] to Innocence Blvd Exit",
+          crossStreet2: "I5 SB [L] to I5 SB [U]"
+        },
+        "I5 NB to Innocence Blvd Ramp": {
+          crossStreet1: "I5 NB",
+          crossStreet2: "Innocence Blvd"
+        },
+        "Innocence Blvd to I5 SB Ramp": {
+          crossStreet1: "Innocence Blvd",
+          crossStreet2: "I5 SB"
         },
         "Innocence Blvd": {
           crossStreet1: "Calais Ave",
@@ -23671,9 +24031,21 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 5": {
-          crossStreet1: "La Puerta Exit",
-          crossStreet2: "I5 MM01.00",
+        "I5 NB [U]": {
+          crossStreet1: "Dutch London St to I5 NB Entrance",
+          crossStreet2: "I5 NB [U] to Innocence Blvd Ext"
+        },
+        "I5 SB [U]": {
+          crossStreet1: "Innocence Blvd to I5 SB Entrance",
+          crossStreet2: "I5 SB [U] to Dutch London St Exit"
+        },
+        "I5 NB [L]": {
+          crossStreet1: "I5 NB [U] to I5 NB [L]",
+          crossStreet2: "Innocence Blvd to I5 NB [L] Entrance",
+        },
+        "I5 SB [L]": {
+          crossStreet1: "I5 SB [L] to Innocence Blvd Exit",
+          crossStreet2: "I5 SB [L] to I5 SB [U]"
         },
         "Alta St": {
           crossStreet1: "S. Arsenal St",
@@ -23696,9 +24068,29 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["LSPD", "LCSO", "SAHP", "BCSO", "SSPD", "PBPD", "MBPD"],
     streets: {
       availableRoads: {
-        "Interstate 5": {
-          crossStreet1: "La Puerta Exit",
-          crossStreet2: "I5 MM01.00",
+        "I5 NB": {
+          crossStreet1: "Dutch London St to I5 NB Entrance",
+          crossStreet2: "I5 NB to I5 NB [L]"
+        },
+        "I5 SB": {
+          crossStreet1: "I5 SB [L] to I5 SB",
+          crossStreet2: "I5 SB to Dutch London St Exit"
+        },
+        "Dutch London St to I5 NB Ramp": {
+          crossStreet1: "Dutch London St",
+          crossStreet2: "I5 NB"
+        },
+        "I5 SB to Dutch London St Ramp": {
+          crossStreet1: "I5 SB",
+          crossStreet2: "Dutch London St"
+        },
+        "Dutch London St": {
+          crossStreet1: "Davis Ave to Dutch London St WB Ramp",
+          crossStreet2: "I5 NB Ramp"
+        },
+        "Davis Ave to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave",
+          crossStreet2: "Dutch London St WB"
         },
         "S. Arsenal St": {
           crossStreet1: "Dutch London St",
@@ -23724,6 +24116,54 @@ export const postalData: IPostal[] = [
         "Davis Ave": {
           crossStreet1: "Dutch London St",
           crossStreet2: "Alta St",
+        },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
         },
         "Mutiny Rd": {
           crossStreet1: "S. Arsenal St",
@@ -23804,6 +24244,54 @@ export const postalData: IPostal[] = [
           crossStreet1: "Interstate 5",
           crossStreet2: "Autopia Pkwy",
         },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
+        },
         "Autopia Pkwy": {
           crossStreet1: "Greenwich Pkwy",
           crossStreet2: "Exceptionalists Way",
@@ -23829,6 +24317,58 @@ export const postalData: IPostal[] = [
           crossStreet1: "Greenwich Pkwy",
           crossStreet2: "Exceptionalists Way",
         },
+        "Davis Ave": {
+          crossStreet1: "Dutch London St",
+          crossStreet2: "Alta St",
+        },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
+        },
       },
     },
   },
@@ -23846,9 +24386,57 @@ export const postalData: IPostal[] = [
           crossStreet1: "I5 MM02.00",
           crossStreet2: "I5 MM03.00",
         },
-        "Dutch London St": {
-          crossStreet1: "Interstate 5",
-          crossStreet2: "Autopia Pkwy",
+        "Davis Ave": {
+          crossStreet1: "Dutch London St",
+          crossStreet2: "Alta St",
+        },
+        "Davis Ave SB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave SB to Dutch London St WB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave SB to Dutch London St EB Ramp": {
+          crossStreet1: "Davis Ave SB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Davis Ave NB to Dutch London St WB/EB Ramp": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB/EB Ramps"
+        },
+        "Davis Ave NB to Dutch London St WB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St WB"
+        },
+        "Davis Ave NB to Dutch London St EB": {
+          crossStreet1: "Davis Ave NB",
+          crossStreet2: "Dutch London St EB"
+        },
+        "Dutch London St EB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps"
+        },
+        "Dutch London St EB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St EB to Davis Ave SB Ramp": {
+          crossStreet1: "Dutch London St EB",
+          crossStreet2: "Davis Ave SB"
+        },
+        "Dutch London St WB to Davis Ave NB/SB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB/SB Ramps",
+        },
+        "Dutch London St WB to Davis Ave NB Ramp": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave NB"
+        },
+        "Dutch London St WB to Davis Ave SB": {
+          crossStreet1: "Dutch London St WB",
+          crossStreet2: "Davis Ave SB"
         },
       },
     },

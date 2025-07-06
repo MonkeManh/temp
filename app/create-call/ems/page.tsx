@@ -2,6 +2,7 @@
 
 import EMSCaseEntry from "@/components/create-call/ems/case-entry";
 import EMSCaseSummary from "@/components/create-call/ems/case-summary";
+import EMSDLS from "@/components/create-call/ems/dls";
 import EMSKeyQuestions from "@/components/create-call/ems/key-questions";
 import SendEMSCase from "@/components/create-call/ems/send-case";
 import Footer from "@/components/footer";
@@ -31,6 +32,7 @@ import { INewCallData } from "@/models/interfaces/INewCallData";
 import { ISettings } from "@/models/interfaces/ISettings";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { IAnswerData } from "@/models/interfaces/protocols/ems/IEMSQuestions";
+import e from "express";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -53,10 +55,7 @@ export default function CreateCallEMS() {
   );
   const [answers, setAnswers] = useState<IAnswerData[]>([]);
   const [activeTab, setActiveTab] = useState<string>("entry");
-  const [currentCode, setCurrentCode] = useState<string>("DEFAULT_CODE");
-  const [currentSuffix, setCurrentSuffix] = useState<string>("DEFAULT_SUFFIX");
   const [recommendedCode, setRecommendedCode] = useState<string>("");
-  const [selectableCodes, setSelectableCodes] = useState<string[]>([]);
   const [hasReconfigured, setHasReconfigured] = useState<string>("");
   const [callbackOnSummary, setCallBackOnSummary] = useState<boolean>(false);
 
@@ -75,6 +74,7 @@ export default function CreateCallEMS() {
       const parsedEMSCase: IEMSCaseEntry = JSON.parse(storedEMSCase);
       setEmsCase(parsedEMSCase);
       setAnswers(parsedEMSCase.answers || []);
+
       const complaintNumAsString = parsedEMSCase.chiefComplaint
         .split(" - ")[0]
         .trim();
@@ -102,6 +102,35 @@ export default function CreateCallEMS() {
     };
   }, []);
 
+  // Helper function to filter selectableCodes based on current code priority
+  const filterSelectableCodesByPriority = useCallback((existingCodes: string[], currentCode: string, protocol: IEMSComplaint | undefined): string[] => {
+    if (!protocol) return existingCodes;
+    
+    const codePriority = getPriorityFromCode(currentCode);
+    const codePriorityIndex = PRIORITY_ORDER.indexOf(codePriority);
+    
+    // Filter out codes of lower priority
+    const filteredCodes = existingCodes.filter(code => {
+      const codePrePriority = getPriorityFromCode(code);
+      const codePrePriorityIndex = PRIORITY_ORDER.indexOf(codePrePriority);
+      return codePrePriorityIndex >= codePriorityIndex;
+    });
+    
+    // Add override codes (ending with "00") from current or higher priorities if not already present
+    protocol.determinants.forEach(determinant => {
+      const determinantPriorityIndex = PRIORITY_ORDER.indexOf(determinant.priority);
+      if (determinantPriorityIndex >= codePriorityIndex) {
+        determinant.codes.forEach(codeObj => {
+          if (codeObj.code.endsWith("00") && !filteredCodes.includes(codeObj.code)) {
+            filteredCodes.push(codeObj.code);
+          }
+        });
+      }
+    });
+    
+    return filteredCodes;
+  }, []);
+
   // When case entry has been completed
   const handleCaseEntryCompletion = useCallback(
     (caseData: IEMSCaseEntry) => {
@@ -110,8 +139,24 @@ export default function CreateCallEMS() {
           "No case data provided during case entry completion."
         );
       }
-      setEmsCase(caseData);
-      setProtocol(getProtocolByName(caseData.chiefComplaint));
+      
+      const newProtocol = getProtocolByName(caseData.chiefComplaint);
+      const initialSelectableCodes: string[] = []; // Start with empty array
+      
+      setEmsCase((prevCase) => {
+        const updatedCase = {
+          ...prevCase,
+          ...caseData,
+          hasBeenSent: false,
+          currentCode: "DEFAULT_CODE",
+          currentSuffix: "DEFAULT_SUFFIX",
+          answers: [],
+          selectableCodes: initialSelectableCodes,
+        };
+        localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+        return updatedCase;
+      });
+      setProtocol(newProtocol);
       setActiveTab("kq");
       localStorage.setItem("EMS_CASE", JSON.stringify(caseData));
 
@@ -125,39 +170,40 @@ export default function CreateCallEMS() {
   );
 
   // When a question is answered in key questions
-  const updateAnswers = useCallback(
-    (answer: IAnswerData) => {
-      setAnswers((prevAnswers) => {
-        const updatedAnswers = [...prevAnswers];
-        const index = updatedAnswers.findIndex(
-          (a) => a.question === answer.question
-        );
+  const updateAnswers = useCallback((answer: IAnswerData) => {
+    setAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers];
+      const index = updatedAnswers.findIndex(
+        (a) => a.questionIndex === answer.questionIndex
+      );
 
-        if (index !== -1) {
-          updatedAnswers[index] = answer;
-        } else {
-          updatedAnswers.push(answer);
-        }
+      if (index !== -1) {
+        updatedAnswers[index] = answer;
+      } else {
+        updatedAnswers.push(answer);
+      }
 
-        // Also update emsCase with new answers
-        if (emsCase) {
-          const updatedCase = { ...emsCase, answers: updatedAnswers };
-          setEmsCase(updatedCase);
-          localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
-        }
-
-        return updatedAnswers;
+      // Also update emsCase with new answers - preserve currentSuffix
+      setEmsCase((prevCase) => {
+        if (!prevCase) return prevCase;
+        const updatedCase = { ...prevCase, answers: updatedAnswers };
+        localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+        return updatedCase;
       });
-    },
-    [emsCase]
-  );
 
-  // When code is being updated from key questions but not sent
+      return updatedAnswers;
+    });
+  }, []);
+
+  // When case entry has been completed
   const updateCode = useCallback(
     (code: string) => {
-      if (code === currentCode) return;
+      if (code === emsCase?.currentCode) return;
+      if(!emsCase) return;
 
-      const currentPriority = getPriorityFromCode(currentCode);
+      const currentPriority = getPriorityFromCode(
+        emsCase?.currentCode || "DEFAULT_CODE"
+      );
       const newPriority = getPriorityFromCode(code);
 
       const isHigherOrEqualPriority =
@@ -166,40 +212,104 @@ export default function CreateCallEMS() {
 
       if (!isHigherOrEqualPriority) return; // Ignore codes with lower priority
 
-      if (higherCode(code, currentCode) === currentCode) {
+      // If a code has already been sent, just add new codes to selectableCodes
+      if (emsCase.hasBeenSent) {
+        if (!emsCase.selectableCodes.includes(code)) {
+          const updatedSelectableCodes = [...emsCase.selectableCodes, code];
+          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          setEmsCase((prevCase) => {
+            if (!prevCase) return prevCase;
+            const updatedCase = {
+              ...prevCase,
+              selectableCodes: filteredSelectableCodes,
+            };
+            localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+            return updatedCase;
+          });
+        }
+        return;
+      }
+
+      if (
+        higherCode(emsCase?.currentCode || "DEFAULT_CODE", code) ===
+        emsCase?.currentCode
+      ) {
         // Current code is higher or same priority
         if (
-          isSamePriority(code, currentCode) &&
-          !selectableCodes.includes(code)
+          isSamePriority(code, emsCase?.currentCode || "DEFAULT_CODE") &&
+          !emsCase.selectableCodes.includes(code)
         ) {
-          selectableCodes.push(code);
+          // Add the code to selectableCodes and filter by priority
+          const updatedSelectableCodes = [...emsCase.selectableCodes, code];
+          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          setEmsCase((prevCase) => {
+            if (!prevCase) return prevCase;
+            const updatedCase = {
+              ...prevCase,
+              selectableCodes: filteredSelectableCodes,
+            };
+            localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+            return updatedCase;
+          });
         }
       } else {
         // New code is higher priority than current code
-        setCurrentCode(code);
-        if (!selectableCodes.includes(code)) {
-          selectableCodes.push(currentCode);
-        }
+        // Add the previous code to selectableCodes and filter by new priority
+        const updatedSelectableCodes = [...emsCase.selectableCodes, emsCase.currentCode];
+        const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, code, protocol);
+        setEmsCase((prevCase) => {
+          if (!prevCase) return prevCase;
+
+          const updatedCase = {
+            ...prevCase,
+            currentCode: code,
+            selectableCodes: filteredSelectableCodes,
+          };
+
+          localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+
+          return updatedCase;
+        });
       }
     },
-    [currentCode, selectableCodes]
+    [emsCase?.currentCode, emsCase?.selectableCodes, emsCase?.hasBeenSent, protocol, filterSelectableCodesByPriority]
   );
 
   // When suffix is being updated from key questions
-  const updateSuffix = useCallback(
-    (suffix: string) => {
-      setCurrentSuffix(suffix);
-    },
-    [setCurrentSuffix]
-  );
+  const updateSuffix = useCallback((suffix: string) => {
+    setEmsCase((prevCase) => {
+      if (!prevCase) return prevCase;
+
+      const updatedCase = {
+        ...prevCase,
+        currentSuffix: suffix,
+      };
+      localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+      return updatedCase;
+    });
+  }, []);
+
+  const updateSceneSecurity = useCallback((newVal: boolean) => {
+    setEmsCase((prevCase) => {
+      if (!prevCase) return prevCase;
+      const updatedCase = {
+        ...prevCase,
+        secureScene: newVal,
+      };
+      localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+      return updatedCase;
+    });
+  }, []);
 
   // When code is sent from key questions
   const handleSendCodeFromKQ = useCallback(
-    (code: string, override?: boolean) => {
+    (code: string, override?: boolean, hideSend = true) => {
       if (emsCase?.hasBeenSent && !override) return;
-      if (code === currentCode) return;
+      if (code === emsCase?.currentCode) return;
 
-      const currentPriority = getPriorityFromCode(currentCode);
+      const currentPriority = getPriorityFromCode(
+        emsCase?.currentCode || "DEFAULT_CODE"
+      );
       const newPriority = getPriorityFromCode(code);
 
       const isHigherOrEqualPriority =
@@ -208,55 +318,120 @@ export default function CreateCallEMS() {
 
       if (!isHigherOrEqualPriority) return; // Filter out lower priority codes
 
-      if (higherCode(code, currentCode) === currentCode) {
-        if (isSamePriority(code, currentCode)) {
-          selectableCodes.push(code);
+      if (
+        higherCode(emsCase?.currentCode || "DEFAULT_CODE", code) ===
+        emsCase?.currentCode
+      ) {
+        if (isSamePriority(code, emsCase?.currentCode || "DEFAULT_CODE")) {
+          // Add the code to selectableCodes and filter by priority
+          const updatedSelectableCodes = emsCase.selectableCodes.includes(code) 
+            ? emsCase.selectableCodes 
+            : [...emsCase.selectableCodes, code];
+          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          setEmsCase((prevCase) => {
+            if (!prevCase) return prevCase;
+            const updatedCase = {
+              ...prevCase,
+              hasBeenSent: hideSend,
+              selectableCodes: filteredSelectableCodes,
+            };
+            localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+            return updatedCase;
+          });
+        } else {
+          setEmsCase((prevCase) => {
+            if (!prevCase) return prevCase;
+            const updatedCase = {
+              ...prevCase,
+              hasBeenSent: hideSend,
+            };
+            localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+            return updatedCase;
+          });
         }
-        return setEmsCase((prevCase) => {
-          if (!prevCase) return prevCase;
-          const updatedCase = {
-            ...prevCase,
-            hasBeenSent: true,
-          };
-          localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
-          return updatedCase;
-        });
+        return;
       }
 
+      // New code is higher priority - add previous code to selectableCodes and update current code
+      const currentSelectableCodes = emsCase?.selectableCodes || [];
+      const currentCode = emsCase?.currentCode || "DEFAULT_CODE";
+      const updatedSelectableCodes = currentSelectableCodes.includes(currentCode)
+        ? currentSelectableCodes
+        : [...currentSelectableCodes, currentCode];
+      const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, code, protocol);
+      setEmsCase((prevCase) => {
+        if (!prevCase) return prevCase;
+        const updatedCase = {
+          ...prevCase,
+          hasBeenSent: hideSend,
+          selectableCodes: filteredSelectableCodes,
+        };
+        localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+        return updatedCase;
+      });
+      setCallBackOnSummary(true);
       setRecommendedCode(code);
       setActiveTab("send");
     },
-    [emsCase?.hasBeenSent, currentCode, selectableCodes]
+    [emsCase?.hasBeenSent, emsCase?.currentCode, emsCase?.selectableCodes, protocol, filterSelectableCodesByPriority]
   );
 
-  const handleCodeSendFromSend = useCallback((code: string) => {
-    setCurrentCode(code);
+  // When all key questions have been answered
+  const handleAllQuestionsAnswered = useCallback(() => {
+    if (!protocol) return;
+
+    const defaultCode = protocol.defaultCode;
+    const activeCode =
+      emsCase?.currentCode !== "DEFAULT_CODE"
+        ? emsCase?.currentCode
+        : defaultCode;
+
+    if (!activeCode) return;
+
+    // Set questionsCompleted to true
     setEmsCase((prevCase) => {
       if (!prevCase) return prevCase;
       const updatedCase = {
         ...prevCase,
-        currentCode: code,
-        currentSuffix: currentSuffix,
-        hasBeenSent: true,
+        questionsCompleted: true,
       };
       localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
       return updatedCase;
     });
-    setRecommendedCode("");
-    setActiveTab("summary");
-    setCallBackOnSummary(true);
-  }, []);
+
+    // Always go to send tab with the current code as recommended code
+    setRecommendedCode(activeCode);
+    setActiveTab("send");
+  }, [protocol, emsCase?.currentCode]);
+
+  // When a code is sent from the send tab
+  const handleCodeSendFromSend = useCallback(
+    (code: string, doNotSetHasSent: boolean = true) => {
+      setCallBackOnSummary(doNotSetHasSent);
+      setEmsCase((prevCase) => {
+        if (!prevCase) return prevCase;
+        const updatedCase = {
+          ...prevCase,
+          currentCode: code,
+          hasBeenSent: doNotSetHasSent,
+        };
+        localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+        return updatedCase;
+      });
+      setRecommendedCode("");
+      setActiveTab("summary");
+    },
+    []
+  );
 
   const handleDelaySendContinue = useCallback((code: string) => {
     setRecommendedCode("");
-    setCurrentCode(code);
     setEmsCase((prevCase) => {
       if (!prevCase) return prevCase;
       const updatedCase = {
         ...prevCase,
         currentCode: code,
-        currentSuffix: currentSuffix,
-        hasBeenSent: true,
+        hasBeenSent: false,
       };
       localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
       return updatedCase;
@@ -279,26 +454,43 @@ export default function CreateCallEMS() {
       if (!newProtocol) return;
       setHasReconfigured(protocol?.shortName);
       setProtocol(newProtocol);
+      setEmsCase((prevCase) => {
+        if (!prevCase) return prevCase;
+        const updatedCase = {
+          ...prevCase,
+          chiefComplaint: newProtocol.protocol + " - " + newProtocol.name,
+          hasBeenSent: false,
+          currentCode: "DEFAULT_CODE",
+          currentSuffix: "DEFAULT_SUFFIX",
+          answers: [],
+          selectableCodes: [], // Reset selectableCodes when switching protocols
+        };
+        localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
+        return updatedCase;
+      });
       setActiveTab("kq");
-      setCurrentCode("DEFAULT_CODE");
-      setCurrentSuffix("DEFAULT_SUFFIX");
     },
     [emsProtocols]
   );
 
-  const handleSummaryClick = useCallback((text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success("Case summary copied to clipboard");
-    if (settings.soundEffects) {
-      const audio = new Audio("/audio/dispatch.mp3");
-      audio.volume = 0.5;
-      audio.play();
-    }
-    if (callbackOnSummary) {
-      setActiveTab("kq");
-      setCallBackOnSummary(false);
-    }
-  }, [callbackOnSummary]);
+  const handleSummaryClick = useCallback(
+    (text: string, navigateTo?: string) => {
+      navigator.clipboard.writeText(text);
+      toast.success("Case summary copied to clipboard");
+      if (settings.soundEffects) {
+        const audio = new Audio("/audio/dispatch.mp3");
+        audio.volume = 0.5;
+        audio.play();
+      }
+      if (callbackOnSummary) {
+        setActiveTab("kq");
+        setCallBackOnSummary(false);
+      } else {
+        setActiveTab(navigateTo || "kq");
+      }
+    },
+    [callbackOnSummary]
+  );
 
   return (
     <main>
@@ -325,12 +517,13 @@ export default function CreateCallEMS() {
           <div className="text-center flex items-center justify-center col-span-1">
             <p
               className={`text-lg font-bold ${
-                emsCase?.currentCode
+                emsCase?.currentCode && emsCase.currentCode !== "DEFAULT_CODE"
                   ? "p-2 rounded-lg bg-muted/10 text-red-500"
                   : ""
               }`}
             >
               {emsCase?.currentCode &&
+                emsCase.currentCode !== "DEFAULT_CODE" &&
                 `${parseInt(
                   emsCase.currentCode.slice(0, 2),
                   10
@@ -374,18 +567,23 @@ export default function CreateCallEMS() {
 
                 <TabsContent value="kq" className="h-full">
                   {emsCase && protocol ? (
-                    <EMSKeyQuestions
-                      emsCase={emsCase}
-                      protocol={protocol}
-                      answers={answers}
-                      codeHasBeenSent={emsCase.hasBeenSent}
-                      settings={settings}
-                      handleUpdateCode={updateCode}
-                      handleUpdateSuffix={updateSuffix}
-                      handleCodeSend={handleSendCodeFromKQ}
-                      handleUpdateAnswers={updateAnswers}
-                      handleProtocolChange={switchProtocol}
-                    />
+                    <>
+                      <EMSKeyQuestions
+                        emsCase={emsCase}
+                        protocol={protocol}
+                        answers={answers}
+                        codeHasBeenSent={emsCase.hasBeenSent}
+                        settings={settings}
+                        currentCode={emsCase.currentCode || "DEFAULT_CODE"}
+                        handleUpdateCode={updateCode}
+                        handleUpdateSuffix={updateSuffix}
+                        handleCodeSend={handleSendCodeFromKQ}
+                        handleUpdateAnswers={updateAnswers}
+                        handleProtocolChange={switchProtocol}
+                        handleSceneSecurityChange={updateSceneSecurity}
+                        handleQuestionComplete={handleAllQuestionsAnswered}
+                      />
+                    </>
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <LoadingState />
@@ -397,9 +595,10 @@ export default function CreateCallEMS() {
                   {emsCase && protocol && (
                     <SendEMSCase
                       recommendedCode={recommendedCode}
-                      selectableCodes={selectableCodes}
+                      selectableCodes={emsCase.selectableCodes}
                       protocol={protocol}
                       emsCase={emsCase}
+                      hasCallback={callbackOnSummary}
                       handleSend={handleCodeSendFromSend}
                       handleDelaySendContinue={handleDelaySendContinue}
                       handleBack={handleBackToQuestionsFromSend}
@@ -416,11 +615,9 @@ export default function CreateCallEMS() {
                 </TabsContent>
 
                 <TabsContent value="dls" className="h-full">
-                  <div className="flex items-center justify-center h-full">
-                    <h2 className="text-2xl font-semibold text-muted-foreground">
-                      DLS
-                    </h2>
-                  </div>
+                  {emsCase && emsCase.questionsCompleted && (
+                    <EMSDLS emsCase={emsCase} />
+                  )}
                 </TabsContent>
 
                 <TabsContent value="summary" className="h-full space-y-4">

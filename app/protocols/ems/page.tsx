@@ -14,6 +14,7 @@ import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { IEMSAnswers } from "@/models/interfaces/protocols/ems/IEMSAnswers";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { getEmsResponsePlan } from "@/data/plans/emsPlans";
 
 const priorityColors = {
   O: "bg-slate-500 text-white",
@@ -203,6 +204,38 @@ function QuestionsList({
                 <div className="flex-1 text-sm font-medium">
                   {question.text}
                 </div>
+                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
+                  ["age", "gender", "patient"].includes(dep)
+                ) && (
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                  >
+                    Patient Dependant
+                  </Badge>
+                )}
+
+                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
+                  ["proximity"].includes(dep)
+                ) && (
+                  <Badge
+                    variant="outline"
+                    className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"
+                  >
+                    Caller Type Dependant
+                  </Badge>
+                )}
+
+                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
+                  ["answers", "responses"].includes(dep)
+                ) && (
+                  <Badge
+                    variant="outline"
+                    className="bg-purple-50 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                  >
+                    Answer Dependent
+                  </Badge>
+                )}
               </div>
               {isOpen ? (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -291,17 +324,12 @@ function DeterminantsList({
                   borderLeftColor: getBorderColor(determinant.priority),
                 }}
               >
-                <div className="flex justify-between items-start gap-2">
+                <div className="flex justify-between items-center gap-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant="outline" className="text-xs font-mono">
                         {code.code}
                       </Badge>
-                      {code.defaultCode && (
-                        <Badge className="text-xs bg-blue-100 text-blue-800">
-                          Default
-                        </Badge>
-                      )}
                     </div>
                     <div className="text-sm flex items-center gap-1">
                       {code.text.includes("Override") && (
@@ -311,7 +339,7 @@ function DeterminantsList({
                     </div>
                   </div>
                   <Badge className="text-xs bg-gray-100 text-gray-800">
-                    Response: {code.recResponse}
+                    Response: {getEmsResponsePlan(code.recResponse)?.incidentType}
                   </Badge>
                 </div>
 
@@ -341,7 +369,7 @@ function DeterminantsList({
                             </span>
                             {subCode.recResponse && (
                               <Badge className="text-xs">
-                                Response: {subCode.recResponse}
+                                Response: {getEmsResponsePlan(subCode.recResponse)?.incidentType}
                               </Badge>
                             )}
                           </div>
@@ -405,8 +433,19 @@ function ProtocolCard({ protocol }: { protocol: IEMSComplaint }) {
 
             <div className="flex items-center gap-2">
               <h4 className="font-semibold text-sm">Default Priority:</h4>
-              <Badge className={defaultPriorityClass}>
+              <Badge className={`${defaultPriorityClass} font-mono`}>
                 {defaultPriority} - {defaultPriorityName}
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <h4 className="font-semibold text-sm">Default Code:</h4>
+              <Badge className="bg-muted-foreground/25 text-primary font-mono">
+                {protocol.defaultCode} -{" "}
+                {protocol.determinants
+                  .flatMap((d) => d.codes)
+                  .find((c) => c.code === protocol.defaultCode)?.text ||
+                  "Unknown"}
               </Badge>
             </div>
 

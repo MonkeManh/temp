@@ -1,6 +1,5 @@
 import { IEMSCaseEntry } from "../../IEMSCaseEntry";
 import { IAnswerData } from "./IEMSQuestions";
-import { IPatientData } from "./IPatientData";
 
 export interface IEMSAnswers {
   answer: string;
@@ -21,6 +20,7 @@ export interface IEMSAnswers {
   gotoProtocol?: number;
   gotoProtocolAfter?: number;
   gotoQuestion?: number;
+  setSceneSecure?: boolean;
   updateCode?: string;
   updateSuffix?: string;
   overrideCode?: boolean;

@@ -8,5 +8,6 @@ export interface INewCallData {
     callerNumber?: string;
     isLocalCaller?: boolean;
     callerStatement: string;
+    callNumber: string;
     service: "Police" | "Fire" | "EMS";
 }

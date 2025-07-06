@@ -131,10 +131,24 @@ const getHelpContent = (field: string) => {
     chiefComplaint: {
       title: "Chief Complaint Code",
       description: (
-        <p className="text-blue-500">
-          Enter the Chief Complaint code that <b>most closely describes</b> the{" "}
-          <b>foremost</b> symptom or incident.
-        </p>
+        <>
+          <p className="text-blue-500">
+            Enter the Chief Complaint code that <b>most closely describes</b>{" "}
+            the <b>foremost</b> symptom or incident.
+          </p>
+          <p className="mt-2">
+            The report of an <b>"unknown problem"</b> in a{" "}
+            <b>patient who is not with or near the caller,</b> or a call for
+            help from someone whose language cannot be understood (no
+            interpreter in the center), should be sent as protocol 32 (Unknown
+            Problem)
+          </p>
+          <p className="mt-2">
+            Please note that <b>Protocol 26</b> should be used for patients with
+            an <b>"unknown problem"</b> who are{" "}
+            <b>with or near the caller (2nd party).</b>
+          </p>
+        </>
       ),
     },
   };
@@ -232,6 +246,14 @@ export default function EMSCaseEntry({
       patientConsciousness: "",
       patientBreathing: "",
       chiefComplaint: "",
+      currentCode: "DEFAULT_CODE",
+      currentSuffix: "DEFAULT_SUFFIX",
+      selectableCodes: [],
+      answers: [],
+      hasBeenSent: false,
+      questionsCompleted: false,
+      hasCompletedDisconnect: false,
+      secureScene: true,
     };
   });
   const [isRestoring, setIsRestoring] = useState(!!initialData);
@@ -405,7 +427,7 @@ export default function EMSCaseEntry({
   }, [formData.patientBreathing]);
 
   useEffect(() => {
-    if( formData.chiefComplaint && !isRestoring) {
+    if (formData.chiefComplaint && !isRestoring) {
       setTimeout(() => {
         nextButtonRef.current?.focus();
       }, 50);
@@ -789,8 +811,11 @@ export default function EMSCaseEntry({
               disabled={!canEditChiefComplaint}
             />
           </div>
-          <Button ref={nextButtonRef}
-           variant="outline" onClick={() => onComplete(formData)}>
+          <Button
+            ref={nextButtonRef}
+            variant="outline"
+            onClick={() => onComplete(formData)}
+          >
             <ArrowRight className="h-4 w-4 text-green-400" />
           </Button>
         </div>

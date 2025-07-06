@@ -15,8 +15,8 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/images/ProQAPlus.png"
-                alt="ProQA Plus Logo"
+                src="/images/FiveQA.png"
+                alt="FiveQA Logo"
                 width={100}
                 height={32}
                 className="rounded-sm"
