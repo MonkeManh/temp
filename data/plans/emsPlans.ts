@@ -435,7 +435,7 @@ export const emsPlans: IResponsePlan[] = [
         quantity: 1,
       },
       {
-        type: "Fire Investigator",
+        type: "OFI Notification",
         quantity: 1,
       },
     ],
@@ -480,7 +480,7 @@ export const emsPlans: IResponsePlan[] = [
         quantity: 1,
       },
       {
-        type: "Fire Investigator",
+        type: "OFI Notification",
         quantity: 1,
       },
     ],
@@ -515,7 +515,7 @@ export const emsPlans: IResponsePlan[] = [
         quantity: 1,
       },
       {
-        type: "Fire Investigator",
+        type: "OFI Notification",
         quantity: 1,
       },
     ],
@@ -546,7 +546,7 @@ export const emsPlans: IResponsePlan[] = [
         quantity: 1,
       },
       {
-        type: "Fire Investigator",
+        type: "OFI Notification",
         quantity: 1,
       },
     ],

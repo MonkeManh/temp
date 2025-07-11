@@ -13,9 +13,11 @@ export interface IEMSAnswers {
   preRenderDependencies?: string[];
   preRenderLogic?: string;
   input?: boolean;
+  multiSelect?: boolean;
   continue?: boolean;
   end?: boolean;
   send?: boolean;
+  isMultiSelectOption?: boolean;
   gotoInstruction?: number;
   gotoProtocol?: number;
   gotoProtocolAfter?: number;

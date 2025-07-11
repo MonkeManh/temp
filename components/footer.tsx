@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-6">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} ProQA Plus. All rights reserved.
+            &copy; {new Date().getFullYear()} FiveQA. All rights reserved.
           </p>
           <p className="text-center text-sm text-muted-foreground">
             Designed and Developed by{" "}

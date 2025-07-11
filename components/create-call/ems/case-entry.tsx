@@ -18,17 +18,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { getEMSProtocolOptions } from "@/data/protocols/emsProtocols";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { INewCallData } from "@/models/interfaces/INewCallData";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 interface IEMSCaseEntryProps {
   callDetails: INewCallData;
-  onComplete: (data: IEMSCaseEntry) => void;
   initialData?: IEMSCaseEntry;
+  onComplete: (data: IEMSCaseEntry) => void;
+  handleCaseRestart: () => void;
 }
 
 const getHelpContent = (field: string) => {
@@ -229,6 +235,7 @@ export default function EMSCaseEntry({
   callDetails,
   initialData,
   onComplete,
+  handleCaseRestart,
 }: IEMSCaseEntryProps) {
   const [formData, setFormData] = useState<IEMSCaseEntry>(() => {
     if (initialData) {
@@ -260,6 +267,7 @@ export default function EMSCaseEntry({
   const [tempAge, setTempAge] = useState<string>("");
   const [focusedField, setFocusedField] = useState<string>("");
   const [focusedInput, setFocusedInput] = useState<string>("");
+  const callerNumberRef = useRef<HTMLInputElement>(null);
   const callerStatmentRef = useRef<HTMLInputElement>(null);
   const callerLocationRef = useRef<HTMLButtonElement>(null);
   const numPatientsRef = useRef<HTMLInputElement>(null);
@@ -443,394 +451,460 @@ export default function EMSCaseEntry({
   const canEditChiefComplaint = !!formData.patientBreathing;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="grid grid-cols-5 gap-4 items-center">
-        <div className="col-span-2 flex items-center justify-end">
-          <Label className="text-sm font-medium">The location is:</Label>
-        </div>
-        <div className="col-span-3">
-          <Input
-            value={`${callDetails?.postal || ""} ${callDetails?.street || ""}`}
-            className="bg-gray-50"
-            disabled
-          />
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label className="text-sm font-medium">The phone number is:</Label>
-        </div>
-        <div className="col-span-3">
-          <Input
-            value={formData.callerNumber}
-            onChange={(e) => {
-              const formatted = formatPhoneNumber(e.target.value);
-              handleInputChange("callerNumber", formatted);
-            }}
-            onFocus={() => {
-              setFocusedInput("callerNumber");
-              setFocusedField("callerNumber");
-            }}
-            onBlur={() => setFocusedInput("")}
-            autoFocus={!callDetails.callerNumber}
-            className="bg-white"
-            disabled={!!callDetails.callerNumber}
-          />
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "callerStatement" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText(
-              "callerStatement",
-              focusedInput === "callerStatement"
-            )}
-          </Label>
-        </div>
-        <div className="col-span-3">
-          <Input
-            value={formData.callerStatement}
-            onChange={(e) =>
-              handleInputChange("callerStatement", e.target.value)
-            }
-            onFocus={() => {
-              setFocusedInput("callerStatement");
-              setFocusedField("callerStatement");
-            }}
-            onBlur={() => setFocusedInput("")}
-            autoFocus={callDetails.callerNumber ? true : false}
-            ref={callerStatmentRef}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-5 gap-4">
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "patientProximity" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText(
-              "patientProximity",
-              focusedInput === "patientProximity"
-            )}
-          </Label>
-        </div>
-        <div className="col-span-1">
-          <Select
-            value={formData.patientProximity}
-            onValueChange={(value) =>
-              handleInputChange("patientProximity", value)
-            }
-            onOpenChange={(open) => {
-              if (open) {
-                setFocusedInput("patientProximity");
-                setFocusedField("patientProximity");
-              } else {
-                setFocusedInput("");
-              }
-            }}
-            disabled={!canEditpatientProximity}
-          >
-            <SelectTrigger className="w-full" ref={callerLocationRef}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="yes">Yes</SelectItem>
-              <SelectItem value="no">No</SelectItem>
-              <SelectItem value="first">First (1st party)</SelectItem>
-              <SelectItem value="fourth">Fourth (4th party)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="col-span-2 row-span-6">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {getHelpContent(focusedField).title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="mt-[-1rem]">
-              <CardDescription className="text-sm">
-                {getHelpContent(focusedField).description}
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "peopleHurt" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText("peopleHurt", focusedInput === "peopleHurt")}
-          </Label>
-        </div>
-        <div className="col-span-1">
-          <Input
-            type="text"
-            value={formData.numPatients}
-            onChange={(e) => {
-              // Clean the input to allow only numbers
-              const value = e.target.value.replace(/[^0-9]/g, "");
-              handleInputChange("numPatients", value);
-            }}
-            onFocus={() => {
-              setFocusedInput("peopleHurt");
-              setFocusedField("peopleHurt");
-            }}
-            disabled={!canEditNumPatients}
-            onBlur={() => setFocusedInput("")}
-            ref={numPatientsRef}
-          />
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "patientAge" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText("patientAge", focusedInput === "patientAge")}
-          </Label>
-        </div>
-
-        <div className="col-span-1">
-          <div className="flex gap-2">
+    <main className="space-y-4">
+      <header>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={() => {
+                // Clear all of the current form data
+                setFormData({
+                  callLocation: `${callDetails?.postal || ""} ${
+                    callDetails?.street || ""
+                  }`,
+                  callerNumber: callDetails?.callerNumber || "",
+                  callerStatement: callDetails?.callerStatement || "",
+                  patientProximity: "",
+                  numPatients: 1,
+                  patientAge: 0,
+                  ageUnit: "year",
+                  patientGender: "",
+                  patientConsciousness: "",
+                  patientBreathing: "",
+                  chiefComplaint: "",
+                  currentCode: "DEFAULT_CODE",
+                  currentSuffix: "DEFAULT_SUFFIX",
+                  selectableCodes: [],
+                  answers: [],
+                  hasBeenSent: false,
+                  questionsCompleted: false,
+                  hasCompletedDisconnect: false,
+                  secureScene: true,
+                });
+                setTempAge("");
+                if (!callDetails.callerNumber) {
+                  setFocusedInput("callerNumber");
+                  setFocusedField("callerNumber");
+                  callerNumberRef.current?.focus();
+                } else {
+                  setFocusedField("callerStatement");
+                  setFocusedInput("callerStatement");
+                  callerStatmentRef.current?.focus();
+                }
+                handleCaseRestart();
+              }}
+              variant="outline"
+              className="cursor-pointer hover:bg-accent-foreground"
+            >
+              <RotateCcw className="w-4 h-4 text-green-400" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Restart EMS Case</p>
+          </TooltipContent>
+        </Tooltip>
+      </header>
+      <div className="p-4 space-y-6">
+        <div className="grid grid-cols-5 gap-4 items-center">
+          <div className="col-span-2 flex items-center justify-end">
+            <Label className="text-sm font-medium">The location is:</Label>
+          </div>
+          <div className="col-span-3">
             <Input
-              value={tempAge}
+              value={`${callDetails?.postal || ""} ${
+                callDetails?.street || ""
+              }`}
+              className="bg-gray-50"
+              disabled
+            />
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label className="text-sm font-medium">The phone number is:</Label>
+          </div>
+          <div className="col-span-3">
+            <Input
+              value={formData.callerNumber}
               onChange={(e) => {
-                setTempAge(e.target.value);
+                const formatted = formatPhoneNumber(e.target.value);
+                handleInputChange("callerNumber", formatted);
               }}
               onFocus={() => {
-                setFocusedInput("patientAge");
-                setFocusedField("patientAge");
+                setFocusedInput("callerNumber");
+                setFocusedField("callerNumber");
               }}
-              onBlur={() => {
-                const input = tempAge.trim();
-
-                const isLikelyDate =
-                  /[/-]/.test(input) ||
-                  /^\d{4}$/.test(input) ||
-                  /^\d{1,2}[/-]\d{1,2}[/-]?\d{0,4}$/.test(input);
-
-                if (isLikelyDate) {
-                  const parsed = calculateAgeFromDate(input);
-                  if (parsed) {
-                    console.log("Parsed age:", parsed);
-                    handleInputChange("ageUnit", parsed.unit);
-                    setFormData((prev) => ({
-                      ...prev,
-                      patientAge: parsed.value,
-                      ageUnit: parsed.unit,
-                    }));
-                    setTempAge(parsed.value.toString());
-                    return;
-                  }
-                }
-
-                const numeric = parseInt(input, 10);
-                const safeAge = isNaN(numeric) ? 0 : numeric;
-
-                setFormData((prev) => ({
-                  ...prev,
-                  patientAge: safeAge,
-                  ageUnit: "year",
-                }));
-                setTempAge(safeAge.toString());
-              }}
-              placeholder="Age or DOB"
-              className="flex-1"
-              ref={patientAgeRef}
+              onBlur={() => setFocusedInput("")}
+              autoFocus={!callDetails.callerNumber}
+              className="bg-white"
+              disabled={!!callDetails.callerNumber}
+              ref={callerNumberRef}
             />
-            <Select
-              value={formData.ageUnit}
-              onValueChange={(value) => handleInputChange("ageUnit", value)}
-              disabled={!canEditPatientAge}
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "callerStatement" ? "font-bold" : "font-normal"
+              }`}
             >
-              <SelectTrigger className="w-fit">
+              {getLabelText(
+                "callerStatement",
+                focusedInput === "callerStatement"
+              )}
+            </Label>
+          </div>
+          <div className="col-span-3">
+            <Input
+              value={formData.callerStatement}
+              onChange={(e) =>
+                handleInputChange("callerStatement", e.target.value)
+              }
+              onFocus={() => {
+                setFocusedInput("callerStatement");
+                setFocusedField("callerStatement");
+              }}
+              onBlur={() => setFocusedInput("")}
+              autoFocus={callDetails.callerNumber ? true : false}
+              ref={callerStatmentRef}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-5 gap-4">
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "patientProximity"
+                  ? "font-bold"
+                  : "font-normal"
+              }`}
+            >
+              {getLabelText(
+                "patientProximity",
+                focusedInput === "patientProximity"
+              )}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Select
+              value={formData.patientProximity}
+              onValueChange={(value) =>
+                handleInputChange("patientProximity", value)
+              }
+              onOpenChange={(open) => {
+                if (open) {
+                  setFocusedInput("patientProximity");
+                  setFocusedField("patientProximity");
+                } else {
+                  setFocusedInput("");
+                }
+              }}
+              disabled={!canEditpatientProximity}
+            >
+              <SelectTrigger className="w-full" ref={callerLocationRef}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="year">year(s)</SelectItem>
-                <SelectItem value="month">month(s)</SelectItem>
-                <SelectItem value="day">day(s)</SelectItem>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="first">First (1st party)</SelectItem>
+                <SelectItem value="fourth">Fourth (4th party)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="col-span-2 row-span-6">
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  {getHelpContent(focusedField).title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="mt-[-1rem]">
+                <CardDescription className="text-sm">
+                  {getHelpContent(focusedField).description}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "peopleHurt" ? "font-bold" : "font-normal"
+              }`}
+            >
+              {getLabelText("peopleHurt", focusedInput === "peopleHurt")}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Input
+              type="text"
+              value={formData.numPatients}
+              onChange={(e) => {
+                // Clean the input to allow only numbers
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                handleInputChange("numPatients", value);
+              }}
+              onFocus={() => {
+                setFocusedInput("peopleHurt");
+                setFocusedField("peopleHurt");
+              }}
+              disabled={!canEditNumPatients}
+              onBlur={() => setFocusedInput("")}
+              ref={numPatientsRef}
+            />
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "patientAge" ? "font-bold" : "font-normal"
+              }`}
+            >
+              {getLabelText("patientAge", focusedInput === "patientAge")}
+            </Label>
+          </div>
+
+          <div className="col-span-1">
+            <div className="flex gap-2">
+              <Input
+                value={tempAge}
+                onChange={(e) => {
+                  setTempAge(e.target.value);
+                }}
+                onFocus={() => {
+                  setFocusedInput("patientAge");
+                  setFocusedField("patientAge");
+                }}
+                onBlur={() => {
+                  const input = tempAge.trim();
+
+                  const isLikelyDate =
+                    /[/-]/.test(input) ||
+                    /^\d{4}$/.test(input) ||
+                    /^\d{1,2}[/-]\d{1,2}[/-]?\d{0,4}$/.test(input);
+
+                  if (isLikelyDate) {
+                    const parsed = calculateAgeFromDate(input);
+                    if (parsed) {
+                      console.log("Parsed age:", parsed);
+                      handleInputChange("ageUnit", parsed.unit);
+                      setFormData((prev) => ({
+                        ...prev,
+                        patientAge: parsed.value,
+                        ageUnit: parsed.unit,
+                      }));
+                      setTempAge(parsed.value.toString());
+                      return;
+                    }
+                  }
+
+                  const numeric = parseInt(input, 10);
+                  const safeAge = isNaN(numeric) ? 0 : numeric;
+
+                  setFormData((prev) => ({
+                    ...prev,
+                    patientAge: safeAge,
+                    ageUnit: "year",
+                  }));
+                  setTempAge(safeAge.toString());
+                }}
+                placeholder="Age or DOB"
+                className="flex-1"
+                ref={patientAgeRef}
+              />
+              <Select
+                value={formData.ageUnit}
+                onValueChange={(value) => handleInputChange("ageUnit", value)}
+                disabled={!canEditPatientAge}
+              >
+                <SelectTrigger className="w-fit">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="year">year(s)</SelectItem>
+                  <SelectItem value="month">month(s)</SelectItem>
+                  <SelectItem value="day">day(s)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "patientGender" ? "font-bold" : "font-normal"
+              }`}
+            >
+              {getLabelText("patientGender", focusedInput === "patientGender")}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Select
+              value={formData.patientGender}
+              onValueChange={(value) =>
+                handleInputChange("patientGender", value)
+              }
+              onOpenChange={(open) => {
+                if (open) {
+                  setFocusedInput("patientGender");
+                  setFocusedField("patientGender");
+                } else {
+                  setFocusedInput("");
+                }
+              }}
+              disabled={!canEditPatientGender}
+            >
+              <SelectTrigger className="w-full" ref={patientGenderRef}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="unknown">Unknown</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "patientConsciousness"
+                  ? "font-bold"
+                  : "font-normal"
+              }`}
+            >
+              {getLabelText(
+                "patientConsciousness",
+                focusedInput === "patientConsciousness"
+              )}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Select
+              value={formData.patientConsciousness}
+              onValueChange={(value) =>
+                handleInputChange("patientConsciousness", value)
+              }
+              onOpenChange={(open) => {
+                if (open) {
+                  setFocusedInput("patientConsciousness");
+                  setFocusedField("patientConsciousness");
+                } else {
+                  setFocusedInput("");
+                }
+              }}
+              disabled={!canEditConsciousness}
+            >
+              <SelectTrigger className="w-full" ref={patientConsciousnessRef}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="unknown">Unknown</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "patientBreathing"
+                  ? "font-bold"
+                  : "font-normal"
+              }`}
+            >
+              {getLabelText(
+                "patientBreathing",
+                focusedInput === "patientBreathing"
+              )}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Select
+              value={formData.patientBreathing}
+              onValueChange={(value) =>
+                handleInputChange("patientBreathing", value)
+              }
+              onOpenChange={(open) => {
+                if (open) {
+                  setFocusedInput("patientBreathing");
+                  setFocusedField("patientBreathing");
+                } else {
+                  setFocusedInput("");
+                }
+              }}
+              disabled={!canEditBreathing}
+            >
+              <SelectTrigger className="w-full" ref={patientBreathingRef}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="unknown">Unknown (3rd/4th party)</SelectItem>
+                <SelectItem value="uncertain">Uncertain (2nd party)</SelectItem>
+                <SelectItem value="agonal/ineffective">
+                  INEFFECTIVE/AGONAL
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "patientGender" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText("patientGender", focusedInput === "patientGender")}
-          </Label>
-        </div>
-        <div className="col-span-1">
-          <Select
-            value={formData.patientGender}
-            onValueChange={(value) => handleInputChange("patientGender", value)}
-            onOpenChange={(open) => {
-              if (open) {
-                setFocusedInput("patientGender");
-                setFocusedField("patientGender");
-              } else {
-                setFocusedInput("");
-              }
-            }}
-            disabled={!canEditPatientGender}
-          >
-            <SelectTrigger className="w-full" ref={patientGenderRef}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="unknown">Unknown</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "patientConsciousness"
-                ? "font-bold"
-                : "font-normal"
-            }`}
-          >
-            {getLabelText(
-              "patientConsciousness",
-              focusedInput === "patientConsciousness"
-            )}
-          </Label>
-        </div>
-        <div className="col-span-1">
-          <Select
-            value={formData.patientConsciousness}
-            onValueChange={(value) =>
-              handleInputChange("patientConsciousness", value)
-            }
-            onOpenChange={(open) => {
-              if (open) {
-                setFocusedInput("patientConsciousness");
-                setFocusedField("patientConsciousness");
-              } else {
-                setFocusedInput("");
-              }
-            }}
-            disabled={!canEditConsciousness}
-          >
-            <SelectTrigger className="w-full" ref={patientConsciousnessRef}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="yes">Yes</SelectItem>
-              <SelectItem value="no">No</SelectItem>
-              <SelectItem value="unknown">Unknown</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "patientBreathing" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText(
-              "patientBreathing",
-              focusedInput === "patientBreathing"
-            )}
-          </Label>
-        </div>
-        <div className="col-span-1">
-          <Select
-            value={formData.patientBreathing}
-            onValueChange={(value) =>
-              handleInputChange("patientBreathing", value)
-            }
-            onOpenChange={(open) => {
-              if (open) {
-                setFocusedInput("patientBreathing");
-                setFocusedField("patientBreathing");
-              } else {
-                setFocusedInput("");
-              }
-            }}
-            disabled={!canEditBreathing}
-          >
-            <SelectTrigger className="w-full" ref={patientBreathingRef}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="yes">Yes</SelectItem>
-              <SelectItem value="no">No</SelectItem>
-              <SelectItem value="unknown">Unknown (3rd/4th party)</SelectItem>
-              <SelectItem value="uncertain">Uncertain (2nd party)</SelectItem>
-              <SelectItem value="agonal/ineffective">
-                INEFFECTIVE/AGONAL
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-5 gap-4 items-center">
-        <div className="col-span-2 flex items-center justify-end">
-          <Label
-            className={`text-sm ${
-              focusedInput === "chiefComplaint" ? "font-bold" : "font-normal"
-            }`}
-          >
-            {getLabelText("chiefComplaint", focusedInput === "chiefComplaint")}
-          </Label>
-        </div>
-        <div className="col-span-3 flex items-center gap-2">
-          <div className="w-[75%]">
-            <Combobox
-              options={sortedComplaintOptions}
-              value={formData.chiefComplaint}
-              onValueChange={(value) => {
-                handleInputChange("chiefComplaint", value);
-              }}
-              onClick={() => {
-                setFocusedInput("chiefComplaint");
-                setFocusedField("chiefComplaint");
-              }}
-              placeholder="Select chief complaint..."
-              searchPlaceholder="Search complaints..."
-              ref={chiefComplaintRef}
-              disabled={!canEditChiefComplaint}
-            />
+        <div className="grid grid-cols-5 gap-4 items-center">
+          <div className="col-span-2 flex items-center justify-end">
+            <Label
+              className={`text-sm ${
+                focusedInput === "chiefComplaint" ? "font-bold" : "font-normal"
+              }`}
+            >
+              {getLabelText(
+                "chiefComplaint",
+                focusedInput === "chiefComplaint"
+              )}
+            </Label>
           </div>
+          <div className="col-span-3 flex items-center gap-2">
+            <div className="w-[75%]">
+              <Combobox
+                options={sortedComplaintOptions}
+                value={formData.chiefComplaint}
+                onValueChange={(value) => {
+                  handleInputChange("chiefComplaint", value);
+                }}
+                onClick={() => {
+                  setFocusedInput("chiefComplaint");
+                  setFocusedField("chiefComplaint");
+                }}
+                placeholder="Select chief complaint..."
+                searchPlaceholder="Search complaints..."
+                ref={chiefComplaintRef}
+                disabled={!canEditChiefComplaint}
+              />
+            </div>
+            <Button
+              ref={nextButtonRef}
+              variant="outline"
+              onClick={() => onComplete(formData)}
+            >
+              <ArrowRight className="h-4 w-4 text-green-400" />
+            </Button>
+          </div>
+        </div>
+        <div className="mt-12">
           <Button
-            ref={nextButtonRef}
             variant="outline"
-            onClick={() => onComplete(formData)}
+            onClick={() => {
+              router.back();
+            }}
           >
-            <ArrowRight className="h-4 w-4 text-green-400" />
+            <ArrowLeft className="h-8 w-8 text-destructive" />
+            Back
           </Button>
         </div>
       </div>
-      <div className="mt-12">
-        <Button
-          variant="outline"
-          onClick={() => {
-            router.back();
-          }}
-        >
-          <ArrowLeft className="h-8 w-8 text-destructive" />
-          Back
-        </Button>
-      </div>
-    </div>
+    </main>
   );
 }

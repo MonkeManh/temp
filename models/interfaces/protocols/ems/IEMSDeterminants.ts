@@ -8,6 +8,7 @@ export interface IEMSCodes {
     text: string;
     recResponse: number;
     notBreathing?: boolean;
+    uncertainBreathing?: boolean;
     notConscious?: boolean;
     multPatient?: boolean;
     subCodes?: {

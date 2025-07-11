@@ -9,20 +9,10 @@ import Footer from "@/components/footer";
 import LoadingState from "@/components/loading-state";
 import Navbar from "@/components/navbar";
 import TimerDisplay from "@/components/TimerDisplay";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { getPostal } from "@/data/locations/postals";
-import { emsPlans } from "@/data/plans/emsPlans";
 import { emsProtocols } from "@/data/protocols/emsProtocols";
 import getSettings, { DEFAULT_SETTINGS, PRIORITY_ORDER } from "@/lib/utils";
 import {
-  capitalize,
-  formatAgeUnit,
-  formatProximity,
-  getBreathingStatus,
-  getConsciousnessStatus,
   getPriorityFromCode,
   higherCode,
   isSamePriority,
@@ -32,7 +22,6 @@ import { INewCallData } from "@/models/interfaces/INewCallData";
 import { ISettings } from "@/models/interfaces/ISettings";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
 import { IAnswerData } from "@/models/interfaces/protocols/ems/IEMSQuestions";
-import e from "express";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
@@ -56,8 +45,8 @@ export default function CreateCallEMS() {
   const [answers, setAnswers] = useState<IAnswerData[]>([]);
   const [activeTab, setActiveTab] = useState<string>("entry");
   const [recommendedCode, setRecommendedCode] = useState<string>("");
-  const [hasReconfigured, setHasReconfigured] = useState<string>("");
   const [callbackOnSummary, setCallBackOnSummary] = useState<boolean>(false);
+  const router = useRouter();
 
   // Load the state from localStorage
   useEffect(() => {
@@ -103,33 +92,45 @@ export default function CreateCallEMS() {
   }, []);
 
   // Helper function to filter selectableCodes based on current code priority
-  const filterSelectableCodesByPriority = useCallback((existingCodes: string[], currentCode: string, protocol: IEMSComplaint | undefined): string[] => {
-    if (!protocol) return existingCodes;
-    
-    const codePriority = getPriorityFromCode(currentCode);
-    const codePriorityIndex = PRIORITY_ORDER.indexOf(codePriority);
-    
-    // Filter out codes of lower priority
-    const filteredCodes = existingCodes.filter(code => {
-      const codePrePriority = getPriorityFromCode(code);
-      const codePrePriorityIndex = PRIORITY_ORDER.indexOf(codePrePriority);
-      return codePrePriorityIndex >= codePriorityIndex;
-    });
-    
-    // Add override codes (ending with "00") from current or higher priorities if not already present
-    protocol.determinants.forEach(determinant => {
-      const determinantPriorityIndex = PRIORITY_ORDER.indexOf(determinant.priority);
-      if (determinantPriorityIndex >= codePriorityIndex) {
-        determinant.codes.forEach(codeObj => {
-          if (codeObj.code.endsWith("00") && !filteredCodes.includes(codeObj.code)) {
-            filteredCodes.push(codeObj.code);
-          }
-        });
-      }
-    });
-    
-    return filteredCodes;
-  }, []);
+  const filterSelectableCodesByPriority = useCallback(
+    (
+      existingCodes: string[],
+      currentCode: string,
+      protocol: IEMSComplaint | undefined
+    ): string[] => {
+      if (!protocol) return existingCodes;
+
+      const codePriority = getPriorityFromCode(currentCode);
+      const codePriorityIndex = PRIORITY_ORDER.indexOf(codePriority);
+
+      // Filter out codes of lower priority
+      const filteredCodes = existingCodes.filter((code) => {
+        const codePrePriority = getPriorityFromCode(code);
+        const codePrePriorityIndex = PRIORITY_ORDER.indexOf(codePrePriority);
+        return codePrePriorityIndex >= codePriorityIndex;
+      });
+
+      // Add override codes (ending with "00") from current or higher priorities if not already present
+      protocol.determinants.forEach((determinant) => {
+        const determinantPriorityIndex = PRIORITY_ORDER.indexOf(
+          determinant.priority
+        );
+        if (determinantPriorityIndex >= codePriorityIndex) {
+          determinant.codes.forEach((codeObj) => {
+            if (
+              codeObj.code.endsWith("00") &&
+              !filteredCodes.includes(codeObj.code)
+            ) {
+              filteredCodes.push(codeObj.code);
+            }
+          });
+        }
+      });
+
+      return filteredCodes;
+    },
+    []
+  );
 
   // When case entry has been completed
   const handleCaseEntryCompletion = useCallback(
@@ -139,10 +140,10 @@ export default function CreateCallEMS() {
           "No case data provided during case entry completion."
         );
       }
-      
+
       const newProtocol = getProtocolByName(caseData.chiefComplaint);
       const initialSelectableCodes: string[] = []; // Start with empty array
-      
+
       setEmsCase((prevCase) => {
         const updatedCase = {
           ...prevCase,
@@ -199,7 +200,7 @@ export default function CreateCallEMS() {
   const updateCode = useCallback(
     (code: string) => {
       if (code === emsCase?.currentCode) return;
-      if(!emsCase) return;
+      if (!emsCase) return;
 
       const currentPriority = getPriorityFromCode(
         emsCase?.currentCode || "DEFAULT_CODE"
@@ -216,7 +217,11 @@ export default function CreateCallEMS() {
       if (emsCase.hasBeenSent) {
         if (!emsCase.selectableCodes.includes(code)) {
           const updatedSelectableCodes = [...emsCase.selectableCodes, code];
-          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          const filteredSelectableCodes = filterSelectableCodesByPriority(
+            updatedSelectableCodes,
+            emsCase.currentCode,
+            protocol
+          );
           setEmsCase((prevCase) => {
             if (!prevCase) return prevCase;
             const updatedCase = {
@@ -241,7 +246,11 @@ export default function CreateCallEMS() {
         ) {
           // Add the code to selectableCodes and filter by priority
           const updatedSelectableCodes = [...emsCase.selectableCodes, code];
-          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          const filteredSelectableCodes = filterSelectableCodesByPriority(
+            updatedSelectableCodes,
+            emsCase.currentCode,
+            protocol
+          );
           setEmsCase((prevCase) => {
             if (!prevCase) return prevCase;
             const updatedCase = {
@@ -255,8 +264,15 @@ export default function CreateCallEMS() {
       } else {
         // New code is higher priority than current code
         // Add the previous code to selectableCodes and filter by new priority
-        const updatedSelectableCodes = [...emsCase.selectableCodes, emsCase.currentCode];
-        const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, code, protocol);
+        const updatedSelectableCodes = [
+          ...emsCase.selectableCodes,
+          emsCase.currentCode,
+        ];
+        const filteredSelectableCodes = filterSelectableCodesByPriority(
+          updatedSelectableCodes,
+          code,
+          protocol
+        );
         setEmsCase((prevCase) => {
           if (!prevCase) return prevCase;
 
@@ -272,7 +288,13 @@ export default function CreateCallEMS() {
         });
       }
     },
-    [emsCase?.currentCode, emsCase?.selectableCodes, emsCase?.hasBeenSent, protocol, filterSelectableCodesByPriority]
+    [
+      emsCase?.currentCode,
+      emsCase?.selectableCodes,
+      emsCase?.hasBeenSent,
+      protocol,
+      filterSelectableCodesByPriority,
+    ]
   );
 
   // When suffix is being updated from key questions
@@ -324,10 +346,14 @@ export default function CreateCallEMS() {
       ) {
         if (isSamePriority(code, emsCase?.currentCode || "DEFAULT_CODE")) {
           // Add the code to selectableCodes and filter by priority
-          const updatedSelectableCodes = emsCase.selectableCodes.includes(code) 
-            ? emsCase.selectableCodes 
+          const updatedSelectableCodes = emsCase.selectableCodes.includes(code)
+            ? emsCase.selectableCodes
             : [...emsCase.selectableCodes, code];
-          const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, emsCase.currentCode, protocol);
+          const filteredSelectableCodes = filterSelectableCodesByPriority(
+            updatedSelectableCodes,
+            emsCase.currentCode,
+            protocol
+          );
           setEmsCase((prevCase) => {
             if (!prevCase) return prevCase;
             const updatedCase = {
@@ -355,10 +381,16 @@ export default function CreateCallEMS() {
       // New code is higher priority - add previous code to selectableCodes and update current code
       const currentSelectableCodes = emsCase?.selectableCodes || [];
       const currentCode = emsCase?.currentCode || "DEFAULT_CODE";
-      const updatedSelectableCodes = currentSelectableCodes.includes(currentCode)
+      const updatedSelectableCodes = currentSelectableCodes.includes(
+        currentCode
+      )
         ? currentSelectableCodes
         : [...currentSelectableCodes, currentCode];
-      const filteredSelectableCodes = filterSelectableCodesByPriority(updatedSelectableCodes, code, protocol);
+      const filteredSelectableCodes = filterSelectableCodesByPriority(
+        updatedSelectableCodes,
+        code,
+        protocol
+      );
       setEmsCase((prevCase) => {
         if (!prevCase) return prevCase;
         const updatedCase = {
@@ -372,8 +404,19 @@ export default function CreateCallEMS() {
       setCallBackOnSummary(true);
       setRecommendedCode(code);
       setActiveTab("send");
+      if (settings.soundEffects) {
+        const audio = new Audio("/audio/code-selected.mp3");
+        audio.volume = 0.5;
+        audio.play();
+      }
     },
-    [emsCase?.hasBeenSent, emsCase?.currentCode, emsCase?.selectableCodes, protocol, filterSelectableCodesByPriority]
+    [
+      emsCase?.hasBeenSent,
+      emsCase?.currentCode,
+      emsCase?.selectableCodes,
+      protocol,
+      filterSelectableCodesByPriority,
+    ]
   );
 
   // When all key questions have been answered
@@ -452,8 +495,6 @@ export default function CreateCallEMS() {
       const newProtocol = emsProtocols.find((p) => p.protocol === protocolNum);
 
       if (!newProtocol) return;
-      setHasReconfigured(protocol?.shortName);
-      setProtocol(newProtocol);
       setEmsCase((prevCase) => {
         if (!prevCase) return prevCase;
         const updatedCase = {
@@ -463,11 +504,13 @@ export default function CreateCallEMS() {
           currentCode: "DEFAULT_CODE",
           currentSuffix: "DEFAULT_SUFFIX",
           answers: [],
-          selectableCodes: [], // Reset selectableCodes when switching protocols
+          selectableCodes: [],
+          reconfiguredFrom: protocol.shortName,
         };
         localStorage.setItem("EMS_CASE", JSON.stringify(updatedCase));
         return updatedCase;
       });
+      setProtocol(newProtocol);
       setActiveTab("kq");
     },
     [emsProtocols]
@@ -476,21 +519,60 @@ export default function CreateCallEMS() {
   const handleSummaryClick = useCallback(
     (text: string, navigateTo?: string) => {
       navigator.clipboard.writeText(text);
-      toast.success("Case summary copied to clipboard");
-      if (settings.soundEffects) {
-        const audio = new Audio("/audio/dispatch.mp3");
-        audio.volume = 0.5;
-        audio.play();
+      if (emsCase?.questionsCompleted) {
+        toast.success("Summary copied, send case to units now!");
+        if (settings.soundEffects) {
+          const audio = new Audio("/audio/dispatch.mp3");
+          audio.volume = 0.5;
+          audio.play();
+        }
       }
+
       if (callbackOnSummary) {
+        toast.success("Case summary copied to clipboard");
         setActiveTab("kq");
         setCallBackOnSummary(false);
+      } else if (navigateTo === "police") {
+        alert("This feature is not yet implemented.");
       } else {
         setActiveTab(navigateTo || "kq");
       }
     },
     [callbackOnSummary]
   );
+
+  const handleRestartCase = useCallback(() => {
+    setEmsCase({
+      callLocation: `${callDetails?.postal || ""} ${callDetails?.street || ""}`,
+      callerNumber: callDetails?.callerNumber || "",
+      callerStatement: callDetails?.callerStatement || "",
+      patientProximity: "",
+      numPatients: 1,
+      patientAge: 0,
+      ageUnit: "year",
+      patientGender: "",
+      patientConsciousness: "",
+      patientBreathing: "",
+      chiefComplaint: "",
+      currentCode: "DEFAULT_CODE",
+      currentSuffix: "DEFAULT_SUFFIX",
+      selectableCodes: [],
+      answers: [],
+      hasBeenSent: false,
+      questionsCompleted: false,
+      hasCompletedDisconnect: false,
+      secureScene: true,
+    });
+    setProtocol(undefined);
+    setAnswers([]);
+    setActiveTab("entry");
+    setRecommendedCode("");
+    setCallBackOnSummary(false);
+    localStorage.setItem("CASE_TIME", "0");
+    localStorage.removeItem("EMS_CASE");
+    window.dispatchEvent(new CustomEvent("timer-reset"));
+    toast.success("Re-started EMS case successfully!");
+  }, []);
 
   return (
     <main>
@@ -555,8 +637,9 @@ export default function CreateCallEMS() {
                   {callDetails ? (
                     <EMSCaseEntry
                       callDetails={callDetails}
-                      onComplete={handleCaseEntryCompletion}
                       initialData={emsCase}
+                      onComplete={handleCaseEntryCompletion}
+                      handleCaseRestart={handleRestartCase}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
@@ -626,9 +709,8 @@ export default function CreateCallEMS() {
                       callDetails={callDetails}
                       emsCase={emsCase}
                       protocol={protocol}
-                      reconfigured={hasReconfigured}
+                      settings={settings}
                       handleClick={handleSummaryClick}
-                      hasCallback={callbackOnSummary}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">

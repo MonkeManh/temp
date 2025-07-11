@@ -43,6 +43,8 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "../ui/checkbox";
 import LoadingState from "../loading-state";
+import { ISettings } from "@/models/interfaces/ISettings";
+import getSettings, { DEFAULT_SETTINGS } from "@/lib/utils";
 
 const formSchema = z.object({
   postal: z.string().min(1, "Postal code is required"),
@@ -95,6 +97,7 @@ export default function CreateCallForm() {
     callerStatement: "",
     service: "Police",
   });
+  const [settings, setSettings] = useState<ISettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -182,6 +185,12 @@ export default function CreateCallForm() {
     };
 
     localStorage.setItem("NEW_CALL", JSON.stringify(callData));
+
+    if (settings.soundEffects) {
+      const audio = new Audio("/audio/new-call.mp3");
+      audio.volume = 0.5;
+      audio.play();
+    }
 
     if (callData.service === "Police") {
       router.push("/create-call/police");
@@ -287,6 +296,22 @@ export default function CreateCallForm() {
 
     return () => subscription.unsubscribe();
   }, [form]);
+
+  useEffect(() => {
+    setSettings(getSettings());
+
+    const handleSettingsChange = (event: Event) => {
+      const customEvent = event as CustomEvent<ISettings>;
+      const newSettings = customEvent.detail;
+      setSettings(newSettings);
+    };
+
+    window.addEventListener("settings-change", handleSettingsChange);
+
+    return () => {
+      window.removeEventListener("settings-change", handleSettingsChange);
+    };
+  }, []);
 
   return (
     <Card className="max-w-5xl mx-auto">

@@ -664,10 +664,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Procopio Dr": {
           crossStreet1: "Paleto Blvd",
-          crossStreet2: "Cascabel Ave",
+          crossStreet2: "Cascabel Ave, Paleto Blvd",
         },
         "Procopio Promenade": {
-          crossStreet1: "Bayview Bridge",
+          crossStreet1: "Bayview Bridge, Procopio View",
           crossStreet2: "Rt 1 SB",
         },
       },
@@ -1189,12 +1189,12 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "Rt 1 SB": {
-          crossStreet1: "Pyrite Ave",
+          crossStreet1: "Pyrite Ave, Procopio Dr",
           crossStreet2: "Procopio Promenade",
         },
         "Rt 1 NB": {
           crossStreet1: "Procopio Promenade",
-          crossStreet2: "Pyrite Ave",
+          crossStreet2: "Pyrite Ave, Procopio Dr",
         },
         "Procopio Dr": {
           crossStreet1: "Paleto Blvd",
@@ -1947,12 +1947,12 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "Rt 1 SB": {
-          crossStreet1: "Duluoz Ave",
+          crossStreet1: "Duluoz Ave, Pyrite Ave",
           crossStreet2: "Procopio Dr",
         },
         "Rt 1 NB": {
           crossStreet1: "Procopio Dr",
-          crossStreet2: "Duluoz Ave",
+          crossStreet2: "Duluoz Ave, Pyrite Ave",
         },
       },
     },
@@ -2041,10 +2041,10 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Rt 1 SB": {
           crossStreet1: "Pyrite Ave",
-          crossStreet2: "Procopio Promenade",
+          crossStreet2: "Procopio Promenade, Procopio Dr",
         },
         "Rt 1 NB": {
-          crossStreet1: "Procopio Promenade",
+          crossStreet1: "Procopio Promenade, Procopio Dr",
           crossStreet2: "Pyrite Ave",
         },
       },
@@ -2553,7 +2553,7 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Catfish View": {
           crossStreet1: "Union Rd",
-          crossStreet2: "Dead End",
+          crossStreet2: "Dead End, Gordo Dr",
         },
         "Gordo Dr": {
           crossStreet1: "Catfish View",
@@ -3180,7 +3180,7 @@ export const postalData: IPostal[] = [
           crossStreet2: "Hayseed Way",
         },
         "Grapeseed Ave": {
-          crossStreet1: "Chianski Passage",
+          crossStreet1: "Chianski Passage, Dots Ln",
           crossStreet2: "Union Rd",
         },
         "Union Rd": {

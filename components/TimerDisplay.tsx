@@ -21,6 +21,18 @@ export default function TimerDisplay() {
   }, []);
 
   useEffect(() => {
+    const handleTimerReset = () => {
+      setTimer(0);
+    };
+
+    window.addEventListener("timer-reset", handleTimerReset);
+
+    return () => {
+      window.removeEventListener("timer-reset", handleTimerReset);
+    };
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => {
         const next = prev + 1;

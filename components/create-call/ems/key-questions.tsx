@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { InputModal } from "@/components/ui/input-modal";
+import { MultiSelectModal } from "@/components/ui/multi-select-modal";
 import {
   Select,
   SelectContent,
@@ -34,7 +35,11 @@ interface IEMSKeyQuestionsProps {
   currentCode: string;
   handleUpdateCode: (code: string) => void;
   handleUpdateSuffix: (suffix: string) => void;
-  handleCodeSend: (code: string, override?: boolean, hideSend?: boolean) => void;
+  handleCodeSend: (
+    code: string,
+    override?: boolean,
+    hideSend?: boolean
+  ) => void;
   handleUpdateAnswers: (answer: IAnswerData) => void;
   handleProtocolChange: (protocolNum: number) => void;
   handleQuestionComplete: () => void;
@@ -61,6 +66,8 @@ export default function EMSKeyQuestions({
   const [activeTab, setActiveTab] = useState<string>("qa");
   const [operatorCallsign, setOperatorCallsign] = useState<string>("");
   const [isInputModalOpen, setIsInputModalOpen] = useState<boolean>(false);
+  const [isMultiSelectModalOpen, setIsMultiSelectModalOpen] =
+    useState<boolean>(false);
   const [pendingAnswer, setPendingAnswer] = useState<IEMSAnswers | null>(null);
   const selectRef = useRef<HTMLButtonElement>(null);
 
@@ -203,7 +210,7 @@ export default function EMSKeyQuestions({
 
         if (!hasBeenAnswered) {
           // Calculate and set the correct display number
-          const displayNumber = calculateDisplayNumber(i) + 1;
+          const displayNumber = calculateDisplayNumber(i);
           setDisplayQuestionNumber(displayNumber);
           return i;
         }
@@ -214,6 +221,25 @@ export default function EMSKeyQuestions({
   };
 
   const currentQuestion = protocol.questions[currentQuestionIndex];
+
+  // Helper function to get unique additional instructions
+  const getUniqueAdditionalInstructions = (): React.ReactNode[] => {
+    const seen = new Set<string>();
+    const uniqueInstructions: React.ReactNode[] = [];
+
+    for (const q of protocol.questions) {
+      const instruction = q.additionalInstructions;
+      if (!instruction) continue;
+
+      const str = processQuestionText(instruction);
+      if (seen.has(str)) continue;
+
+      seen.add(str);
+      uniqueInstructions.push(instruction);
+    }
+
+    return uniqueInstructions;
+  };
 
   // Check pre-render instructions for the current question
   const shouldRenderCurrentQuestion = currentQuestion?.preRenderInstructions
@@ -256,6 +282,10 @@ export default function EMSKeyQuestions({
     if (answerObj.input) {
       setPendingAnswer(answerObj);
       setIsInputModalOpen(true);
+      return;
+    } else if (answerObj.multiSelect) {
+      setPendingAnswer(answerObj);
+      setIsMultiSelectModalOpen(true);
       return;
     }
 
@@ -375,13 +405,41 @@ export default function EMSKeyQuestions({
     }
   }
 
-  useEffect(() => {
-    if (currentQuestion.defaultTab !== activeTab) {
-      setActiveTab(currentQuestion.defaultTab || "qa");
-      setTimeout(() => {
-        selectRef?.current?.click();
-      }, 50);
+  const handleInputModalClose = () => {
+    setIsInputModalOpen(false);
+    setPendingAnswer(null);
+  };
+
+  const handleInputModalConfirm = (inputValue: string) => {
+    if (pendingAnswer) {
+      processAnswer(pendingAnswer, inputValue);
+      setIsInputModalOpen(false);
+      setPendingAnswer(null);
     }
+  };
+
+  const handleMultiSelectModalClose = () => {
+    setIsMultiSelectModalOpen(false);
+    setPendingAnswer(null);
+  };
+
+  const handleMultiSelectModalConfirm = (selectedValues: string[]) => {
+    if (pendingAnswer && selectedValues.length > 0) {
+      // Join selected values with comma and space
+      const combinedValue = selectedValues.join(", ");
+      processAnswer(pendingAnswer, combinedValue);
+      setIsMultiSelectModalOpen(false);
+      setPendingAnswer(null);
+    }
+  };
+
+  useEffect(() => {
+    if (currentQuestion?.defaultTab !== activeTab) {
+      setActiveTab(currentQuestion?.defaultTab || "qa");
+    }
+    setTimeout(() => {
+      selectRef?.current?.click();
+    }, 100);
   }, [currentQuestion]);
 
   useEffect(() => {
@@ -393,11 +451,27 @@ export default function EMSKeyQuestions({
       const notBreathingCode = protocol.determinants
         .flatMap((det) => det.codes)
         .find((code) => code.notBreathing);
+
       if (
         notBreathingCode &&
         higherCode(notBreathingCode.code, currentCode) === notBreathingCode.code
       ) {
         handleCodeSend(notBreathingCode.code, true, true);
+      }
+    } else if (
+      (emsCase.patientConsciousness === "no" &&
+        emsCase.patientBreathing === "unknown") ||
+      emsCase.patientBreathing === "uncertain"
+    ) {
+      const uncertainBreathingCode = protocol.determinants
+        .flatMap((det) => det.codes)
+        .find((code) => code.uncertainBreathing);
+      if (
+        uncertainBreathingCode &&
+        higherCode(uncertainBreathingCode.code, currentCode) ===
+          uncertainBreathingCode.code
+      ) {
+        handleCodeSend(uncertainBreathingCode.code, true, true);
       }
     } else if (emsCase.patientConsciousness === "no") {
       // Find the code in the protocol that has the property notConscious
@@ -423,20 +497,7 @@ export default function EMSKeyQuestions({
         handleCodeSend(multiplePatientsCode.code, true, true);
       }
     }
-  }, [currentQuestionIndex]);
-
-  const handleInputModalClose = () => {
-    setIsInputModalOpen(false);
-    setPendingAnswer(null);
-  };
-
-  const handleInputModalConfirm = (inputValue: string) => {
-    if (pendingAnswer) {
-      processAnswer(pendingAnswer, inputValue);
-      setIsInputModalOpen(false);
-      setPendingAnswer(null);
-    }
-  };
+  }, [currentQuestionIndex, emsCase, protocol, currentCode, handleCodeSend]);
 
   // If no current question, there might be no valid questions
   if (!currentQuestion) {
@@ -459,10 +520,21 @@ export default function EMSKeyQuestions({
           <label className="col-span-2 font-medium flex items-center gap-2">
             <p className="mr-2">{displayQuestionNumber}.</p>
             <div className="text-lg font-semibold">
-              {replacePronounInNode(
-                currentQuestion.text,
-                getPronoun(emsCase.patientGender)
-              )}
+              {emsCase.patientProximity !== "first"
+                ? replacePronounInNode(
+                    currentQuestion.text,
+                    getPronoun(emsCase.patientGender)
+                  )
+                : emsCase.patientProximity === "first" &&
+                  currentQuestion.firstPersonText
+                ? replacePronounInNode(
+                    currentQuestion.firstPersonText,
+                    getPronoun(emsCase.patientGender)
+                  )
+                : replacePronounInNode(
+                    currentQuestion.text,
+                    getPronoun(emsCase.patientGender)
+                  )}
             </div>
           </label>
           {currentQuestion.questionType === "select" ? (
@@ -476,6 +548,11 @@ export default function EMSKeyQuestions({
               <SelectContent>
                 {currentQuestion.answers
                   .filter((answer: IEMSAnswers) => {
+                    // Don't render answers that are multi-select options
+                    if (answer.isMultiSelectOption) {
+                      return false;
+                    }
+
                     // Check if answer should be rendered based on preRenderInstructions
                     if (answer.preRenderInstructions) {
                       return evaluatePreRenderInstructions(
@@ -532,15 +609,16 @@ export default function EMSKeyQuestions({
             </TabsList>
 
             <div className="p-6 h-full">
-              <TabsContent value="qa" className="h-full space-y-1">
+              <TabsContent value="qa" className="h-full space-y-1 max-h-[400px] overflow-y-auto">
                 {answers.map((answer) => {
                   const questionText =
                     answer.questionDisplay.charAt(0).toUpperCase() +
                     answer.questionDisplay.slice(1);
 
                   // Calculate the display number for this answered question
-                  const displayNumber =
-                    calculateDisplayNumber(answer.questionIndex) + 1;
+                  const displayNumber = calculateDisplayNumber(
+                    answer.questionIndex
+                  );
 
                   return (
                     <div
@@ -553,10 +631,16 @@ export default function EMSKeyQuestions({
                   );
                 })}
               </TabsContent>
-              <TabsContent value="ai" className="h-full">
-                {currentQuestion.additionalInstructions}
+              <TabsContent value="ai" className="h-full space-y-6 max-h-[400px] overflow-y-auto">
+                {currentQuestion.additionalInstructions ? (
+                  <div>{currentQuestion.additionalInstructions}</div>
+                ) : (
+                  getUniqueAdditionalInstructions().map((instruction, i) => (
+                    <div key={i}>{instruction}</div>
+                  ))
+                )}
               </TabsContent>
-              <TabsContent value="det/suf" className="h-full">
+              <TabsContent value="det/suf" className="h-full space-y-6 max-h-[400px] overflow-y-auto">
                 <div className="flex flex-col">
                   <h2 className="font-semibold text-lg mb-2">Determinants:</h2>
                   {protocol.determinants.map((prio, prioIndex) =>
@@ -722,6 +806,29 @@ export default function EMSKeyQuestions({
             : "Enter Value"
         }
         placeholder="Enter your input..."
+      />
+
+      <MultiSelectModal
+        isOpen={isMultiSelectModalOpen}
+        onClose={handleMultiSelectModalClose}
+        onConfirm={handleMultiSelectModalConfirm}
+        title={
+          pendingAnswer
+            ? `Select options for: ${pendingAnswer.answer}`
+            : "Select Options"
+        }
+        options={
+          pendingAnswer
+            ? currentQuestion.answers
+                .filter((answer) => answer.isMultiSelectOption)
+                .map((answer) => ({
+                  value: answer.answer,
+                  label: answer.answer,
+                  display: answer.display,
+                  questionDisplay: answer.questionDisplay,
+                }))
+            : []
+        }
       />
     </div>
   );

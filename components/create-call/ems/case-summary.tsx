@@ -4,17 +4,17 @@ import { getPostal } from "@/data/locations/postals";
 import { getEmsResponsePlan } from "@/data/plans/emsPlans";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { INewCallData } from "@/models/interfaces/INewCallData";
+import { ISettings } from "@/models/interfaces/ISettings";
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Badge, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface IEMSCaseSummaryProps {
-  hasCallback: boolean;
-  reconfigured: string;
   callDetails: INewCallData;
   emsCase: IEMSCaseEntry;
   protocol: IEMSComplaint;
+  settings: ISettings;
   handleClick: (text: string, navigateTo?: string) => void;
 }
 
@@ -22,15 +22,26 @@ export default function EMSCaseSummary({
   callDetails,
   emsCase,
   protocol,
-  reconfigured,
-  hasCallback,
+  settings,
   handleClick,
 }: IEMSCaseSummaryProps) {
   const [summaryText, setSummaryText] = useState<string>("");
 
-  useEffect(() => {
-    console.log(hasCallback);
+  // Extract determinant and response logic
+  const codeMatch = protocol.determinants
+    .flatMap((d) => d.codes)
+    .find((c) => c.code === emsCase.currentCode);
 
+  const subCodeMatch =
+    emsCase.currentSuffix && codeMatch?.subCodes
+      ? codeMatch.subCodes.find((s) => s.suffix === emsCase.currentSuffix)
+      : null;
+
+  const response = subCodeMatch?.recResponse ?? codeMatch?.recResponse;
+  const responsePlan = getEmsResponsePlan(response || 0);
+  const shouldSendPolice = !!responsePlan?.sendPolice;
+
+  useEffect(() => {
     const township = getPostal(callDetails.postal)?.twp;
 
     const location = `Location: ${callDetails.postal} ${callDetails.street}${
@@ -49,6 +60,7 @@ export default function EMSCaseSummary({
         : emsCase.patientProximity === "fourth"
         ? "Fourth Party - "
         : "";
+
     const count = emsCase.numPatients;
     const age = emsCase.patientAge;
     const ageUnit = emsCase.ageUnit;
@@ -76,11 +88,12 @@ export default function EMSCaseSummary({
         : `${age}-${ageUnit}-old, ${gender}, ${consciousness}, ${breathing}`
     }`;
 
-    const reconfiguration = reconfigured
-      ? "-- Call reconfigured from " + reconfigured
+    const reconfiguration = emsCase.reconfiguredFrom
+      ? "-- Call reconfigured from " + emsCase.reconfiguredFrom
       : "";
 
-    const answers = emsCase.answers?.map((qa) => `-- ${qa.display}`) || [];
+    const answers =
+      emsCase.answers?.map((qa) => `-- ${qa.display}`).filter(Boolean) || [];
 
     const dispatch = `ProQA completed by: Dispatcher ${
       localStorage.getItem("CALLSIGN") || "Unknown"
@@ -92,35 +105,16 @@ export default function EMSCaseSummary({
         } | Phone ${callDetails.callerNumber || "Unknown"}`
       : "";
 
-    const codeMatch = protocol.determinants
-      .flatMap((d) => d.codes)
-      .find((c) => c.code === emsCase.currentCode);
-
-    const subCodeMatch =
-      emsCase.currentSuffix && codeMatch?.subCodes
-        ? codeMatch.subCodes.find((s) => s.suffix === emsCase.currentSuffix)
-        : null;
-
-    const response = subCodeMatch?.recResponse ?? codeMatch?.recResponse;
-
-    const responseText = getEmsResponsePlan(response || 0)?.units;
-
     const responseUnits =
-      responseText
+      responsePlan?.units
         ?.map((u) => {
           let unitType = u.type;
 
-          if (unitType === "Police Notification") {
-            return "Police Notification";
-          } else if (unitType === "OFI Notification") {
-            return "OFI Notification";
-          } else if (unitType === "Fire Notification") {
-            return "Fire Notification";
-          } else if (unitType === "EMS Notification") {
-            return "EMS Notification";
-          } else if (unitType === "MEO Notification") {
-            return "MEO Notification";
-          }
+          if (unitType === "Police Notification") return "PD Notify";
+          if (unitType === "OFI Notification") return "OFI Notify";
+          if (unitType === "Fire Notification") return "Fire Notify";
+          if (unitType === "EMS Notification") return "EMS Notify";
+          if (unitType === "MEO Notification") return "MEO Notify";
 
           return `${u.quantity}x ${unitType}`;
         })
@@ -160,7 +154,7 @@ export default function EMSCaseSummary({
       .join("\n");
 
     setSummaryText(text);
-  }, [callDetails, emsCase, protocol, reconfigured]);
+  }, [callDetails, emsCase, protocol]);
 
   return (
     <div>
@@ -171,20 +165,28 @@ export default function EMSCaseSummary({
         style={{ resize: "none" }}
         spellCheck={false}
       />
-      <div className="flex justify-end space=x-2 pt-4">
+      <div className="flex justify-end space-x-2 pt-4">
         <Button
           variant="outline"
-          onClick={() => {
+          onClick={() =>
             handleClick(
               summaryText,
               !emsCase.questionsCompleted ? "kq" : "pdi-cei"
             )
           }
-        }
         >
           {emsCase.hasCompletedDisconnect ? "Close Case" : "Dispatch Case"}
           <ArrowRight className="h-4 w-4 text-green-500" />
         </Button>
+
+        {settings.multiService && shouldSendPolice && (
+          <Button
+            variant="outline"
+            onClick={() => handleClick(summaryText, "police")}
+          >
+            Dispatch Police <ShieldAlert className="h-4 w-4 text-blue-500" />
+          </Button>
+        )}
       </div>
     </div>
   );

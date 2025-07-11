@@ -101,7 +101,14 @@ export default function SendEMSCase({
             handleSend(recommendedCode, hasCallback);
           }}
         >
-          Send:{" "}
+          {recommendedCode === emsCase.currentCode ? (
+            <>
+              Confirm
+            </>
+          ) : (
+            <>Send</>
+          )}
+          :{" "}
           {recommendedCode &&
             `${parseInt(
               recommendedCode.slice(0, 2),
@@ -173,7 +180,7 @@ export default function SendEMSCase({
                       : "text-muted-foreground hover:bg-muted/25"
                   }`}
                   onClick={() => {
-                    if (isRecommended || isHigherPriorityOverride) {
+                    if (isRecommended || isHigherPriorityOverride || selectableCodes.includes(row.code)) {
                       handleSend(row.code, hasCallback);
                     }
                   }}

@@ -4,12 +4,13 @@ import { IEMSCaseEntry } from "../../IEMSCaseEntry";
 
 export interface IEMSQuestions {
   text: ReactNode;
+  firstPersonText?: ReactNode;
   preRenderInstructions?: (
     patient: IEMSCaseEntry,
     answers: IAnswerData[],
     currentCode: string
   ) => boolean;
-  questionType: "select" | "input";
+  questionType: "select" | "input" | "multi-select";
   preRenderDependencies?: string[];
   preRenderLogic?: string;
   additionalInstructions?: ReactNode;

@@ -19,7 +19,7 @@ export interface IEMSCaseEntry {
     questionsCompleted: boolean;
     hasCompletedDisconnect: boolean;
     gotoPDI?: number;
-    reconfigured?: string;
     secureScene: boolean;
     selectableCodes: string[];
+    reconfiguredFrom?: string;
 }
