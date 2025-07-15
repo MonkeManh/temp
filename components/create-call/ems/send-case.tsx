@@ -40,22 +40,25 @@ export default function SendEMSCase({
   handleBack,
 }: IEMSCaseProps) {
   // Helper function to get the appropriate recResponse for a code with suffix
-  const getRecResponseForCode = (codeString: string, suffix?: string): number => {
+  const getRecResponseForCode = (
+    codeString: string,
+    suffix?: string
+  ): number => {
     // Find the code object in the protocol determinants
     const codeObj = protocol.determinants
-      .flatMap(det => det.codes)
-      .find(code => code.code === codeString);
-    
+      .flatMap((det) => det.codes)
+      .find((code) => code.code === codeString);
+
     if (!codeObj) return 1; // Default fallback
-    
+
     // If we have a suffix and the code has subcodes, look for the suffix
     if (suffix && suffix !== "DEFAULT_SUFFIX" && codeObj.subCodes) {
-      const subCode = codeObj.subCodes.find(sub => sub.suffix === suffix);
+      const subCode = codeObj.subCodes.find((sub) => sub.suffix === suffix);
       if (subCode && subCode.recResponse !== undefined) {
         return subCode.recResponse;
       }
     }
-    
+
     // Return the default recResponse for the code
     return codeObj.recResponse;
   };
@@ -102,9 +105,9 @@ export default function SendEMSCase({
           }}
         >
           {recommendedCode === emsCase.currentCode ? (
-            <>
-              Confirm
-            </>
+            <>Confirm</>
+          ) : emsCase.currentCode !== "DEFAULT_CODE" ? (
+            <>Reconfigure</>
           ) : (
             <>Send</>
           )}
@@ -116,7 +119,12 @@ export default function SendEMSCase({
             )}-${recommendedCode.charAt(2)}-${parseInt(
               recommendedCode.slice(3),
               10
-            )}`}
+            )}${
+              emsCase.currentSuffix &&
+              emsCase.currentSuffix !== "DEFAULT_SUFFIX"
+                ? `${emsCase.currentSuffix}`
+                : ""
+            }`}
           <ArrowRight className="w-6 h-6 text-green-500" />
         </Button>
       </div>
@@ -180,7 +188,11 @@ export default function SendEMSCase({
                       : "text-muted-foreground hover:bg-muted/25"
                   }`}
                   onClick={() => {
-                    if (isRecommended || isHigherPriorityOverride || selectableCodes.includes(row.code)) {
+                    if (
+                      isRecommended ||
+                      isHigherPriorityOverride ||
+                      selectableCodes.includes(row.code)
+                    ) {
                       handleSend(row.code, hasCallback);
                     }
                   }}
@@ -204,9 +216,11 @@ export default function SendEMSCase({
                       emsCase.currentSuffix !== "DEFAULT_SUFFIX" && (
                         <p className="mr-4">{emsCase.currentSuffix}</p>
                       )}
-                    {getEmsResponsePlan(
-                      getRecResponseForCode(row.code, emsCase.currentSuffix)
-                    )?.incidentType}
+                    {
+                      getEmsResponsePlan(
+                        getRecResponseForCode(row.code, emsCase.currentSuffix)
+                      )?.incidentType
+                    }
                   </td>
                 </tr>
               );

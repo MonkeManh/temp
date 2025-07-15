@@ -494,6 +494,8 @@ export default function CreateCallEMS() {
 
       const newProtocol = emsProtocols.find((p) => p.protocol === protocolNum);
 
+      alert(`Switching to protocol ${newProtocol?.name}`)
+
       if (!newProtocol) return;
       setEmsCase((prevCase) => {
         if (!prevCase) return prevCase;
@@ -511,9 +513,10 @@ export default function CreateCallEMS() {
         return updatedCase;
       });
       setProtocol(newProtocol);
+      setAnswers([]); // Reset the answers state as well
       setActiveTab("kq");
     },
-    [emsProtocols]
+    [protocol, emsProtocols]
   );
 
   const handleSummaryClick = useCallback(
@@ -535,11 +538,40 @@ export default function CreateCallEMS() {
       } else if (navigateTo === "police") {
         alert("This feature is not yet implemented.");
       } else {
-        setActiveTab(navigateTo || "kq");
+        if (navigateTo === "pdi-cei" && settings.giveInstructions === false) {
+          handleCompleteCase();
+        } else {
+          setActiveTab(navigateTo || "kq");
+        }
       }
     },
     [callbackOnSummary]
   );
+
+  const handleCompleteCase = useCallback(() => {
+    toast.success("Case completed, returning to dashboard.");
+    const RUN_NUMBER = localStorage.getItem("RUN_NUMBER");
+    const CALL_NUMBER = localStorage.getItem("CALL_NUMBER");
+    const yearSuffix = (new Date().getFullYear() % 100).toString();
+
+    if (RUN_NUMBER && CALL_NUMBER) {
+      const nextCallNumber = parseInt(CALL_NUMBER, 10) + 1;
+      localStorage.setItem("CALL_NUMBER", nextCallNumber.toString());
+
+      const padded = nextCallNumber.toString().padStart(5, "0");
+      const newRunNumber = `${yearSuffix}-${padded}`;
+
+      localStorage.setItem("RUN_NUMBER", newRunNumber);
+    } else {
+      localStorage.setItem("CALL_NUMBER", "1");
+      localStorage.setItem("RUN_NUMBER", `${yearSuffix}-00001`);
+    }
+    localStorage.removeItem("NEW_CALL");
+    localStorage.removeItem("EMS_PROQA_DATA");
+    localStorage.removeItem("EMS_CASE");
+    localStorage.removeItem("CASE_TIME");
+    router.push("/dispatch");
+  }, []);
 
   const handleRestartCase = useCallback(() => {
     setEmsCase({
@@ -612,7 +644,12 @@ export default function CreateCallEMS() {
                 )}-${emsCase.currentCode.charAt(2)}-${parseInt(
                   emsCase.currentCode.slice(3),
                   10
-                )}`}
+                )}${
+                  emsCase.callLocation &&
+                  emsCase.currentSuffix !== "DEFAULT_SUFFIX"
+                    ? `${emsCase.currentSuffix}`
+                    : ""
+                }`}
             </p>
           </div>
         </div>
@@ -624,11 +661,19 @@ export default function CreateCallEMS() {
             className="h-full flex flex-col"
           >
             <div className="flex-1 border rounded-lg">
-              <TabsList className="grid w-full grid-cols-5 rounded-b-none border-b">
+              <TabsList
+                className={`grid w-full ${
+                  !settings.giveInstructions ? "grid-cols-3" : "grid-cols-5"
+                } rounded-b-none border-b`}
+              >
                 <TabsTrigger value="entry">Entry</TabsTrigger>
                 <TabsTrigger value="kq">KQ</TabsTrigger>
-                <TabsTrigger value="pdi-cei">PDI/CEI</TabsTrigger>
-                <TabsTrigger value="dls">DLS</TabsTrigger>
+                {!settings.giveInstructions ? null : (
+                  <>
+                    <TabsTrigger value="pdi-cei">PDI/CEI</TabsTrigger>
+                    <TabsTrigger value="dls">DLS</TabsTrigger>
+                  </>
+                )}
                 <TabsTrigger value="summary">Summary</TabsTrigger>
               </TabsList>
 
@@ -638,6 +683,7 @@ export default function CreateCallEMS() {
                     <EMSCaseEntry
                       callDetails={callDetails}
                       initialData={emsCase}
+                      settings={settings}
                       onComplete={handleCaseEntryCompletion}
                       handleCaseRestart={handleRestartCase}
                     />

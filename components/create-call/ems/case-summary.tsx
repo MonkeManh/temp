@@ -38,7 +38,7 @@ export default function EMSCaseSummary({
       : null;
 
   const response = subCodeMatch?.recResponse ?? codeMatch?.recResponse;
-  const responsePlan = getEmsResponsePlan(response || 0);
+  const responsePlan = getEmsResponsePlan(response || protocol.defaultPlan);
   const shouldSendPolice = !!responsePlan?.sendPolice;
 
   useEffect(() => {
@@ -168,7 +168,7 @@ export default function EMSCaseSummary({
       <div className="flex justify-end space-x-2 pt-4">
         <Button
           variant="outline"
-          onClick={() =>
+          onClick={() => 
             handleClick(
               summaryText,
               !emsCase.questionsCompleted ? "kq" : "pdi-cei"

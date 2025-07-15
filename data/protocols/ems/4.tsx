@@ -580,7 +580,7 @@ export const ASSAULT: IEMSComplaint = {
           questionDisplay: "**pronoun** has an obvious deformity",
           dependency(_patient, answers) {
             const lastAnswer = answers[answers.length - 1]?.answer;
-            if (lastAnswer === "Leg, lower") {
+            if (lastAnswer === "Leg, upper") {
               return { code: "04B01" };
             }
             return { code: "04A01" };

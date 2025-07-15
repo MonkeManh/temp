@@ -16,7 +16,11 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ISettings } from "@/models/interfaces/ISettings";
 import getSettings, { DEFAULT_SETTINGS } from "@/lib/utils";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 import { Badge } from "./ui/badge";
 import { Spinner } from "./ui/spinner";
 
@@ -69,18 +73,26 @@ const settingsConfig = [
       "Case entry completion can key into another service depending on requirement. For example, a LEO call that involves injuries will automatically queue an EMS case.",
   },
   {
-    key: "gotoInstructions" as keyof ISettings,
+    key: "giveInstructions" as keyof ISettings,
     label: "Post Dispatch Instructions",
     flags: ["Experimental"],
     short: "Goes to PDIs after a case is completed",
     description:
       "Automatically navigates the user to the Post Dispatch Instructions (PDI) page after completion of a case.",
   },
+  {
+    key: "strictEntry" as keyof ISettings,
+    label: "Strict Case Entry",
+    flags: ["In Development"],
+    short: "Enforces strict case entry rules",
+    description:
+      "Mandates specific information to be entered before certain actions can be taken.",
+  },
 ];
 
 export default function SettingsMenu() {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [settings, setSettings] = useState<ISettings | null>(null);
+  const [settings, setSettings] = useState<ISettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
     const savedSettings = getSettings();
@@ -101,16 +113,23 @@ export default function SettingsMenu() {
       if (!prev) return prev;
       const updated = { ...prev, [key]: value };
       localStorage.setItem("SETTINGS", JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent("settings-change", { detail: updated }));
+
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("settings-change", { detail: updated })
+        );
+      }, 0);
+
       return updated;
     });
   }, []);
 
-  if (!settings) return (
-    <Button variant="outline" size="icon" disabled>
-      <Spinner className="h-4 w-4 animate-spin" />
-    </Button>
-  ); // Optional loading fallback
+  if (!settings)
+    return (
+      <Button variant="outline" size="icon" disabled>
+        <Spinner className="h-4 w-4 animate-spin" />
+      </Button>
+    ); // Optional loading fallback
 
   return (
     <DropdownMenu>
@@ -127,15 +146,14 @@ export default function SettingsMenu() {
           {settingsConfig.map(({ key, label, short, description, flags }) => (
             <Collapsible key={key} open={expandedItems.has(key)}>
               <DropdownMenuItem
-                className="flex items-center justify-between p-3 cursor-pointer"
-                onClick={(e) => {
+                className="flex items-center justify-between p-3"
+                onSelect={(e) => {
                   e.preventDefault();
-                  updateSetting(key, !settings[key]);
                 }}
               >
                 <div className="flex flex-col space-y-1 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <Label htmlFor={key} className="text-sm font-medium cursor-pointer">
+                    <Label htmlFor={key} className="text-sm font-medium">
                       {label}
                     </Label>
                     {flags?.map((flag) => (

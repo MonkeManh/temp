@@ -27352,7 +27352,6 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
     streets: {
       availableRoads: {
-
         "Arroyo Vivo Campgrounds": {
           crossStreet1: "Solverde Blvd",
           crossStreet2: "Dead End",
@@ -27361,8 +27360,8 @@ export const postalData: IPostal[] = [
           crossStreet1: "Arroyo Vivo Campgrounds",
           crossStreet2: "Avenida Del Solano",
         },
-      }
       },
+    },
   },
   {
     postal: "1046",
@@ -27381,8 +27380,8 @@ export const postalData: IPostal[] = [
         "Encanto Dr": {
           crossStreet1: "Avenida Del Solano",
           crossStreet2: "Dead End",
-        }
-      }
+        },
+      },
     },
   },
   {
@@ -27397,13 +27396,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Avenida Del Solano": {
           crossStreet1: "Encanto Dr",
-          crossStreet2: "Sierra Lucia Dr"
+          crossStreet2: "Sierra Lucia Dr",
         },
         "Sierra Lucia Dr": {
           crossStreet1: "Avenida Del Solano",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27418,17 +27417,17 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Solverde Blvd": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Arroyo Vivo Campgrounds"
+          crossStreet2: "Arroyo Vivo Campgrounds",
         },
         "Avenida Del Solano": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Sierra Lucia Dr"
+          crossStreet2: "Sierra Lucia Dr",
         },
         "Encanto Dr": {
           crossStreet1: "Avenida Del Solano",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27443,13 +27442,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Avenida Del Solano": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Sierra Lucia Dr"
+          crossStreet2: "Sierra Lucia Dr",
         },
         "Sierra Lucia Dr": {
           crossStreet1: "Avenida Del Solano",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27464,17 +27463,17 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Solverde Blvd": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Arroyo Vivo Campgrounds"
+          crossStreet2: "Arroyo Vivo Campgrounds",
         },
         "Avenida Del Solano": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Sierra Lucia Dr"
+          crossStreet2: "Sierra Lucia Dr",
         },
         "Encanto Dr": {
           crossStreet1: "Avenida Del Solano",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27489,21 +27488,21 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Minerva Rd (East)": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Kodiak Dr"
+          crossStreet2: "Kodiak Dr",
         },
         "Minerva Rd (West)": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Josiah Dr"
+          crossStreet2: "Josiah Dr",
         },
         "Dulcis St (South)": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Fugero Rd"
+          crossStreet2: "Fugero Rd",
         },
         "Dulcis St (North)": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Solverde Blvd"
-        }
-      }
+          crossStreet2: "Solverde Blvd",
+        },
+      },
     },
   },
   {
@@ -27518,13 +27517,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Dulcis St": {
           crossStreet1: "Fugero Rd",
-          crossStreet2: "Minerva Rd"
+          crossStreet2: "Minerva Rd",
         },
         "Fugero Rd": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Camino Del Cielo"
-        }
-      }
+          crossStreet2: "Camino Del Cielo",
+        },
+      },
     },
   },
   {
@@ -27539,25 +27538,25 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Oypress Hollow Ln": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Squidrillo Fwy EB/WB"
+          crossStreet2: "Squidrillo Fwy EB/WB",
         },
         "Dulcis St": {
           crossStreet1: "Junipero Cabrera Hwy, Oypress Hollow Ln",
-          crossStreet2: "Fugero Rd"
+          crossStreet2: "Fugero Rd",
         },
         "Dillmore Way": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Del Soleo Hwy EB": {
           crossStreet1: "Del Soleo Hwy EB to Squidrillo Fwy EB",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Del Soleo Hwy WB": {
           crossStreet1: "Squidrillo Fwy WB to Del Soleo Hwy WB",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27572,13 +27571,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Orolund Circle": {
           crossStreet1: "Lomeli St",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Lomeli St": {
           crossStreet1: "Oypress Hollow Ln",
-          crossStreet2: "Orolund Circle"
-        }
-      }
+          crossStreet2: "Orolund Circle",
+        },
+      },
     },
   },
   {
@@ -27608,7 +27607,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Sardine Row",
       crossStreet1: "3rd St",
-      crossStreet2: "Doldrum Blvd"
+      crossStreet2: "Doldrum Blvd",
     },
   },
   {
@@ -27623,25 +27622,25 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Lockwood Loop": {
           crossStreet1: "2nd St",
-          crossStreet2: "Juniper Ave"
+          crossStreet2: "Juniper Ave",
         },
         "Marinera Ave": {
           crossStreet1: "Juniper Ave",
-          crossStreet2: "Doldrum Blvd, Sardine Row"
+          crossStreet2: "Doldrum Blvd, Sardine Row",
         },
         "1st St": {
           crossStreet1: "Lockwood Loop",
-          crossStreet2: "Doldrum Blvd"
+          crossStreet2: "Doldrum Blvd",
         },
         "Doldrum Blvd": {
           crossStreet1: "2nd St",
-          crossStreet2: "Sardine Row"
+          crossStreet2: "Sardine Row",
         },
         "2nd St": {
           crossStreet1: "Lockwood Loop",
-          crossStreet2: "Doldrum Blvd"
-        }
-      }
+          crossStreet2: "Doldrum Blvd",
+        },
+      },
     },
   },
   {
@@ -27656,13 +27655,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Lockwood Loop": {
           crossStreet1: "Marinera Ave",
-          crossStreet2: "Juniper Ave, Marinera Ave"
+          crossStreet2: "Juniper Ave, Marinera Ave",
         },
         "Marinera Ave": {
           crossStreet1: "Lockwood Loop",
-          crossStreet2: "Juniper Ave, Lockwood Loop, Sardine Row"
-        }
-      }
+          crossStreet2: "Juniper Ave, Lockwood Loop, Sardine Row",
+        },
+      },
     },
   },
   {
@@ -27677,13 +27676,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Marinera Ave": {
           crossStreet1: "Lockwood Loop",
-          crossStreet2: "Junipero Cabrera Hwy"
+          crossStreet2: "Junipero Cabrera Hwy",
         },
         "Junipero Cabrera Hwy": {
           crossStreet1: "Ladera Ln",
-          crossStreet2: "Dulcis St"
+          crossStreet2: "Dulcis St",
         },
-      }
+      },
     },
   },
   {
@@ -27698,21 +27697,21 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Dillmore Way": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Del Soleo Hwy EB": {
           crossStreet1: "Del Soleo Hwy EB to Squidrillo Fwy EB",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Del Soleo Hwy WB": {
           crossStreet1: "Squidrillo Fwy WB to Del Soleo Hwy WB",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Dulcis St": {
           crossStreet1: "Dillmore Way",
-          crossStreet2: "Fugero Rd"
-        }
-      }
+          crossStreet2: "Fugero Rd",
+        },
+      },
     },
   },
   {
@@ -27727,13 +27726,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Fugero Rd": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Camino Del Cielo"
+          crossStreet2: "Camino Del Cielo",
         },
         "Camino Del Cielo": {
           crossStreet1: "Fugero Rd",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27748,21 +27747,21 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Minerva Rd": {
           crossStreet1: "Josiah Dr",
-          crossStreet2: "Dulcis St"
+          crossStreet2: "Dulcis St",
         },
         "Josiah Dr": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Minerva Rd"
+          crossStreet2: "Minerva Rd",
         },
         "Dulcis St": {
           crossStreet1: "Arroy Dr",
-          crossStreet2: "Minerva Rd, Arroy Dr"
+          crossStreet2: "Minerva Rd, Arroy Dr",
         },
         "Arrory Dr": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Perimeter, Dulcis St"
-        }
-      }
+          crossStreet2: "Perimeter, Dulcis St",
+        },
+      },
     },
   },
   {
@@ -27777,17 +27776,17 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Dulcis St": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Arroy Dr, Perimeter Rd"
+          crossStreet2: "Arroy Dr, Perimeter Rd",
         },
         "Arroy Dr": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Perimeter Rd, Dulcis St"
+          crossStreet2: "Perimeter Rd, Dulcis St",
         },
         "Arroyo Vivo Campgrounds": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27802,13 +27801,13 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Perimeter Rd": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Arroy Dr, Dulcis St"
+          crossStreet2: "Arroy Dr, Dulcis St",
         },
         "Arroyo Vivo Campgrounds": {
           crossStreet1: "Solverde Blvd",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27823,7 +27822,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Camino Arroyo",
       crossStreet1: "Solverde Blvd, State Park Dr",
-      crossStreet2: "Dead End"
+      crossStreet2: "Dead End",
     },
   },
   {
@@ -27838,7 +27837,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Camino Arroyo",
       crossStreet1: "Solverde Blvd, State Park Dr",
-      crossStreet2: "Dead End"
+      crossStreet2: "Dead End",
     },
   },
   {
@@ -27853,7 +27852,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Perimeter Rd",
       crossStreet1: "Minerva Rd",
-      crossStreet2: "Arroy Dr, Dulcis St"
+      crossStreet2: "Arroy Dr, Dulcis St",
     },
   },
   {
@@ -27868,7 +27867,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Perimeter Rd",
       crossStreet1: "Minerva Rd",
-      crossStreet2: "Arroy Dr, Dulcis St"
+      crossStreet2: "Arroy Dr, Dulcis St",
     },
   },
   {
@@ -27883,7 +27882,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Perimeter Rd",
       crossStreet1: "Minerva Rd",
-      crossStreet2: "Arroy Dr, Dulcis St"
+      crossStreet2: "Arroy Dr, Dulcis St",
     },
   },
   {
@@ -27898,29 +27897,29 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Minerva Rd": {
           crossStreet1: "Josiah Dr",
-          crossStreet2: "Fort Arroy Rd"
+          crossStreet2: "Fort Arroy Rd",
         },
         "Perimeter Rd": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Arroy Dr, Dulcis St"
+          crossStreet2: "Arroy Dr, Dulcis St",
         },
         "Fort Arroy Rd": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Dead End"
+          crossStreet2: "Dead End",
         },
         "Josiah Dr": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Minerva Rd"
+          crossStreet2: "Minerva Rd",
         },
         "Arroy Dr": {
           crossStreet1: "Dulcis St",
-          crossStreet2: "Perimeter Rd, Dulcis St"
+          crossStreet2: "Perimeter Rd, Dulcis St",
         },
         "Dulcis St": {
           crossStreet1: "Perimeter Rd, Arroy Dr",
-          crossStreet2: "Arroy Dr"
-        }
-      }
+          crossStreet2: "Arroy Dr",
+        },
+      },
     },
   },
   {
@@ -27935,17 +27934,17 @@ export const postalData: IPostal[] = [
       availableRoads: {
         "Josiah Dr": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Minerva Rd"
+          crossStreet2: "Minerva Rd",
         },
         "Minerva Rd": {
           crossStreet1: "Josiah Dr",
-          crossStreet2: "Perimeter Rd"
+          crossStreet2: "Perimeter Rd",
         },
         "Fort Arroy Rd": {
           crossStreet1: "Minerva Rd",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27959,14 +27958,14 @@ export const postalData: IPostal[] = [
     streets: {
       availableRoads: {
         "Josiah Dr": {
-          crossStreet1: "Minerva Rd", 
-          crossStreet2: "Minerva Rd"
+          crossStreet1: "Minerva Rd",
+          crossStreet2: "Minerva Rd",
         },
         "Fugero Rd": {
           crossStreet1: "Camino Del Cielo",
-          crossStreet2: "Dead End"
-        }
-      }
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -27981,7 +27980,7 @@ export const postalData: IPostal[] = [
       autoFill: true,
       mainStreet: "Fugero Rd",
       crossStreet1: "Camino Del Cielo",
-      crossStreet2: "Dead End"
+      crossStreet2: "Dead End",
     },
   },
   {
@@ -27994,8 +27993,15 @@ export const postalData: IPostal[] = [
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
     streets: {
       availableRoads: {
-        
-      }
+        "Fugero Rd": {
+          crossStreet1: "Camino Del Cielo",
+          crossStreet2: "Dead End",
+        },
+        "Camino Del Cielo": {
+          crossStreet1: "Fugero Rd",
+          crossStreet2: "Dead End",
+        },
+      },
     },
   },
   {
@@ -28006,7 +28012,18 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Camino Del Cielo": {
+          crossStreet1: "Fugero Rd",
+          crossStreet2: "Dead End",
+        },
+        "Fugero Rd": {
+          crossStreet1: "Camino Del Cielo",
+          crossStreet2: "Dulcis St",
+        },
+      },
+    },
   },
   {
     postal: "1076",
@@ -28016,7 +28033,26 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Del Soleo Hwy EB": {
+          crossStreet1: "Del Soleo Hwy EB to Squidrillo Fwy EB",
+          crossStreet2: "Dead End",
+        },
+        "Del Soleo Hwy WB": {
+          crossStreet1: "Squidrillo Fwy WB to Del Soleo Hwy WB",
+          crossStreet2: "Dead End",
+        },
+        "Dillmore Way": {
+          crossStreet1: "Dulcis St",
+          crossStreet2: "Dead End",
+        },
+        "Junipero Cabrera Hwy": {
+          crossStreet1: "Brinewater Ave",
+          crossStreet2: "Marinera Ave",
+        },
+      },
+    },
   },
   {
     postal: "1077",
@@ -28026,7 +28062,26 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Ladera Ln": {
+          crossStreet1: "Junipero Cabrera Hwy",
+          crossStreet2: "Lockwood Loop",
+        },
+        "Lockwood Loop": {
+          crossStreet1: "Ladera Ln",
+          crossStreet2: "Marinera Ave",
+        },
+        "Marinera Ave": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Junipero Cabrera Hwy",
+        },
+        "Junipero Cabrera Hwy": {
+          crossStreet1: "Ladera Ln",
+          crossStreet2: "Marinera Ave",
+        },
+      },
+    },
   },
   {
     postal: "1078",
@@ -28036,7 +28091,18 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Lockwood Loop": {
+          crossStreet1: "Juniper Ave",
+          crossStreet2: "Marinera Ave, Ladera Ln",
+        },
+        "Juniper Ave": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Marinera Ave",
+        },
+      },
+    },
   },
   {
     postal: "1079",
@@ -28046,7 +28112,30 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Juniper Ave": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Marinera Ave",
+        },
+        "Lockwood Loop": {
+          crossStreet1: "Juniper Ave",
+          crossStreet2: "Marinera Ave, 4th St, 2nd St, 1st St",
+        },
+        "4th St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "2nd St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "1st St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+      },
+    },
   },
   {
     postal: "1080",
@@ -28056,7 +28145,34 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Doldrum Blvd": {
+          crossStreet1: "Lockwood Loop, Sardine Row",
+          crossStreet2: "Sardine Row",
+        },
+        "1st St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "2nd St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "3rd St": {
+          crossStreet1: "Doldrum Blvd",
+          crossStreet2: "Sardine Row",
+        },
+        "4th St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "Sardine Row": {
+          crossStreet1: "3rd St, Doldrum Blvd",
+          crossStreet2: "Doldrum Blvd, Marinera Ave",
+        },
+      },
+    },
   },
   {
     postal: "1081",
@@ -28066,7 +28182,26 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Doldrum Blvd": {
+          crossStreet1: "3rd St",
+          crossStreet2: "Sardine Row, Lockwood Loop",
+        },
+        "4th St": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Doldrum Blvd",
+        },
+        "3rd St": {
+          crossStreet1: "Doldrum Blvd",
+          crossStreet2: "Sardine Row",
+        },
+        "Sardine Row": {
+          crossStreet1: "3rd St, Doldrum Blvd",
+          crossStreet2: "Doldrum Blvd, Marinera Ave",
+        },
+      },
+    },
   },
   {
     postal: "1082",
@@ -28076,7 +28211,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Juniper Ave": {
+          crossStreet1: "Brinewater Ave, Reverie Rd",
+          crossStreet2: "Marinera Ave",
+        },
+        "Lockwood Loop": {
+          crossStreet1: "4th St, Sardine Row",
+          crossStreet2: "Ladera Ln",
+        },
+        "Reverie Rd": {
+          crossStreet1: "Juniper Ave",
+          crossStreet2: "Juniper Ave",
+        },
+      },
+    },
   },
   {
     postal: "1083",
@@ -28086,7 +28236,26 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Ladera Ln": {
+          crossStreet1: "Junipero Cabrera Hwy",
+          crossStreet2: "Lockwood Loop",
+        },
+        "Lockwood Loop": {
+          crossStreet1: "Juniper Ave",
+          crossStreet2: "Marinera Ave",
+        },
+        "Junipero Cabrera Hwy": {
+          crossStreet1: "Brinewater Ave",
+          crossStreet2: "Ladera Ln",
+        },
+        "Brinewater Ave": {
+          crossStreet1: "Junipero Cabrera Hwy",
+          crossStreet2: "Juniper Ave",
+        },
+      },
+    },
   },
   {
     postal: "1084",
@@ -28096,7 +28265,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Del Soleo Hwy EB": {
+          crossStreet1: "Del Soleo Hwy EB to Squidrillo Fwy EB",
+          crossStreet2: "Dead End",
+        },
+        "Del Soleo Hwy WB": {
+          crossStreet1: "Squidrillo Fwy WB to Del Soleo Hwy WB",
+          crossStreet2: "Dead End",
+        },
+        "Camino Del Cielo": {
+          crossStreet1: "Fugero Rd",
+          crossStreet2: "Dead End",
+        },
+      },
+    },
   },
   {
     postal: "1085",
@@ -28106,7 +28290,18 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Fugero Rd": {
+          crossStreet1: "Camino Del Cielo",
+          crossStreet2: "Dead End",
+        },
+        "Camino Del Cielo": {
+          crossStreet1: "Fugero Rd",
+          crossStreet2: "Dead End",
+        },
+      },
+    },
   },
   {
     postal: "1086",
@@ -28116,7 +28311,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Fugero Rd": {
+          crossStreet1: "Camino Del Cielo",
+          crossStreet2: "Dead End",
+        },
+        "Camino Del Cielo": {
+          crossStreet1: "Fugero Rd",
+          crossStreet2: "Dead End",
+        },
+        "Josiah Dr": {
+          crossStreet1: "Minerva Rd",
+          crossStreet2: "Dead End",
+        },
+      },
+    },
   },
   {
     postal: "1087",
@@ -28126,7 +28336,12 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      autoFill: true,
+      mainStreet: "Josiah Dr",
+      crossStreet1: "Minerva Rd",
+      crossStreet2: "Dead End",
+    },
   },
   {
     postal: "1088",
@@ -28136,7 +28351,12 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      autoFill: true,
+      mainStreet: "Josiah Trail",
+      crossStreet1: "Josiah Dr",
+      crossStreet2: "Dead End",
+    },
   },
   {
     postal: "1089",
@@ -28146,7 +28366,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Del Soleo Hwy EB": {
+          crossStreet1: "Del Soleo Hwy EB to Squidrillo Fwy EB",
+          crossStreet2: "Dead End",
+        },
+        "Del Soleo Hwy WB": {
+          crossStreet1: "Squidrillo Fwy WB to Del Soleo Hwy WB",
+          crossStreet2: "Dead End",
+        },
+        "Josiah Trail": {
+          crossStreet1: "Josiah Dr",
+          crossStreet2: "Dead End",
+        },
+      },
+    },
   },
   {
     postal: "1090",
@@ -28156,7 +28391,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Junipero Cabrera Hwy": {
+          crossStreet1: "Brinewater Ave",
+          crossStreet2: "Dead End",
+        },
+        "Brinewater Ave": {
+          crossStreet1: "Junipero Cabrera Hwy",
+          crossStreet2: "Woolward Way",
+        },
+        "Woolward Way": {
+          crossStreet1: "Brinewater Ave",
+          crossStreet2: "Dead End",
+        },
+      },
+    },
   },
   {
     postal: "1091",
@@ -28166,7 +28416,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Doldrum Blvd": {
+          crossStreet1: "Lockwood Loop",
+          crossStreet2: "Brinewater Ave, Wavebreaker Way",
+        },
+        "Reverie Rd": {
+          crossStreet1: "Juniper Ave",
+          crossStreet2: "Juniper Ave",
+        },
+        "Brinewater Ave": {
+          crossStreet1: "Doldrum Blvd",
+          crossStreet2: "Juniper Ave",
+        },
+      },
+    },
   },
   {
     postal: "1092",
@@ -28176,7 +28441,18 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Brinewater Ave": {
+          crossStreet1: "Doldrum Blvd",
+          crossStreet2: "Wavebreaker Way, Doldrum Blvd",
+        },
+        "Wavebreaker Way": {
+          crossStreet1: "Droldrum Blvd",
+          crossStreet2: "Brinewater Ave",
+        },
+      },
+    },
   },
   {
     postal: "1093",
@@ -28186,7 +28462,22 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      availableRoads: {
+        "Doldrum Blvd": {
+          crossStreet1: "Brinewater Ave",
+          crossStreet2: "Wavebreaker Way, Brinewater Ave",
+        },
+        "Brinewater Ave": {
+          crossStreet1: "Doldrum Blvd",
+          crossStreet2: "Wavebreaker Way, Doldrum Blvd",
+        },
+        "Wavebreaker Way": {
+          crossStreet1: "Droldrum Blvd",
+          crossStreet2: "Brinewater Ave",
+        },
+      },
+    },
   },
   {
     postal: "1094",
@@ -28196,6 +28487,11 @@ export const postalData: IPostal[] = [
     fireBox: "1101",
     fdRunOrder: ["11", "3", "4", "9", "2", "1", "8", "10", "7", "6", "5"],
     policeRunOrder: ["MBPD", "SAHP", "BCSO", "PBPD", "SSPD", "LCSO", "LSPD"],
-    streets: {},
+    streets: {
+      autoFill: true,
+      mainStreet: "Woolward Way",
+      crossStreet1: "Brinewater Ave",
+      crossStreet2: "Dead End",
+    },
   },
 ];

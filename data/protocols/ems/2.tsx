@@ -333,6 +333,38 @@ export const ALLERGIES: IEMSComplaint = {
     },
 
     {
+      text: <p className="text-red-400"><b className="font-bold">Where</b> is the <b className="font-bold">snake</b> now?</p>,
+      questionType: "select",
+      preRenderInstructions(_patient, answers) {
+        const lastAnswer = answers[answers.length - 1].answer;
+        return lastAnswer === "SNAKEBITE";
+      },
+      preRenderLogic: "Cause of reaction was snakebite",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Location:",
+          display: "Snake location: {input}",
+          questionDisplay: "Where is the snake now?",
+          input: true,
+          continue: true,
+        },
+        {
+          answer: "Gone",
+          display: "Snake is gone",
+          questionDisplay: "The snake is gone",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk where snake is",
+          questionDisplay: "Unk where the snake is",
+          continue: true,
+        }
+      ]
+    },
+
+    {
       text: (
         <p>
           <b className="font-bold">When</b> did the reaction start?

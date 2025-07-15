@@ -101,7 +101,6 @@ export const BACK_PAIN: IEMSComplaint = {
           display: "Pn NOT caused by trauma",
           questionDisplay: "Pain NOT caused by trauma",
           continue: true,
-          updateCode: "05A01",
         },
         {
           answer: "Unknown",
@@ -136,8 +135,8 @@ export const BACK_PAIN: IEMSComplaint = {
           answer: "Earlier (more than 6hrs ago)",
           display: "Trauma happened earlier (> 6 hours ago)",
           questionDisplay: "Trauma happened earlier (> 6 hours ago)",
-          continue: true,
           updateCode: "05A02",
+          continue: true,
         },
         {
           answer: "Unknown",

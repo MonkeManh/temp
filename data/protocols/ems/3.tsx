@@ -88,55 +88,21 @@ export const ANIMAL_BITE: IEMSComplaint = {
     {
       text: (
         <p>
-          <span className="text-blue-400">(If not obvious)</span> Is the{" "}
-          <b className="font-bold">
-            attack <span className="text-red-400">currently happening</span>
-          </b>
-          ?
+          <span className="text-blue-400">(Not obvious)</span> Is the{" "}
+          <b className="font-bold">When</b> did this{" "}
+          <b className="font-bold">happen</b>?
         </p>
       ),
       questionType: "select",
       answers: [
         {
-          answer: "No",
-          display: "Attack not in prog",
-          questionDisplay: "**pronoun** is not currently being attacked",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Attack in prog",
+          answer: "IN PROGRESS",
+          display: "Attack in progress",
           questionDisplay: "**pronoun** is currently being attacked",
           updateCode: "03D09",
+          continue: true,
           send: true,
-          continue: true,
-          setSceneSecure: false,
         },
-        {
-          answer: "Unknown",
-          display: "Unk if attack in prog",
-          questionDisplay: "Unk if **pronoun** is currently being attacked",
-          continue: true,
-          updateCode: "03B03",
-        },
-      ],
-    },
-
-    {
-      text: (
-        <p>
-          <b className="font-bold">When</b> did the{" "}
-          <b className="font-bold">attack/incident</b> occur?
-        </p>
-      ),
-      questionType: "select",
-      preRenderInstructions: (_patient, answers) => {
-        const firstAnswer = answers[0]?.answer;
-        return firstAnswer !== "Yes";
-      },
-      preRenderLogic: "Attack not in progress",
-      preRenderDependencies: ["answers"],
-      answers: [
         {
           answer: "Less than 6 hours ago",
           display: "Happened now (< 6 hours ago)",
@@ -155,41 +121,7 @@ export const ANIMAL_BITE: IEMSComplaint = {
           display: "Unk when attack happened",
           questionDisplay: "Unk when **pronoun** was attacked",
           continue: true,
-          updateCode: "03B03",
-        },
-      ],
-    },
-
-    {
-      text: (
-        <p>
-          <b className="font-bold">Were</b> there{" "}
-          <b className="font-bold">multiple animals</b> involved?
-        </p>
-      ),
-      questionType: "select",
-      answers: [
-        {
-          answer: "No",
-          display: "Single animal involved",
-          questionDisplay: "**pronoun** was attacked by a single animal",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Multiple animals involved",
-          questionDisplay: "**pronoun** was attacked by multiple animals",
-          updateCode: "03D08",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if multiple animals involved",
-          questionDisplay:
-            "Unk if **pronoun** was attacked by multiple animals",
-          continue: true,
-        },
+        }
       ],
     },
 
@@ -289,6 +221,39 @@ export const ANIMAL_BITE: IEMSComplaint = {
           answer: "Unknown",
           display: "Unk where animal is",
           questionDisplay: "Unk where the animal is now",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          <b className="font-bold">Were</b> there{" "}
+          <b className="font-bold">multiple animals</b> involved?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "Single animal involved",
+          questionDisplay: "**pronoun** was attacked by a single animal",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Multiple animals involved",
+          questionDisplay: "**pronoun** was attacked by multiple animals",
+          updateCode: "03D08",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if multiple animals involved",
+          questionDisplay:
+            "Unk if **pronoun** was attacked by multiple animals",
           continue: true,
         },
       ],

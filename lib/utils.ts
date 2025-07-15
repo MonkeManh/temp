@@ -8,11 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export const DEFAULT_SETTINGS: ISettings = {
   advancedMode: false,
-  autoSave: false,
+  autoSave: true,
   soundEffects: false,
   quickSend: true,
   multiService: false,
-  gotoInstructions: false,
+  giveInstructions: false,
+  strictEntry: false,
 }
 
 export default function getSettings(): ISettings {

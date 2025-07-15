@@ -4,22 +4,14 @@ import Footer from "@/components/footer";
 import LoadingState from "@/components/loading-state";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import getSettings from "@/lib/utils";
+import getSettings, { DEFAULT_SETTINGS } from "@/lib/utils";
 import { ISettings } from "@/models/interfaces/ISettings";
 import { Phone, Settings } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "next/link"
 import { useEffect, useState } from "react";
 
 export default function DispatchPage() {
-  const [settings, setSettings] = useState<ISettings>({
-    advancedMode: false,
-    autoSave: false,
-    soundEffects: false,
-    quickSend: false,
-    multiService: false,
-    gotoInstructions: false,
-  });
+  const [settings, setSettings] = useState<ISettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

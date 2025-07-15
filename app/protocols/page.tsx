@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { emsProtocols } from "@/data/protocols/emsProtocols";
+import { fireProtocols } from "@/data/protocols/fireProtocols";
 
 const protocolServices = [
   {
@@ -28,7 +29,7 @@ const protocolServices = [
     icon: Flame,
     description:
       "Fire suppression, rescue operations, and hazardous materials response protocols for emergency situations.",
-    protocolCount: 89,
+    protocolCount: fireProtocols.length,
     href: "/protocols/fire",
     color: "text-red-600",
     bg: "bg-red-500/10",

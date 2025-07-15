@@ -19,10 +19,13 @@ export const BREATHING_PROB: IEMSComplaint = {
     {
       text: (
         <p>
-          <span className="text-blue-400">(If not obvious (1st pty))</span> Is
+         Is
           **pronoun** able to talk to you{" "}
           <span className="text-blue-400">(cry)</span> at all?
         </p>
+      ),
+      firstPersonText: (
+        <p><span className="text-blue-400">Is the caller able to <b className="font-bold">talk</b> or <b className="font-bold">cry</b> at all</span>?</p>
       ),
       questionType: "select",
       preRenderInstructions: (patient) => {
@@ -63,6 +66,9 @@ export const BREATHING_PROB: IEMSComplaint = {
           Did **pronoun** <b className="font-bold">choke</b> on anything first?
         </p>
       ),
+      firstPersonText: (
+        <p>Did you <b className="font-bold">choke</b> on anything first?</p>
+      ),
       questionType: "select",
       preRenderInstructions: (_patient, answers) => {
         const lastAnswer = answers[answers.length - 1]?.answer;
@@ -95,10 +101,12 @@ export const BREATHING_PROB: IEMSComplaint = {
     {
       text: (
         <p>
-          <span className="text-blue-400">(If not obvious (1st pty))</span> Is
-          **pronoun** having difficulty{" "}
-          <b className="font-bold">speaking between breaths</b>?
+          <p>Is **pronoun** having difficulty{" "}
+          <b className="font-bold">speaking between breaths</b>?</p>
         </p>
+      ),
+      firstPersonText: (
+        <p><span className="text-blue-400">(If not obvious)</span> Are you having difficulty <b className="font-bold">speaking between breaths</b>?</p>
       ),
       questionType: "select",
       defaultTab: "ai",
@@ -176,63 +184,25 @@ export const BREATHING_PROB: IEMSComplaint = {
           Is **pronoun** <b className="font-bold">changing color</b>?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller",
-      preRenderDependencies: ["proximity"],
-      additionalInstructions: <AI.ChangingColor />,
-      defaultTab: "ai",
-      answers: [
-        {
-          answer: "No",
-          display: "Not changing color",
-          questionDisplay: "**pronoun** is not changing color",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Changing color",
-          questionDisplay: "**pronoun** is changing color",
-          continue: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if changing color",
-          questionDisplay: "Unk if **pronoun** is changing color",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
+      firstPersonText: (
         <p>
           Have you noticed your skin <b className="font-bold">changing color</b>
-          ?
+          {" "} <span className="text-blue-400">(&lt; 6hrs)</span>?
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity === "first";
-      },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
       additionalInstructions: <AI.ChangingColor />,
       defaultTab: "ai",
       answers: [
         {
           answer: "No",
-          display: "Not changing color",
+          display: "Not changing color (< 6hrs)",
           questionDisplay: "**pronoun** is not changing color",
           continue: true,
         },
         {
           answer: "Yes",
-          display: "Changing color",
+          display: "Changing color (< 6hrs)",
           questionDisplay: "**pronoun** is changing color",
           continue: true,
         },
@@ -252,13 +222,12 @@ export const BREATHING_PROB: IEMSComplaint = {
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient, answers) => {
-        const { patientProximity } = patient;
+      preRenderInstructions: (_patient, answers) => {
         const lastAnswer = answers[answers.length - 1].answer;
         return lastAnswer === "Yes";
       },
       preRenderLogic: "Patient has had a change in color",
-      preRenderDependencies: ["answers", "proximity"],
+      preRenderDependencies: ["answers"],
       additionalInstructions: <AI.ChangingColor />,
       defaultTab: "ai",
       answers: [
@@ -345,51 +314,10 @@ export const BREATHING_PROB: IEMSComplaint = {
           <span className="text-red-400">(cold sweats)</span>?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller",
-      preRenderDependencies: ["proximity"],
-      answers: [
-        {
-          answer: "No",
-          display: "Not clammy",
-          questionDisplay: "**pronoun** is not clammy",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Clammy",
-          questionDisplay: "**pronoun** is clammy",
-          updateCode: "06D04",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if clammy",
-          questionDisplay: "Unk if **pronoun** is clammy",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
-        <p>
-          Are you <b className="font-bold">clammy</b>{" "}
-          <span className="text-red-400">(cold sweats)</span>?
-        </p>
+      firstPersonText: (
+        <p>Are you <b className="font-bold">clammy</b> or having <b className="font-bold">cold sweats</b>?</p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity === "first";
-      },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
       answers: [
         {
           answer: "No",
@@ -420,50 +348,10 @@ export const BREATHING_PROB: IEMSComplaint = {
           Does **pronoun** have <b className="font-bold">asthma</b>?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller",
-      preRenderDependencies: ["proximity"],
-      answers: [
-        {
-          answer: "No",
-          display: "No asthma",
-          questionDisplay: "**pronoun** does not have asthma",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Has asthma",
-          questionDisplay: "**pronoun** has asthma",
-          updateSuffix: "A",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if asthma",
-          questionDisplay: "Unk if **pronoun** has asthma",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
-        <p>
-          Do you have <b className="font-bold">asthma</b>?
-        </p>
+      firstPersonText: (
+        <p>Do you have <b className="font-bold">asthma</b>?</p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity === "first";
-      },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
       answers: [
         {
           answer: "No",
@@ -495,51 +383,19 @@ export const BREATHING_PROB: IEMSComplaint = {
           Obstructive Pulmonary Disease)
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller",
-      preRenderDependencies: ["proximity"],
-      answers: [
-        {
-          answer: "No",
-          display: "No COPD",
-          questionDisplay: "**pronoun** does not have COPD",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Has COPD",
-          questionDisplay: "**pronoun** has COPD",
-          updateSuffix: "E",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if COPD",
-          questionDisplay: "Unk if **pronoun** has COPD",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
+      firstPersonText: (
         <p>
           Do you have <b className="font-bold">COPD</b> (Chronic Obstructive
           Pulmonary Disease)
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity === "first";
+      preRenderInstructions: (_patient, answers) => {
+        const lastAnswer = answers[answers.length - 1]?.answer;
+        return lastAnswer !== "Yes";
       },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
+      preRenderLogic: "Patient does not have asthma",
+      preRenderDependencies: ["answers"],
       answers: [
         {
           answer: "No",
@@ -571,82 +427,17 @@ export const BREATHING_PROB: IEMSComplaint = {
           <b className="font-bold">lung problems</b>?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient, answers) => {
-        const { patientProximity } = patient;
-        const asthmaAnswer =
-          answers.find((a) => a.question === "Do you have asthma?")?.answer ||
-          answers.find((a) => a.question === "Does **pronoun** have asthma?")
-            ?.answer;
-        const copdAnswer =
-          answers.find(
-            (a) =>
-              a.question ===
-              "Do you have COPD (Chronic Obstructive Pulmonary Disease)?"
-          )?.answer ||
-          answers.find(
-            (a) =>
-              a.question ===
-              "Does **pronoun** have COPD (Chronic Obstructive Pulmonary Disease)?"
-          )?.answer;
-        return (
-          patientProximity !== "first" &&
-          asthmaAnswer !== "Yes" &&
-          copdAnswer !== "Yes"
-        );
-      },
-      preRenderLogic:
-        "Patient is not the caller and does not have asthma or COPD",
-      preRenderDependencies: ["proximity", "answers"],
-      answers: [
-        {
-          answer: "No",
-          display: "No other lung problems",
-          questionDisplay: "**pronoun** does not have any other lung problems",
-          continue: true,
-        },
-        {
-          answer: "Yes (input problems):",
-          display: "PT has other lung problems: {input}",
-          questionDisplay: "**pronoun** has other lung problems: {input}",
-          input: true,
-          continue: true,
-          updateSuffix: "O",
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if other lung problems",
-          questionDisplay: "Unk if **pronoun** has any other lung problems",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
+      firstPersonText: (
         <p>
           Do you have any other <b className="font-bold">lung problems</b>?
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient, answers) => {
-        const { patientProximity } = patient;
-        const asthmaAnswer = answers.find(
-          (a) => a.question === "Do you have asthma?"
-        )?.answer;
-        const copdAnswer = answers.find(
-          (a) =>
-            a.question ===
-            "Do you have COPD (Chronic Obstructive Pulmonary Disease)?"
-        )?.answer;
-        return (
-          patientProximity === "first" &&
-          asthmaAnswer !== "Yes" &&
-          copdAnswer !== "Yes"
-        );
+      preRenderInstructions: (_patient, answers) => {
+        const asthmaAnswer = answers.find((a) => a.question === "Does **pronoun** have asthma?")?.answer;
+        const copdAnswer = answers.find((a) => a.question === "Does **pronoun** have COPD (Chronic Obstructive Pulmonary Disease)")?.answer;
+        return asthmaAnswer !== "Yes" && copdAnswer !== "Yes";
       },
-      preRenderLogic: "Patient is the caller and does not have asthma or COPD",
-      preRenderDependencies: ["proximity", "answers"],
       answers: [
         {
           answer: "No",
@@ -658,9 +449,9 @@ export const BREATHING_PROB: IEMSComplaint = {
           answer: "Yes (input problems):",
           display: "PT has other lung problems: {input}",
           questionDisplay: "**pronoun** has other lung problems: {input}",
+          updateSuffix: "O",
           input: true,
           continue: true,
-          updateSuffix: "O",
         },
         {
           answer: "Unknown",
@@ -679,45 +470,7 @@ export const BREATHING_PROB: IEMSComplaint = {
           <b className="font-bold">instructions</b> to treat this?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller",
-      preRenderDependencies: ["proximity"],
-      answers: [
-        {
-          answer: "Not applicable",
-          display: "N/A",
-          questionDisplay: "N/A",
-          continue: true,
-        },
-        {
-          answer: "No",
-          display: "No special equipment or instructions",
-          questionDisplay:
-            "**pronoun** has no special equipment or instructions",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Has special equipment or instructions",
-          questionDisplay: "**pronoun** has special equipment or instructions",
-          continue: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if special equipment or instructions",
-          questionDisplay:
-            "Unk if **pronoun** has special equipment or instructions",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
+      firstPersonText: (
         <p>
           <span className="text-blue-400">(Tracheostomy blockage)</span> Do you
           have any <b className="font-bold">special equipment</b> or{" "}
@@ -725,12 +478,6 @@ export const BREATHING_PROB: IEMSComplaint = {
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient) => {
-        const { patientProximity } = patient;
-        return patientProximity === "first";
-      },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
       answers: [
         {
           answer: "Not applicable",

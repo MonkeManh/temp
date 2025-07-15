@@ -14,6 +14,7 @@ export const BURNS_EXPLOSION: IEMSComplaint = {
   defaultPriority: "A",
   defaultPlan: 26,
   defaultCode: "07B02",
+  preSend: true,
   questions: [
     {
       text: (
@@ -218,15 +219,17 @@ export const BURNS_EXPLOSION: IEMSComplaint = {
           Is **pronoun** <b className="font-bold">breathing normally</b>?
         </p>
       ),
+      firstPersonText: (
+        <p><span className="text-blue-400">(If not obvious)</span> Are you breathing normally?</p>
+      ),
       questionType: "select",
       preRenderInstructions: (patient) => {
         return (
           patient.patientBreathing !== "no" &&
-          patient.patientBreathing !== "agonal/ineffective" &&
-          patient.patientProximity !== "first"
+          patient.patientBreathing !== "agonal/ineffective"
         );
       },
-      preRenderLogic: "Patient is not not breathing or agonal/ineffective",
+      preRenderLogic: "Patient is not apneic or agonal",
       preRenderDependencies: ["patient"],
       answers: [
         {
@@ -240,41 +243,7 @@ export const BURNS_EXPLOSION: IEMSComplaint = {
           display: "Not breathing nlly",
           questionDisplay: "**pronoun** is NOT breathing nlly",
           updateCode: "07C02",
-          continue: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if breathing nlly",
-          questionDisplay: "Unk if **pronoun** is breathing nlly",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
-        <p>
-          Are you having any <b className="font-bold">trouble breathing</b>?
-        </p>
-      ),
-      questionType: "select",
-      preRenderInstructions: (patient) => {
-        return patient.patientProximity === "first";
-      },
-      preRenderLogic: "Patient is the caller",
-      preRenderDependencies: ["proximity"],
-      answers: [
-        {
-          answer: "No",
-          display: "Breathing nlly",
-          questionDisplay: "**pronoun** is breathing nlly",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Not breathing nlly",
-          questionDisplay: "**pronoun** is NOT breathing nlly",
-          updateCode: "07C02",
+          send: true,
           continue: true,
         },
         {
@@ -293,67 +262,18 @@ export const BURNS_EXPLOSION: IEMSComplaint = {
           <b className="font-bold">speaking between breaths</b>?
         </p>
       ),
-      questionType: "select",
-      preRenderInstructions: (patient, answers) => {
-        const isDiffBreathing =
-          answers.find(
-            (a) => a.question === "Is **pronoun** breathing normally?"
-          )?.answer === "No" ||
-          answers.find((a) => a.question === "Are you breathing normally?")
-            ?.answer === "No";
-        return isDiffBreathing && patient.patientProximity !== "first";
-      },
-      preRenderLogic: "Patient is not the caller and has difficulty breathing",
-      preRenderDependencies: ["proximity", "answers"],
-      defaultTab: "ai",
-      additionalInstructions: <AI.DiffSpeakingBtwnBreaths />,
-      answers: [
-        {
-          answer: "No",
-          display: "No diff speaking btwn breaths",
-          questionDisplay:
-            "**pronoun** is NOT having difficulty speaking between breaths",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "Diff speaking btwn breaths",
-          questionDisplay:
-            "**pronoun** is having difficulty speaking between breaths",
-          updateCode: "07D05",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if diff speaking btwn breaths",
-          questionDisplay:
-            "Unk if **pronoun** is having difficulty speaking between breaths",
-          continue: true,
-        },
-      ],
-    },
-
-    {
-      text: (
+      firstPersonText: (
         <p>
-          <span className="text-blue-400">(If not obvious)</span> Are you having{" "}
-          <b className="font-bold">difficulty speaking</b> between{" "}
-          <b className="font-bold">breaths</b>?
+          <span className="text-blue-400">(If not obvious)</span> Are you having difficulty <b className="font-bold">speaking between breaths</b>?
         </p>
       ),
       questionType: "select",
-      preRenderInstructions: (patient, answers) => {
-        const isDiffBreathing =
-          answers.find(
-            (a) => a.question === "Is **pronoun** breathing normally?"
-          )?.answer === "No" ||
-          answers.find((a) => a.question === "Are you breathing normally?")
-            ?.answer === "No";
-        return isDiffBreathing && patient.patientProximity === "first";
+      preRenderInstructions: (_patient, answers) => {
+        const lastAnswer = answers[answers.length - 1]?.answer;
+        return lastAnswer === "No";
       },
-      preRenderLogic: "Patient is the caller and has difficulty breathing",
-      preRenderDependencies: ["proximity", "answers"],
+      preRenderLogic: "Patient is having difficulty breathing",
+      preRenderDependencies: ["answers"],
       defaultTab: "ai",
       additionalInstructions: <AI.DiffSpeakingBtwnBreaths />,
       answers: [

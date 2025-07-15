@@ -26,6 +26,7 @@ import {
 import { getEMSProtocolOptions } from "@/data/protocols/emsProtocols";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { INewCallData } from "@/models/interfaces/INewCallData";
+import { ISettings } from "@/models/interfaces/ISettings";
 import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -33,6 +34,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 interface IEMSCaseEntryProps {
   callDetails: INewCallData;
   initialData?: IEMSCaseEntry;
+  settings: ISettings;
   onComplete: (data: IEMSCaseEntry) => void;
   handleCaseRestart: () => void;
 }
@@ -234,6 +236,7 @@ const formatPhoneNumber = (value: string, onComplete?: () => void) => {
 export default function EMSCaseEntry({
   callDetails,
   initialData,
+  settings,
   onComplete,
   handleCaseRestart,
 }: IEMSCaseEntryProps) {
@@ -337,8 +340,8 @@ export default function EMSCaseEntry({
   const sortedComplaintOptions = useMemo(() => {
     const allComplaints = getEMSProtocolOptions();
 
-    const breathingStatus = formData.patientBreathing.toLowerCase();
-    const consciousness = formData.patientConsciousness.toLowerCase();
+    const breathingStatus = formData?.patientBreathing?.toLowerCase();
+    const consciousness = formData?.patientConsciousness?.toLowerCase();
 
     const highlight = (complaints: number[]) => {
       const priority = allComplaints.filter((c) =>
@@ -442,13 +445,27 @@ export default function EMSCaseEntry({
     }
   }, [formData.chiefComplaint]);
 
-  const canEditpatientProximity = !!formData.callerStatement;
-  const canEditNumPatients = !!formData.patientProximity;
-  const canEditPatientAge = !!formData.numPatients;
-  const canEditPatientGender = !!formData.patientAge || !!tempAge;
-  const canEditConsciousness = !!formData.patientGender;
-  const canEditBreathing = !!formData.patientConsciousness;
-  const canEditChiefComplaint = !!formData.patientBreathing;
+  const canEditpatientProximity =
+    !settings.strictEntry || !!formData.callerStatement;
+  const canEditNumPatients =
+    !settings.strictEntry || !!formData.patientProximity;
+  const canEditPatientAge = !settings.strictEntry || !!formData.numPatients;
+  const canEditPatientGender =
+    !settings.strictEntry || !!formData.patientAge || !!tempAge;
+
+  const canEditConsciousness =
+    !settings.strictEntry || !!formData.patientGender;
+
+  const canEditBreathing =
+    !settings.strictEntry || !!formData.patientConsciousness;
+
+  const canEditChiefComplaint =
+    !settings.strictEntry || !!formData.patientBreathing;
+  const canSubmitCase =
+    !!formData.chiefComplaint &&
+    !!formData.patientBreathing &&
+    !!formData.patientConsciousness &&
+    !!formData.patientGender;
 
   return (
     <main className="space-y-4">
@@ -888,6 +905,7 @@ export default function EMSCaseEntry({
               ref={nextButtonRef}
               variant="outline"
               onClick={() => onComplete(formData)}
+              disabled={!canSubmitCase}
             >
               <ArrowRight className="h-4 w-4 text-green-400" />
             </Button>

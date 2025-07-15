@@ -469,7 +469,7 @@ export const ABDO_PAIN: IEMSComplaint = {
         },
         {
           code: "01A02",
-          text: "Testical or Groin Pain (Male)",
+          text: "Non-Traumatic Testicle or Groin Pain (Male)",
           recResponse: 2,
         },
       ],

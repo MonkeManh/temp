@@ -4,5 +4,6 @@ export interface ISettings {
     soundEffects: boolean;
     quickSend: boolean;
     multiService: boolean;
-    gotoInstructions: boolean;
+    giveInstructions: boolean;
+    strictEntry: boolean;
 }

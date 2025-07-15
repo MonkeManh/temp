@@ -160,6 +160,23 @@ export const DROWNING: IEMSComplaint = {
             },
           ],
         },
+        {
+          code: "14C02",
+          text: "Decompression Sickness (The Bends)",
+          recResponse: 68,
+          subCodes: [
+            {
+              suffix: "D",
+              text: "Diving Inj (Not Underwater)",
+              recResponse: 68,
+            },
+            {
+              suffix: "S",
+              text: "SCUBA Accident (Not Underwater)",
+              recResponse: 68,
+            },
+          ],
+        }
       ],
     },
     {

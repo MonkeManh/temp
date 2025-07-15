@@ -1,6 +1,6 @@
-import { Location } from "@/models/interfaces/locations/ICIDS";
+import { ILocation } from "@/models/interfaces/locations/ICIDS";
 
-export const getLocation = (location: string): Location | undefined => {
+export const getLocation = (location: string): ILocation | undefined => {
   const locations = CIDSData.filter((loc) => loc.name === location);
   if (locations.length > 0) {
     return locations[0];
@@ -8,7 +8,7 @@ export const getLocation = (location: string): Location | undefined => {
   return undefined;
 };
 
-export const CIDSData: Location[] = [
+export const CIDSData: ILocation[] = [
   {
     id: 1,
     name: "PostOP Depot",

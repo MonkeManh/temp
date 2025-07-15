@@ -204,38 +204,41 @@ function QuestionsList({
                 <div className="flex-1 text-sm font-medium">
                   {question.text}
                 </div>
-                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
-                  ["age", "gender", "patient"].includes(dep)
-                ) && (
-                  <Badge
-                    variant="outline"
-                    className="bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  >
-                    Patient Dependant
-                  </Badge>
-                )}
+                {question.preRenderDependencies &&
+                  question.preRenderDependencies?.some((dep) =>
+                    ["age", "gender", "patient"].includes(dep)
+                  ) && (
+                    <Badge
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                    >
+                      Patient Dependant
+                    </Badge>
+                  )}
 
-                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
-                  ["proximity"].includes(dep)
-                ) && (
-                  <Badge
-                    variant="outline"
-                    className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"
-                  >
-                    Caller Type Dependant
-                  </Badge>
-                )}
+                {question.preRenderDependencies &&
+                  question.preRenderDependencies?.some((dep) =>
+                    ["proximity"].includes(dep)
+                  ) && (
+                    <Badge
+                      variant="outline"
+                      className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"
+                    >
+                      Caller Type Dependant
+                    </Badge>
+                  )}
 
-                {question.preRenderDependencies && question.preRenderDependencies?.some((dep) =>
-                  ["answers", "responses"].includes(dep)
-                ) && (
-                  <Badge
-                    variant="outline"
-                    className="bg-purple-50 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                  >
-                    Answer Dependent
-                  </Badge>
-                )}
+                {question.preRenderDependencies &&
+                  question.preRenderDependencies?.some((dep) =>
+                    ["answers", "responses"].includes(dep)
+                  ) && (
+                    <Badge
+                      variant="outline"
+                      className="bg-purple-50 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                    >
+                      Answer Dependent
+                    </Badge>
+                  )}
               </div>
               {isOpen ? (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -246,6 +249,15 @@ function QuestionsList({
 
             {isOpen && (
               <div className="px-4 py-4 border-t">
+                {question.firstPersonText && (
+                  <div className="mb-6 flex items-center gap-2">
+                    <p className="text-xs">First Person Text:</p>
+                    <Badge className="text-xs bg-muted text-muted-foreground">
+                      {question.firstPersonText}
+                    </Badge>
+                  </div>
+                )}
+
                 <div className="mb-6 flex items-center gap-2">
                   <p className="text-xs">Question Type:</p>
                   <Badge className="text-xs bg-muted text-muted-foreground">
@@ -339,7 +351,8 @@ function DeterminantsList({
                     </div>
                   </div>
                   <Badge className="text-xs bg-gray-100 text-gray-800">
-                    Response: {getEmsResponsePlan(code.recResponse)?.incidentType}
+                    Response:{" "}
+                    {getEmsResponsePlan(code.recResponse)?.incidentType}
                   </Badge>
                 </div>
 
@@ -369,7 +382,11 @@ function DeterminantsList({
                             </span>
                             {subCode.recResponse && (
                               <Badge className="text-xs">
-                                Response: {getEmsResponsePlan(subCode.recResponse)?.incidentType}
+                                Response:{" "}
+                                {
+                                  getEmsResponsePlan(subCode.recResponse)
+                                    ?.incidentType
+                                }
                               </Badge>
                             )}
                           </div>

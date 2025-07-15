@@ -1,5 +1,4 @@
 import { IEMSComplaint } from "@/models/interfaces/protocols/ems/IEMSComplaint";
-import * as AI from "./additionalInformation";
 import {
   ABDO_PAIN,
   ALLERGIES,
@@ -47,26 +46,29 @@ export function getEMSProtocolOptions() {
   }));
 }
 
+// PRE PDI UPDATE
 export const emsProtocols: IEMSComplaint[] = [
   ABDO_PAIN,
   ALLERGIES,
   ANIMAL_BITE,
   ASSAULT,
   BACK_PAIN,
-  // NEEDS UPDATING
   BREATHING_PROB,
-  // NEEDS REVIEW + UPDATING
   BURNS_EXPLOSION,
   // No questions
   CARB_MONO_HAZ,
   // Need a review
   CARDIAC_ARREST,
-  // No questions
+  // Good
   CHEST_PAIN,
   CHOKING,
+  // No questions
   SEIZURES,
+  // Good
   DIABETIC_PROBLEM,
+  // No Questions
   DROWNING,
+  // Good for now
   ELECTROCUTION,
   EYE_PROBLEMS,
   FALLS,

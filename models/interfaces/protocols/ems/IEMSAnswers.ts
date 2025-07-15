@@ -14,6 +14,7 @@ export interface IEMSAnswers {
   preRenderLogic?: string;
   input?: boolean;
   multiSelect?: boolean;
+  strokeTest?: boolean;
   continue?: boolean;
   end?: boolean;
   send?: boolean;
@@ -42,5 +43,6 @@ export type DependencyResult = {
   plan?: number;
   override?: boolean;
   send?: boolean;
+  gotoProtocol?: number;
 };
 

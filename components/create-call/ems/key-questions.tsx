@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { InputModal } from "@/components/ui/input-modal";
 import { MultiSelectModal } from "@/components/ui/multi-select-modal";
+import { StrokeTestModal } from "@/components/ui/stroke-test-modal";
 import {
   Select,
   SelectContent,
@@ -17,6 +18,8 @@ import {
   replacePronounInNode,
   evaluateDependencies,
   higherCode,
+  getPriorityFromCode,
+  isPriorityHigher,
 } from "@/lib/utils/emsHelpers";
 import { IEMSCaseEntry } from "@/models/interfaces/IEMSCaseEntry";
 import { ISettings } from "@/models/interfaces/ISettings";
@@ -68,6 +71,7 @@ export default function EMSKeyQuestions({
   const [isInputModalOpen, setIsInputModalOpen] = useState<boolean>(false);
   const [isMultiSelectModalOpen, setIsMultiSelectModalOpen] =
     useState<boolean>(false);
+  const [isStrokeTestModalOpen, setIsStrokeTestModalOpen] = useState<boolean>(false);
   const [pendingAnswer, setPendingAnswer] = useState<IEMSAnswers | null>(null);
   const selectRef = useRef<HTMLButtonElement>(null);
 
@@ -287,6 +291,10 @@ export default function EMSKeyQuestions({
       setPendingAnswer(answerObj);
       setIsMultiSelectModalOpen(true);
       return;
+    } else if (answerObj.strokeTest) {
+      setPendingAnswer(answerObj);
+      setIsStrokeTestModalOpen(true);
+      return;
     }
 
     // Process the answer normally
@@ -307,6 +315,9 @@ export default function EMSKeyQuestions({
 
       if (dependencyResult) {
         // Handle dependency results
+        if(dependencyResult.gotoProtocol) {
+          return handleProtocolChange(dependencyResult.gotoProtocol);
+        }
         if (dependencyResult.code) {
           if (dependencyResult.send && settings.quickSend && !codeHasBeenSent) {
             handleCodeSend(dependencyResult.code);
@@ -368,15 +379,20 @@ export default function EMSKeyQuestions({
     console.log("EMS CASE", emsCase);
     console.log("Code has been sent", codeHasBeenSent);
 
-    if (
-      (answerObj.send &&
-        settings.quickSend &&
-        answerObj.updateCode &&
-        !codeHasBeenSent) ||
-      (answerObj.updateCode && answerObj.overrideSend && settings.quickSend)
-    ) {
-      return handleCodeSend(answerObj.updateCode);
-    } else if (answerObj.updateCode) {
+    // Check if we should send the code
+    if (answerObj.updateCode && answerObj.send && settings.quickSend) {
+      const currentPriority = getPriorityFromCode(currentCode);
+      const newPriority = getPriorityFromCode(answerObj.updateCode);
+      const isHigherPriorityCode = isPriorityHigher(newPriority, currentPriority);
+      
+      if (!codeHasBeenSent || answerObj.overrideSend || isHigherPriorityCode) {
+        // Pass override=true if this is a higher priority code and a code has already been sent
+        const shouldOverride = codeHasBeenSent && isHigherPriorityCode;
+        return handleCodeSend(answerObj.updateCode, shouldOverride);
+      }
+    }
+    
+    if (answerObj.updateCode) {
       handleUpdateCode(answerObj.updateCode);
     }
 
@@ -433,6 +449,19 @@ export default function EMSKeyQuestions({
     }
   };
 
+  const handleStrokeTestModalClose = () => {
+    setIsStrokeTestModalOpen(false);
+    setPendingAnswer(null);
+  };
+
+  const handleStrokeTestModalConfirm = (selectedValue: string) => {
+    if (pendingAnswer && selectedValue) {
+      processAnswer(pendingAnswer, selectedValue);
+      setIsStrokeTestModalOpen(false);
+      setPendingAnswer(null);
+    }
+  };
+
   useEffect(() => {
     if (currentQuestion?.defaultTab !== activeTab) {
       setActiveTab(currentQuestion?.defaultTab || "qa");
@@ -458,6 +487,17 @@ export default function EMSKeyQuestions({
       ) {
         handleCodeSend(notBreathingCode.code, true, true);
       }
+    } else if (emsCase.patientConsciousness === "no") {
+      // Find the code in the protocol that has the property notConscious
+      const notConsciousCode = protocol.determinants
+        .flatMap((det) => det.codes)
+        .find((code) => code.notConscious);
+      if (
+        notConsciousCode &&
+        higherCode(notConsciousCode.code, currentCode) === notConsciousCode.code
+      ) {
+        handleCodeSend(notConsciousCode.code, true, true);
+      }
     } else if (
       (emsCase.patientConsciousness === "no" &&
         emsCase.patientBreathing === "unknown") ||
@@ -472,17 +512,6 @@ export default function EMSKeyQuestions({
           uncertainBreathingCode.code
       ) {
         handleCodeSend(uncertainBreathingCode.code, true, true);
-      }
-    } else if (emsCase.patientConsciousness === "no") {
-      // Find the code in the protocol that has the property notConscious
-      const notConsciousCode = protocol.determinants
-        .flatMap((det) => det.codes)
-        .find((code) => code.notConscious);
-      if (
-        notConsciousCode &&
-        higherCode(notConsciousCode.code, currentCode) === notConsciousCode.code
-      ) {
-        handleCodeSend(notConsciousCode.code, true, true);
       }
     } else if (emsCase.numPatients > 1) {
       // Find the code in the protocol that has the property multiplePatients
@@ -829,6 +858,15 @@ export default function EMSKeyQuestions({
                 }))
             : []
         }
+      />
+
+      <StrokeTestModal
+        isOpen={isStrokeTestModalOpen}
+        onClose={handleStrokeTestModalClose}
+        onConfirm={handleStrokeTestModalConfirm}
+        title="Stroke Test"
+        instruction=""
+        patientGender={emsCase.patientGender}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-export type Location = {
+export type ILocation = {
   id: number;
   name: string;
   postal: string;
