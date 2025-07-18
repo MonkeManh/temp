@@ -34,7 +34,8 @@ export const PSYCH: IEMSComplaint = {
           display: "Violent",
           questionDisplay: "**pronoun** is violent",
           updateSuffix: "V",
-          continue: true
+          setSceneSecure: false,
+          continue: true,
         },
         {
           answer: "Unknown",
@@ -67,6 +68,7 @@ export const PSYCH: IEMSComplaint = {
               return { subCode: "W" }
             }
           },
+          setSceneSecure: false,
           continue: true
         },
         {
@@ -238,6 +240,7 @@ export const PSYCH: IEMSComplaint = {
               return { code: "25A02" }
             }
           },
+          setSceneSecure: false,
           continue: true,
         },
         {
@@ -245,12 +248,14 @@ export const PSYCH: IEMSComplaint = {
           display: "Threatening suicide",
           questionDisplay: "**pronoun** is threatening to kill themselves",
           updateCode: "25B03",
+          setSceneSecure: false,
           continue: true,
         },
         {
           answer: "Unknown",
           display: "Unk if suicidal",
           questionDisplay: "Unk if **pronoun** is thinking or expressing thoughts about killing themselves",
+          setSceneSecure: false,
           continue: true,
         }
       ]
@@ -315,6 +320,7 @@ export const PSYCH: IEMSComplaint = {
           answer: "Yes",
           display: "Thinking of self-harm",
           questionDisplay: "**pronoun** is thinking about injuring themselves",
+          setSceneSecure: false,
           continue: true,
         },
         {
@@ -322,6 +328,7 @@ export const PSYCH: IEMSComplaint = {
           display: "Threatening to jump",
           questionDisplay: "**pronoun** is threatening to injure themselves",
           updateCode: "25B04",
+          setSceneSecure: false,
           continue: true,
         },
         {

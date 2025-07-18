@@ -636,7 +636,7 @@ export default function CreateCallEMS() {
                   : ""
               }`}
             >
-              {emsCase?.currentCode &&
+              {emsCase?.currentCode && emsCase.hasBeenSent &&
                 emsCase.currentCode !== "DEFAULT_CODE" &&
                 `${parseInt(
                   emsCase.currentCode.slice(0, 2),

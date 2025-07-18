@@ -3,7 +3,7 @@ import * as AI from "../additionalInformation";
 
 export const UNCO_FAINTING: IEMSComplaint = {
   protocol: 31,
-  name: "Unconsciousness / Fainting (Near)",
+  name: "Unconscious / Fainting (Near)",
   shortName: "Unco/Fainting",
   description: <></>,
   services: [

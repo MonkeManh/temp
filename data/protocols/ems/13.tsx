@@ -258,9 +258,6 @@ export const DIABETIC_PROBLEM: IEMSComplaint = {
 
     {
       text: <p className="text-red-400">What <b className="font-bold">type</b> of <b className="font-bold">weapon</b>?</p>,
-      firstPersonText: (
-        <p className="text-red-400">What <b className="font-bold">type</b> of <b className="font-bold">weapon</b>?</p>
-      ),
       questionType: "select",
       preRenderInstructions: (patient, answers) => {
         const lastAnswer = answers[answers.length - 1]?.answer;

@@ -27,7 +27,7 @@ export const INACCESSIBLE_ENTRAPMENT: IEMSComplaint = {
         },
         {
           answer: "Yes",
-          display: "Yes chems/hazmat involved",
+          display: "Chems/hazmat involved",
           questionDisplay: "There are hazardous materials involved in this incident",
           gotoProtocol: 8
         },

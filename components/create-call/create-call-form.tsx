@@ -2,6 +2,8 @@
 
 import { getPostal, postalData } from "@/data/locations/postals";
 import { IPostal } from "@/models/interfaces/locations/IPostal";
+import { getLocation, CIDSData } from "@/data/locations/CIDS";
+import { ILocation } from "@/models/interfaces/locations/ICIDS";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -97,6 +99,8 @@ export default function CreateCallForm() {
     callerStatement: "",
     service: "Police",
   });
+  
+  const [hasBldgSelected, setHasBldgSelected] = useState<boolean>(false);
   const [settings, setSettings] = useState<ISettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -106,6 +110,10 @@ export default function CreateCallForm() {
     undefined
   );
   const [selectedStreet, setSelectedStreet] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<ILocation | undefined>(
+    undefined
+  );
+  const [isSelectingLocation, setIsSelectingLocation] = useState<boolean>(false);
   const postalRef = useRef<HTMLButtonElement>(null);
   const streetRef = useRef<HTMLButtonElement>(null);
   const buildingInfoRef = useRef<HTMLInputElement>(null);
@@ -114,11 +122,20 @@ export default function CreateCallForm() {
   const localCallerRef = useRef<HTMLButtonElement>(null);
   const callerStatementRef = useRef<HTMLTextAreaElement>(null);
   const createCallRef = useRef<HTMLButtonElement>(null);
+  const locationRef = useRef<HTMLButtonElement>(null);
   const postalOptions = useMemo(
     () =>
       postalData.map((postal) => ({
         value: postal.postal,
         label: postal.postal,
+      })),
+    []
+  );
+  const locationOptions = useMemo(
+    () =>
+      CIDSData.map((location) => ({
+        value: location.name,
+        label: location.name,
       })),
     []
   );
@@ -148,11 +165,17 @@ export default function CreateCallForm() {
     if (!postalObj) return;
     form.setValue("postal", postal);
     setSelectedPostal(postalObj);
+    
+    // Clear location when postal is manually changed
+    if (selectedLocation) {
+      setSelectedLocation(undefined);
+    }
 
     // Clear previous values of streets
     form.setValue("street", "");
     form.setValue("crossStreet1", "");
     form.setValue("crossStreet2", "");
+    setSelectedStreet("");
 
     if (!postalObj.streets.autoFill || !postalObj.streets.mainStreet) return;
 
@@ -165,6 +188,7 @@ export default function CreateCallForm() {
       "crossStreet2",
       postalObj.streets.crossStreet2 || "Not Found"
     );
+    setSelectedStreet(postalObj.streets.mainStreet);
     buildingInfoRef.current?.focus();
   };
 
@@ -222,9 +246,31 @@ export default function CreateCallForm() {
       callerStatement: parsed.callerStatement || "",
       service: parsed.service || "Police",
     };
+
+    // Check if buildingInfo matches a location in CIDSData
+    if (values.buildingInfo) {
+      const matchedLocation = CIDSData.find(location => location.name === values.buildingInfo);
+      if (matchedLocation) {
+        setSelectedLocation(matchedLocation);
+        // Override the values with location data
+        values.postal = matchedLocation.postal;
+        values.street = matchedLocation.mainStreet;
+        values.crossStreet1 = matchedLocation.crossStreet1;
+        values.crossStreet2 = matchedLocation.crossStreet2;
+        
+        // Set the selected postal as well
+        const postalObj = getPostal(matchedLocation.postal);
+        if (postalObj) {
+          setSelectedPostal(postalObj);
+        }
+        setSelectedStreet(matchedLocation.mainStreet);
+      }
+    }
+
     setInitialValues(values);
     setSelectedPostal(getPostal(values.postal));
     setSelectedStreet(values.street);
+    
     form.reset(values);
     setIsFormValid(validateForm(values));
     setIsLoading(false);
@@ -257,12 +303,54 @@ export default function CreateCallForm() {
     }
   }, [selectedPostal, selectedStreet, form]);
 
+  // Handle when a location is selected to ensure cross streets are updated
+  useEffect(() => {
+    if (selectedLocation) {
+      // Force form to re-render with the location's cross streets
+      form.setValue("crossStreet1", selectedLocation.crossStreet1);
+      form.setValue("crossStreet2", selectedLocation.crossStreet2);
+    }
+  }, [selectedLocation, form]);
+
+  // Handle location selection
+  const handleLocationChange = (locationName: string): void => {
+    const locationObj = getLocation(locationName);
+    if (!locationObj) return;
+    
+    setIsSelectingLocation(true);
+    setSelectedLocation(locationObj);
+    
+    // Set form values from location data
+    form.setValue("postal", locationObj.postal);
+    form.setValue("street", locationObj.mainStreet);
+    form.setValue("crossStreet1", locationObj.crossStreet1);
+    form.setValue("crossStreet2", locationObj.crossStreet2);
+    form.setValue("buildingInfo", locationObj.name);
+    
+    // Set the selected postal and street as well
+    const postalObj = getPostal(locationObj.postal);
+    if (postalObj) {
+      setSelectedPostal(postalObj);
+    }
+    setSelectedStreet(locationObj.mainStreet);
+    
+    // Focus on caller name field after a brief delay to ensure state is updated
+    setTimeout(() => {
+      setIsSelectingLocation(false);
+      callerNameRef.current?.focus();
+    }, 0);
+  };
+
   //   Handle form changes and validation
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === "postal") {
         const postalCode = value.postal;
         if (!postalCode) return;
+
+        // Don't process postal changes if we're in the middle of selecting a location
+        // This prevents interference when location selection sets postal code
+        if (selectedLocation || isSelectingLocation) return;
 
         const postalObj = getPostal(postalCode);
         form.setValue("street", "");
@@ -281,13 +369,14 @@ export default function CreateCallForm() {
           );
           buildingInfoRef.current?.focus();
         } else {
+          // If no auto-fill, go to street selection
           streetRef.current?.click();
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, selectedLocation, isSelectingLocation]);
 
   useEffect(() => {
     const subscription = form.watch((data) => {
@@ -328,6 +417,62 @@ export default function CreateCallForm() {
                 className="space-y-6"
               >
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Location Selector - shows only when advanced mode is enabled */}
+                  {settings.advancedMode && (
+                    <div className="md:col-span-2">
+                      <FormItem>
+                        <FormLabel>Location (Optional)</FormLabel>
+                        <FormControl>
+                          {!selectedLocation ? (
+                            <Combobox
+                              options={locationOptions}
+                              value=""
+                              onValueChange={handleLocationChange}
+                              placeholder="Select a known location"
+                              searchPlaceholder="Search locations..."
+                              ref={locationRef}
+                              autoFocus
+                            />
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <Input
+                                value={selectedLocation.name}
+                                disabled
+                                className="flex-1"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedLocation(undefined);
+                                  setSelectedPostal(undefined);
+                                  form.setValue("postal", "");
+                                  form.setValue("street", "");
+                                  form.setValue("crossStreet1", "");
+                                  form.setValue("crossStreet2", "");
+                                  form.setValue("buildingInfo", "");
+                                  // Clear the streets when location is cleared
+                                  setSelectedStreet("");
+                                  // Focus back on postal field
+                                  postalRef.current?.focus();
+                                }}
+                              >
+                                Clear Location
+                              </Button>
+                            </div>
+                          )}
+                        </FormControl>
+                        <FormDescription>
+                          {!selectedLocation 
+                            ? "Select a pre-configured location or enter postal code below"
+                            : "Location selected - postal and street information auto-filled"
+                          }
+                        </FormDescription>
+                      </FormItem>
+                    </div>
+                  )}
+
                   <FormField
                     control={form.control}
                     name="postal"
@@ -338,7 +483,7 @@ export default function CreateCallForm() {
                           <Combobox
                             options={postalOptions}
                             value={field.value ?? ""}
-                            autoFocus={!initialValues.postal}
+                            autoFocus={!settings.advancedMode && !initialValues.postal}
                             onValueChange={handlePostalChange}
                             placeholder="Select postal code"
                             searchPlaceholder="Search postal codes..."
@@ -358,8 +503,15 @@ export default function CreateCallForm() {
                       let availableOptions: { value: string; label: string }[] =
                         [];
 
-                      // Check if the postal code has auto-filled streets
-                      if (
+                      // If location is selected, use location's main street
+                      if (selectedLocation) {
+                        availableOptions = [
+                          {
+                            value: selectedLocation.mainStreet,
+                            label: selectedLocation.mainStreet,
+                          },
+                        ];
+                      } else if (
                         currentPostal?.streets?.autoFill &&
                         currentPostal.streets.mainStreet
                       ) {
@@ -403,7 +555,7 @@ export default function CreateCallForm() {
                               placeholder="Select street"
                               searchPlaceholder="Search streets..."
                               disabled={Boolean(
-                                currentPostal?.streets?.autoFill
+                                currentPostal?.streets?.autoFill || selectedLocation
                               )}
                               ref={streetRef}
                             />
@@ -423,7 +575,15 @@ export default function CreateCallForm() {
                       let availableOptions: { value: string; label: string }[] =
                         [];
 
-                      if (
+                      // If location is selected, use location's cross street
+                      if (selectedLocation) {
+                        availableOptions = [
+                          {
+                            value: selectedLocation.crossStreet1,
+                            label: selectedLocation.crossStreet1,
+                          },
+                        ];
+                      } else if (
                         currentPostal?.streets?.autoFill &&
                         currentPostal.streets.crossStreet1
                       ) {
@@ -459,7 +619,8 @@ export default function CreateCallForm() {
                       const isDisabled = Boolean(
                         currentPostal?.streets?.autoFill ||
                           (currentPostal?.streets?.availableRoads &&
-                            currentStreet)
+                            currentStreet) ||
+                          selectedLocation
                       );
 
                       return (
@@ -490,7 +651,15 @@ export default function CreateCallForm() {
                       let availableOptions: { value: string; label: string }[] =
                         [];
 
-                      if (
+                      // If location is selected, use location's cross street
+                      if (selectedLocation) {
+                        availableOptions = [
+                          {
+                            value: selectedLocation.crossStreet2,
+                            label: selectedLocation.crossStreet2,
+                          },
+                        ];
+                      } else if (
                         currentPostal?.streets?.autoFill &&
                         currentPostal.streets.crossStreet2
                       ) {
@@ -526,7 +695,8 @@ export default function CreateCallForm() {
                       const isDisabled = Boolean(
                         currentPostal?.streets?.autoFill ||
                           (currentPostal?.streets?.availableRoads &&
-                            currentStreet)
+                            currentStreet) ||
+                          selectedLocation
                       );
 
                       return (
@@ -555,11 +725,22 @@ export default function CreateCallForm() {
                       <FormItem className="md:col-span-2">
                         <FormLabel>Location Info</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Apartment, suite, unit, etc."
-                            {...field}
-                            ref={buildingInfoRef}
-                          />
+                          {form.getValues("postal") && !hasBldgSelected ? (
+                            <Input
+                              placeholder="Apartment, suite, unit, etc."
+                              {...field}
+                              ref={buildingInfoRef}
+                            />
+                          ) : (
+                            <Combobox
+                              options={[]}
+                              value={field.value || ""}
+                              onValueChange={field.onChange}
+                              placeholder="Select postal code first"
+                              searchPlaceholder="Select postal code first"
+                              disabled
+                            />
+                          )}
                         </FormControl>
                         <FormMessage />
                       </FormItem>

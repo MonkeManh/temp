@@ -79,7 +79,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         {
           answer: "Unknown",
           display: "Unk when injury occurred",
-          questionDisplay: "It is unknown when the incident happened",
+          questionDisplay: "Unknown when the incident happened",
           continue: true,
           setSceneSecure: false,
         },
@@ -125,7 +125,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
           answer: "Unknown",
           display: "Unk if obvious death",
           questionDisplay:
-            "It is unknown if the caller thinks the patient is beyond help",
+            "Unknown if the caller thinks the patient is beyond help",
           continue: true,
         },
       ],
@@ -138,6 +138,12 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
           <b className="font-bold">still nearby</b>?
         </p>
       ),
+      preRenderInstructions: (_patient, answers) => {
+        const typeOfIncident = answers[0]?.answer;
+        return typeOfIncident === "Shooting" || typeOfIncident === "Stabbing";
+      },
+      preRenderLogic: "the incident involves shooting or stabbing",
+      preRenderDependencies: ["answers"],
       questionType: "select",
       answers: [
         {
@@ -175,8 +181,8 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         },
         {
           answer: "Unknown",
-          display: "Unk if assailant still nearby",
-          questionDisplay: "It is unknown if the assailant is still nearby",
+          display: "Unk where assailant is",
+          questionDisplay: "Unknown where the assailant is",
           continue: true,
         },
       ],
@@ -202,14 +208,14 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         {
           answer: "Unknown",
           display: "Unk if SERIOUS bleeding",
-          questionDisplay: "It is unknown if there is SERIOUS bleeding",
+          questionDisplay: "Unknown if there is SERIOUS bleeding",
           continue: true,
         }
       ]
     },
 
     {
-      text: <p>Is the <b className="font-bold">object</b> (knife) <b className="font-bold">still impaled</b>?</p>,
+      text: <p>Is the <b className="font-bold">object</b> (or knife) <b className="font-bold">still impaled</b>?</p>,
       questionType: "select",
       preRenderInstructions: (_patient, answers) => {
         const firstAnswer = answers[0]?.answer;
@@ -234,7 +240,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         {
           answer: "Unknown",
           display: "Unk if object still impaled",
-          questionDisplay: "It is unknown if the object is still impaled",
+          questionDisplay: "Unknown if the object is still impaled",
           continue: true,
         }
       ]
@@ -274,7 +280,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
           answer: "Unknown",
           display: "Unk if responding nlly",
           questionDisplay:
-            "Unk if **pronoun** is completely alert (responding appropriately)",
+            "Unknown if **pronoun** is completely alert (responding appropriately)",
           continue: true,
         },
       ],
@@ -301,7 +307,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         {
           answer: "Unknown",
           display: "Unk what part of body injured",
-          questionDisplay: "It is unknown what part of the body was injured",
+          questionDisplay: "Unknown what part of the body was injured",
           continue: true,
           updateCode: "27B04",
         }
@@ -375,7 +381,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
         {
           answer: "Unknown",
           display: "Unk if mult wounds",
-          questionDisplay: "It is unknown if there are multiple wounds",
+          questionDisplay: "Unknown if there are multiple wounds",
           continue: true,
         }
       ]

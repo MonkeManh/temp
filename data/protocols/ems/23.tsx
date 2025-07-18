@@ -42,7 +42,7 @@ export const OVERDOSE_POISONING: IEMSComplaint = {
         },
         {
           answer: "Unknown",
-          display: "Unknown if accidental or intentional",
+          display: "Unk if accidental or intentional",
           questionDisplay: "It is unknown if this was an accidental or intentional overdose/poisoning",
           continue: true,
         }
@@ -162,7 +162,7 @@ export const OVERDOSE_POISONING: IEMSComplaint = {
     },
 
     {
-      text: <p>Is **pronoun <b className="font-bold">changing color</b>?</p>,
+      text: <p>Is **pronoun** <b className="font-bold">changing color</b>?</p>,
       questionType: "select",
       preRenderInstructions: (patient) => {
         return patient.patientProximity !== "first";

@@ -61,22 +61,21 @@ const getHelpContent = (field: string) => {
             <span className="text-blue-500">
               Location refers to a specific structure or building, typically a{" "}
               <b className="font-bold">business</b> or{" "}
-              <b className="font-bold">well known residence</b>. The location
-              select menu shows a list of recorded businesses/locations from
-              CIDS.
-            </span>
-          </p>
-          <p>
-            <span className="text-blue-500">
-              CIDS stands for{" "}
-              <b className="font-bold">Critical Information Dispatch System</b>.
-              This system collects pertinant information about businesses and
-              locations that may be useful to first responders. This information
-              can include hazards, pre-arrival recommendations, and other
-              critical details.
+              <b className="font-bold">well known residence</b>.
             </span>
           </p>
         </div>
+      ),
+    },
+    displayCIDS: {
+      title: "Display CIDS",
+      description: (
+        <p className="text-blue-500">
+          Indicate whether the location being reported has a CIDS display. A
+          CIDS display is a visual representation of critical information about
+          the location, such as hazards, pre-arrival recommendations, and other
+          important details that can assist first responders.
+        </p>
       ),
     },
     boxType: {
@@ -152,14 +151,21 @@ export default function FireCaseEntry({
   handleCaseRestart,
 }: IEMSCaseEntryProps) {
   const [formData, setFormData] = useState<IFireCaseEntry>(() => {
-    if (initialData) {
-      return initialData;
-    }
+
+    
+    // Check if buildingInfo matches a location in CIDSData
+    const matchingLocation = callDetails?.buildingInfo 
+      ? CIDSData.find((c) => c.name === callDetails.buildingInfo)
+      : null;
+
+    console.log("Matching Location:", matchingLocation);
+    
     return {
       callLocation: `${callDetails?.postal || ""} ${callDetails?.street || ""}`,
       callerNumber: callDetails?.callerNumber || "",
       callerStatement: callDetails?.callerStatement || "",
-      location: "",
+      location: matchingLocation ? matchingLocation.name : "",
+      displayCIDS: "",
       boxType: "",
       chiefComplaint: "",
       currentCode: "DEFAULT_CODE",
@@ -179,6 +185,7 @@ export default function FireCaseEntry({
   const callerStatmentRef = useRef<HTMLInputElement>(null);
   const locationRef = useRef<HTMLButtonElement>(null);
   const boxTypeRef = useRef<HTMLButtonElement>(null);
+  const displayCIDSRef = useRef<HTMLButtonElement>(null);
   const chiefComplaintRef = useRef<HTMLButtonElement>(null);
   const continueRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -192,6 +199,10 @@ export default function FireCaseEntry({
       location: {
         normal: "The location is:",
         focused: "What is the exact location? (Address, Business Name, etc.)",
+      },
+      displayCIDS: {
+        normal: "Display CIDS?",
+        focused: "Should responders expect a CIDS display?",
       },
       boxType: {
         normal: "The box type is:",
@@ -253,9 +264,15 @@ export default function FireCaseEntry({
 
   useEffect(() => {
     if (formData.boxType && !isRestoring) {
-      setTimeout(() => chiefComplaintRef.current?.click(), 100);
+      setTimeout(() => displayCIDSRef.current?.click(), 100);
     }
   }, [formData.boxType]);
+
+  useEffect(() => {
+    if (formData.displayCIDS && !isRestoring) {
+      setTimeout(() => chiefComplaintRef.current?.click(), 100);
+    }
+  }, [formData.displayCIDS]);
 
   useEffect(() => {
     if (formData.chiefComplaint && !isRestoring) {
@@ -264,6 +281,9 @@ export default function FireCaseEntry({
   }, [formData.chiefComplaint]);
 
   const canEditLocation = !settings.strictEntry || !!formData.callerStatement;
+  const canEditCIDS =
+    !settings.strictEntry ||
+    (!!formData.callerStatement && !!formData.location);
   const canEditboxType = !settings.strictEntry || !!formData.callerStatement;
   const canEditChiefComplaint =
     !settings.strictEntry || !!formData.callerStatement;
@@ -276,6 +296,11 @@ export default function FireCaseEntry({
           <TooltipTrigger asChild>
             <Button
               onClick={() => {
+                // Check if buildingInfo matches a location in CIDSData
+                const matchingLocation = callDetails?.buildingInfo 
+                  ? CIDSData.find((c) => c.name === callDetails.buildingInfo)
+                  : null;
+                
                 // Clear all of the current form data
                 setFormData({
                   callLocation: `${callDetails?.postal || ""} ${
@@ -283,7 +308,8 @@ export default function FireCaseEntry({
                   }`,
                   callerNumber: callDetails?.callerNumber || "",
                   callerStatement: callDetails?.callerStatement || "",
-                  location: "",
+                  location: matchingLocation ? matchingLocation.name : "",
+                  displayCIDS: "",
                   boxType: "",
                   chiefComplaint: "",
                   currentCode: "DEFAULT_CODE",
@@ -410,8 +436,8 @@ export default function FireCaseEntry({
           </div>
         </div>
 
-        <div className="grid grid-cols-5 gap-4">
-          <div className="col-span-2 flex items-center justify-end">
+        <div className="grid grid-cols-5 gap-4 items-start" style={{ gridTemplateRows: 'auto auto' }}>
+          <div className="col-span-2 flex items-center justify-end h-10">
             <Label
               className={`text-sm ${
                 focusedInput === "boxType" ? "font-bold" : "font-normal"
@@ -420,6 +446,7 @@ export default function FireCaseEntry({
               {getLabelText("boxType", focusedInput === "boxType")}
             </Label>
           </div>
+          
           <div className="col-span-1">
             <Select
               value={formData.boxType}
@@ -442,6 +469,7 @@ export default function FireCaseEntry({
               </SelectContent>
             </Select>
           </div>
+          
           <div className="col-span-2 row-span-2">
             <Card className="h-full">
               <CardHeader>
@@ -455,6 +483,40 @@ export default function FireCaseEntry({
                 </CardDescription>
               </CardContent>
             </Card>
+          </div>
+
+              
+          <div className="col-span-2 flex items-center justify-end h-10">
+            <Label
+              className={`text-sm ${
+                focusedInput === "displayCIDS" ? "font-bold" : "font-normal"
+              }`}
+            >
+              {getLabelText("displayCIDS", focusedInput === "displayCIDS")}
+            </Label>
+          </div>
+          <div className="col-span-1">
+            <Select
+              value={formData.displayCIDS}
+              onValueChange={(value) => handleInputChange("displayCIDS", value)}
+              onOpenChange={(open) => {
+                if (open) {
+                  setFocusedInput("displayCIDS");
+                  setFocusedField("displayCIDS");
+                } else {
+                  setFocusedInput("");
+                }
+              }}
+              disabled={!canEditCIDS}
+            >
+              <SelectTrigger ref={displayCIDSRef} className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="yes">Yes</SelectItem>
+                <SelectItem value="no">No</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

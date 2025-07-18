@@ -488,6 +488,7 @@ export default function CreateCallFire() {
   // When the protocol is changed from key questions
   const switchProtocol = useCallback(
     (protocolNum: number) => {
+      console.log("Switching protocol to", protocolNum);
       if (!protocol) return;
 
       const newProtocol = fireProtocols.find((p) => p.protocol === protocolNum);
@@ -532,6 +533,10 @@ export default function CreateCallFire() {
         setCallbackOnSummary(false);
       } else if (navigateTo === "police") {
         alert("This feature is not yet implemented.");
+      } else if(navigateTo === "ems") {
+        handleClearCase();
+        toast.success("Switching to EMS case entry.");
+        router.push("/create-call/ems");
       } else {
         if (navigateTo === "pdi-cei" && settings.giveInstructions === false) {
           handleCompleteCase();
@@ -574,6 +579,7 @@ export default function CreateCallFire() {
       callerNumber: callDetails?.callerNumber || "",
       callerStatement: callDetails?.callerStatement || "",
       location: callDetails?.buildingInfo || "",
+      displayCIDS: "",
       boxType: "",
       chiefComplaint: "",
       currentCode: "DEFAULT_CODE",
@@ -594,6 +600,12 @@ export default function CreateCallFire() {
     localStorage.removeItem("FIRE_CASE");
     window.dispatchEvent(new CustomEvent("timer-reset"));
     toast.success("Re-started Fire case successfully!");
+  }, []);
+
+  const handleClearCase = useCallback(() => {
+    localStorage.removeItem("FIRE_CASE");
+    localStorage.setItem("CASE_TIME", "0");
+    window.dispatchEvent(new CustomEvent("timer-reset"));
   }, []);
 
   return (
@@ -626,7 +638,7 @@ export default function CreateCallFire() {
                   : ""
               }`}
             >
-              {fireCase?.currentCode &&
+              {fireCase?.currentCode && fireCase.hasBeenSent &&
                 fireCase.currentCode !== "DEFAULT_CODE" &&
                 `${parseInt(
                   fireCase.currentCode.slice(0, 2),

@@ -186,13 +186,10 @@ export function StrokeTestModal({
         <DialogHeader>
           <DialogTitle>
             {currentTestIndex < strokeTests.length 
-              ? `${getTestTitle(currentTest.type)} (${currentTestIndex + 1}/${strokeTests.length})`
+              ? `Stroke Test (${currentTestIndex + 1}/${strokeTests.length})`
               : `Test Overview (4/4)`
             }
           </DialogTitle>
-          <div className="text-sm text-muted-foreground">
-            Scoring: 0 = Normal, 1 = Mild abnormality, 2 = Severe abnormality (Max total: 6)
-          </div>
         </DialogHeader>
         
         <div className="space-y-6">
@@ -256,7 +253,6 @@ export function StrokeTestModal({
                       />
                       <div className="flex-1">
                         <span className="text-sm">{option.label}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">(Score: {option.score})</span>
                       </div>
                     </label>
                   ))}

@@ -458,6 +458,7 @@ export default function FireKeyQuestions({
               <SelectTrigger
                 ref={selectRef}
                 className="w-full col-span-2 p-4 py-4"
+                autoFocus
               >
                 <SelectValue />
               </SelectTrigger>

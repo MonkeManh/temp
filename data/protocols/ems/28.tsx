@@ -38,7 +38,6 @@ export const STROKE: IEMSComplaint = {
             "**pronoun** is NOT completely alert (not responding appropriately)",
           updateCode: "28C01",
           continue: true,
-          send: true,
         },
         {
           answer: "Unknown",
@@ -73,7 +72,6 @@ export const STROKE: IEMSComplaint = {
           questionDisplay: "**pronoun** is NOT breathing normally",
           updateCode: "28C02",
           continue: true,
-          send: true,
         },
         {
           answer: "Unknown",
@@ -94,7 +92,6 @@ export const STROKE: IEMSComplaint = {
           questionDisplay: "**pronoun** has sudden speech problems",
           updateCode: "28C03",
           continue: true,
-          send: true,
         },
         {
           answer: "Sudden weakness or numbness",
@@ -102,7 +99,6 @@ export const STROKE: IEMSComplaint = {
           questionDisplay: "**pronoun** has sudden weakness or numbness",
           updateCode: "28C04",
           continue: true,
-          send: true,
         },
         {
           answer: "Sudden paralysis or facial droop (one side)",
@@ -111,7 +107,6 @@ export const STROKE: IEMSComplaint = {
             "**pronoun** has sudden paralysis or facial droop (one side)",
           updateCode: "28C05",
           continue: true,
-          send: true,
         },
         {
           answer: "Sudden loss of balance or coordination",
@@ -120,7 +115,6 @@ export const STROKE: IEMSComplaint = {
             "**pronoun** has sudden loss of balance or coordination",
           updateCode: "28C06",
           continue: true,
-          send: true,
         },
         {
           answer: "Sudden vision problems",
@@ -128,7 +122,6 @@ export const STROKE: IEMSComplaint = {
           questionDisplay: "**pronoun** has sudden vision problems",
           updateCode: "28C07",
           continue: true,
-          send: true,
         },
         {
           answer: "Sudden onset of severe headache",
@@ -137,7 +130,6 @@ export const STROKE: IEMSComplaint = {
             "**pronoun** has sudden onset of severe headache",
           updateCode: "28C08",
           continue: true,
-          send: true,
         },
         {
           answer: 'Only "stroke" mentioned',
@@ -395,7 +387,7 @@ export const STROKE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "Less than 4.5 hours ago:";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "Less than 4.5 hours ago:";
           },
         },
         {
@@ -408,7 +400,7 @@ export const STROKE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "More than 4.5 hours ago:";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "More than 4.5 hours ago:";
           },
         },
         {
@@ -421,7 +413,7 @@ export const STROKE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "Unknown when symptoms started";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "Unknown when symptoms started";
           },
         }
       ]

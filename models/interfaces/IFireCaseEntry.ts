@@ -5,6 +5,7 @@ export interface IFireCaseEntry {
     callerNumber: string;
     callerStatement: string;
     location: string;
+    displayCIDS: string;
     boxType: string;
     chiefComplaint: string;
     currentCode: string;

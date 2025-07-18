@@ -13,7 +13,7 @@ export const DEFAULT_SETTINGS: ISettings = {
   quickSend: true,
   multiService: false,
   giveInstructions: false,
-  strictEntry: false,
+  strictEntry: true,
 }
 
 export default function getSettings(): ISettings {

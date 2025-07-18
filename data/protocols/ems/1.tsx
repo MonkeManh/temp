@@ -3,7 +3,7 @@ import * as AI from "../additionalInformation";
 
 export const ABDO_PAIN: IEMSComplaint = {
   protocol: 1,
-  name: "Abdominal Pain/Problems",
+  name: "Abdominal Pain / Problems",
   shortName: "Abdo Pain",
   description: (
     <>
@@ -219,8 +219,8 @@ export const ABDO_PAIN: IEMSComplaint = {
       preRenderInstructions: (patient, answers) => {
         const { patientAge: age, patientProximity: proximity } = patient;
         if (proximity !== "first" || age < 50) return false;
-        const lastAnswer = answers[answers.length - 1].answer;
-        return lastAnswer === "Yes";
+        const hasColorChanged = answers?.find((a) => a.question === "Has your skin changed color?")?.answer;
+        return hasColorChanged === "Yes";
       },
       preRenderDependencies: ["proximity", "answers"],
       preRenderLogic:

@@ -3,7 +3,7 @@ import * as AI from "../additionalInformation";
 
 export const ANIMAL_BITE: IEMSComplaint = {
   protocol: 3,
-  name: "Animal Bites/Attacks",
+  name: "Animal Bites / Attacks",
   shortName: "Animal Bite",
   description: (
     <>

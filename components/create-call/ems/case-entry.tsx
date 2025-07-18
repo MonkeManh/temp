@@ -52,7 +52,7 @@ const getHelpContent = (field: string) => {
           <b>breathing</b> or <b>coughing</b> at all?" (You go check and tell me
           what you find.){" "}
           <span className="text-blue-500">Then tell the caller:</span> "
-          <b>Do not slap</b>
+          <b>Do not slap</b>{" "}
           her/him on the back."
           <br />
           <br />

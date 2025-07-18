@@ -93,21 +93,21 @@ export default function FireCaseSummary({
         .join(", ") || "No Response Units";
 
     const text = [
-      `Code: ${fireCase.currentCode}${
+      `Code: ${fireCase.currentCode !== "DEFAULT_CODE" ? fireCase.currentCode : "Pending"}${
         subCodeMatch?.suffix && fireCase.currentSuffix !== "DEFAULT_SUFFIX"
           ? `${fireCase.currentSuffix}`
           : ""
       }`,
       location,
-      crossStreets,
       fireCase.boxType
         ? `Box: ${fireCase.boxType} Box ${
             getPostal(callDetails.postal)?.fireBox
           }`
         : null,
+      crossStreets,
       `Recc: ${responseUnits}`,
       `Disp: Pending`,
-      `Problem: ${protocol.shortName} - ${codeMatch?.text}${
+      `Problem: ${protocol.shortName} ${codeMatch?.text !== undefined ? `- ${codeMatch.text}` : ""}${
         fireCase.currentSuffix
           ? `${subCodeMatch?.text ? ` - ${subCodeMatch?.text}` : ""}`
           : ""
@@ -118,7 +118,7 @@ export default function FireCaseSummary({
       "Scene Com: Not Established",
       "Channel: Fire Response",
       "Staging Location: N/A",
-      CIDS ? `CIDS: ${CIDS.cids} ` : false,
+      CIDS && fireCase.displayCIDS === "yes" ? `CIDS: ${CIDS.cids} ` : false,
       "==============================",
       callerInfo,
       `ProQA Information:`,

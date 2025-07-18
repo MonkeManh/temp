@@ -2706,6 +2706,7 @@ export const firePlans: IResponsePlan[] = [
         quantity: 1,
       },
     ],
+    sendEMS: true,
   },
   {
     id: 157,

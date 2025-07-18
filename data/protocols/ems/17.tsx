@@ -282,6 +282,7 @@ export const FALLS: IEMSComplaint = {
           display: "Breathing nlly",
           questionDisplay: "**pronoun** is breathing normally",
           continue: true,
+          updateCode: "17B01",
           preRenderInstructions: (patient) => {
             return patient.patientProximity !== "first";
           },

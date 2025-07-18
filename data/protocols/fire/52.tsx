@@ -257,11 +257,20 @@ export const ALARMS: IFireComplaint = {
       questionType: "select",
       answers: [
         {
+          answer: "HIGH LIFE RISK",
+          display: "HIGH LIFE RISK bldg",
+          questionDisplay: "The building involved is a HIGH LIFE RISK bldg",
+          updateCode: "52C01",
+          continue: true,
+          send: true
+        },
+        {
           answer: "Residential (single-family)",
           display: "Residential (single-family) bldg",
           questionDisplay: "The building involved is a residential (single-family) bldg",
           updateCode: "52B01",
           continue: true,
+          send: true
         },
         {
           answer: "Commercial/industrial",
@@ -269,6 +278,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a commercial/industrial bldg",
           updateCode: "52C03",
           continue: true,
+          send: true
         },
         {
           answer: "Residential (multi-family)",
@@ -276,6 +286,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a residential (multi-family) bldg",
           updateCode: "52C04",
           continue: true,
+          send: true
         },
         {
           answer: "Non-dwelling building/structure (shed, garage):",
@@ -284,6 +295,7 @@ export const ALARMS: IFireComplaint = {
           updateCode: "52B02",
           continue: true,
           input: true,
+          send: true
         },
         {
           answer: "HIGH RISE",
@@ -291,6 +303,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a HIGH RISE bldg",
           updateCode: "52C02",
           continue: true,
+          send: true
         },
         {
           answer: "Mixed-occupancy",
@@ -298,6 +311,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a mixed-occupancy bldg",
           updateCode: "52C05",
           continue: true,
+          send: true
         },
         {
           answer: "Mobile home",
@@ -305,6 +319,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a mobile home",
           updateCode: "52B03",
           continue: true,
+          send: true
         },
         {
           answer: "House trailer",
@@ -319,6 +334,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building involved is a portable office",
           updateCode: "52B03",
           continue: true,
+          send: true
         },
         {
           answer: "Other:",
@@ -327,6 +343,7 @@ export const ALARMS: IFireComplaint = {
           updateCode: "52B04",
           continue: true,
           input: true,
+          send: true
         },
         {
           answer: "Unknown",
@@ -334,35 +351,7 @@ export const ALARMS: IFireComplaint = {
           questionDisplay: "The building type is unk",
           updateCode: "52B04",
           continue: true,
-        }
-      ]
-    },
-
-    {
-      text: <p className="text-blue-400">Is there a <b className="font-bold">HIGH LIFE RISK</b>?</p>,
-      questionType: "select",
-      answers: [
-        {
-          answer: "No",
-          display: "No HIGH LIFE RISK ID'd",
-          questionDisplay: "No HIGH LIFE RISK is ID'd",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Yes",
-          display: "HIGH LIFE RISK ID'd",
-          questionDisplay: "A HIGH LIFE RISK is ID'd",
-          updateCode: "52C01",
-          continue: true,
-          send: true,
-        },
-        {
-          answer: "Unkown",
-          display: "Unk if HIGH LIFE RISK",
-          questionDisplay: "It is unk if a HIGH LIFE RISK is present",
-          continue: true,
-          send: true,
+          send: true
         }
       ]
     },

@@ -3,7 +3,7 @@ import * as AI from "../additionalInformation";
 
 export const ASSAULT: IEMSComplaint = {
   protocol: 4,
-  name: "Assault/Sexual Assault",
+  name: "Assault / Sexual Assault",
   shortName: "Assault",
   description: (
     <>
@@ -118,8 +118,8 @@ export const ASSAULT: IEMSComplaint = {
           answer: "Earlier (more than 6hrs ago)",
           display: "Happened earlier (> 6 hours ago)",
           questionDisplay: "Incident happened earlier (> 6 hours ago)",
-          continue: true,
           updateCode: "04A02",
+          continue: true,
         },
         {
           answer: "Unknown",
@@ -132,10 +132,10 @@ export const ASSAULT: IEMSComplaint = {
 
     {
       text: (
-        <p>
+        <p className="text-red-400">
           <span className="text-blue-400">(If applicable)</span>{" "}
           <b className="font-bold">Where</b> is the{" "}
-          <b className="font-bold text-red-500">assailant</b> now?
+          <b className="font-bold">assailant</b> now?
         </p>
       ),
       questionType: "select",
@@ -144,6 +144,7 @@ export const ASSAULT: IEMSComplaint = {
           answer: "Location:",
           display: "Assailant is {input}",
           questionDisplay: "Assailant is {input}",
+          setSceneSecure: false,
           input: true,
           continue: true,
         },
@@ -151,6 +152,7 @@ export const ASSAULT: IEMSComplaint = {
           answer: "Gone",
           display: "Assailant is gone",
           questionDisplay: "The assailant is no longer present",
+          setSceneSecure: false,
           continue: true,
         },
         {
@@ -172,6 +174,86 @@ export const ASSAULT: IEMSComplaint = {
           continue: true,
         },
       ],
+    },
+
+    {
+      text: <p className="text-red-400">Were <b className="font-bold">any weapons</b> involved?</p>,
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No wpns",
+          questionDisplay: "No weapons were involved",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Wpns involved or mentioned",
+          questionDisplay: "Weapons were involved or mentioned",
+          setSceneSecure: false,
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if wpns involved",
+          questionDisplay: "Unk if any weapons were involved",
+          continue: true,
+        }
+      ]
+    },
+
+    {
+      text: <p className="text-red-400">What <b className="font-bold">type</b> of <b className="font-bold">weapon</b>?</p>,
+      questionType: "select",
+      preRenderInstructions: (_patient, answers) => {
+        const weaponsAnswer = answers.find((a) => a.question === "Were any weapons involved?")?.answer;
+        return weaponsAnswer === "Yes";
+      },
+      preRenderLogic: "Weapons were involved or mentioned",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Firearm:",
+          display: "Firearm: {input}",
+          questionDisplay: "**pronoun** has or has access to a firearm: {input}",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Knife:",
+          display: "Knife: {input}",
+          questionDisplay: "**pronoun** has or has access to a knife: {input}",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Club:",
+          display: "Club: {input}",
+          questionDisplay: "**pronoun** has or has access to a club: {input}",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Explosive:",
+          display: "Explosive: {input}",
+          questionDisplay: "**pronoun** has or has access to an explosive: {input}",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Other:",
+          display: "Other: {input}",
+          questionDisplay: "**pronoun** has or has access to another type of weapon: {input}",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk type of wpn",
+          questionDisplay: "Unk type of weapon **pronoun** has or has access to",
+          continue: true,
+        }
+      ]
     },
 
     {

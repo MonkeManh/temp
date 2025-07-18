@@ -521,7 +521,7 @@ export const HEADACHE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "Less than 4.5 hours ago:";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "Less than 4.5 hours ago:";
           },
         },
         {
@@ -534,7 +534,7 @@ export const HEADACHE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "More than 4.5 hours ago:";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "More than 4.5 hours ago:";
           },
         },
         {
@@ -547,7 +547,7 @@ export const HEADACHE: IEMSComplaint = {
             const lastAnswerDisplay = answers[answers.length - 1]?.display;
             const score = lastAnswerDisplay?.match(/Stroke test score: (\d)/)?.[1];
             const timeFrame = answers.find((a) => a.question === "When did these symptoms start?")?.answer;
-            return score !== undefined && parseInt(score) > 5 && timeFrame === "Unknown when symptoms started";
+            return score !== undefined && parseInt(score) >= 5 && timeFrame === "Unknown when symptoms started";
           },
         }
       ]

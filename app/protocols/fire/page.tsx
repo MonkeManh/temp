@@ -119,6 +119,11 @@ function AnswerItem({ answer }: { answer: IFireAnswers }) {
       className: "bg-orange-100 text-orange-800",
     },
     {
+      condition: answer.updateSuffix,
+      label: `Suffix: ${answer.updateSuffix}`,
+      className: "bg-amber-100 text-amber-800",
+    },
+    {
       condition: answer.gotoProtocol,
       label: `→ Protocol ${answer.gotoProtocol}`,
       className: "bg-indigo-100 text-indigo-800",
