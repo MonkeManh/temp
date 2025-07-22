@@ -19,6 +19,7 @@ import { IFireComplaint } from "@/models/interfaces/protocols/fire/IFireComplain
 import { IAnswerData } from "@/models/interfaces/protocols/fire/IFireQuestions";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { set } from "react-hook-form";
 import { toast } from "sonner";
 
 function getProtocolByName(str: string): IFireComplaint | undefined {
@@ -325,8 +326,6 @@ export default function CreateCallFire() {
   const handleSendCodeFromKQ = useCallback(
     (code: string, override?: boolean, hideSend = true) => {
       if (fireCase?.hasBeenSent && !override) return;
-      if (code === fireCase?.currentCode) return;
-
       const currentPriority = getPriorityFromCode(
         fireCase?.currentCode || "DEFAULT_CODE"
       );
@@ -340,7 +339,7 @@ export default function CreateCallFire() {
 
       if (
         higherCode(fireCase?.currentCode || "DEFAULT_CODE", code) ===
-        fireCase?.currentCode
+        fireCase?.currentCode && fireCase.hasBeenSent
       ) {
         if (isSamePriority(code, fireCase?.currentCode || "DEFAULT_CODE")) {
           // Add the code to selectableCodes and filter by priority
@@ -516,8 +515,24 @@ export default function CreateCallFire() {
   );
 
   const handleSummaryClick = useCallback(
-    (text: string, navigateTo?: string) => {
+    (text: string, navigateTo?: string, unitsToSend?: string[]) => {
       navigator.clipboard.writeText(text);
+      
+      // Check if we're about to complete the case
+      const willCompleteCase = navigateTo === "pdi-cei" && settings.giveInstructions === false;
+      
+      if(unitsToSend && !willCompleteCase) {
+        setFireCase((prevCase) => {
+          if (!prevCase) return prevCase;
+          const updatedCase = {
+            ...prevCase,
+            unitsToSend: unitsToSend,
+          };
+          localStorage.setItem("FIRE_CASE", JSON.stringify(updatedCase));
+          return updatedCase;
+        });
+      }
+
       if (fireCase?.questionsCompleted) {
         toast.success("Summary copied, send case to units now!");
         if (settings.soundEffects) {
@@ -545,7 +560,7 @@ export default function CreateCallFire() {
         }
       }
     },
-    [callbackOnSummary]
+    [callbackOnSummary, fireCase, settings, router]
   );
 
   const handleCompleteCase = useCallback(() => {
@@ -590,6 +605,8 @@ export default function CreateCallFire() {
       questionsCompleted: false,
       hasCompletedDisconnect: false,
       secureScene: true,
+      reconfiguredFrom: undefined,
+      unitsToSend: ["Pending"],
     });
     setProtocol(undefined);
     setAnswers([]);

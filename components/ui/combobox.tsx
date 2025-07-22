@@ -22,7 +22,9 @@ import {
 interface Option {
   value: string;
   label: string;
+  add?: string;
   className?: string;
+  searchableText?: string;
 }
 
 export interface ComboboxProps
@@ -41,111 +43,125 @@ export interface ComboboxProps
   disabled?: boolean;
 }
 
-export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(({
-  options,
-  value,
-  onValueChange,
-  placeholder = "Select option",
-  searchPlaceholder = "Search...",
-  emptyText = "No results found.",
-  strictSearch = false,
-  autoFocus = false,
-  className,
-  open: controlledOpen,
-  onOpenChange,
-  disabled = false,
-  ...props
-}, ref) => {
-  const [internalOpen, setInternalOpen] = React.useState(false);
-  const open = controlledOpen ?? internalOpen;
-  const setOpen = onOpenChange ?? setInternalOpen;
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const hasInitiallyMounted = React.useRef(false);
+export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
+  (
+    {
+      options,
+      value,
+      onValueChange,
+      placeholder = "Select option",
+      searchPlaceholder = "Search...",
+      emptyText = "No results found.",
+      strictSearch = false,
+      autoFocus = false,
+      className,
+      open: controlledOpen,
+      onOpenChange,
+      disabled = false,
+      ...props
+    },
+    ref
+  ) => {
+    const [internalOpen, setInternalOpen] = React.useState(false);
+    const open = controlledOpen ?? internalOpen;
+    const setOpen = onOpenChange ?? setInternalOpen;
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const hasInitiallyMounted = React.useRef(false);
 
-  React.useEffect(() => {
-    if (autoFocus && !hasInitiallyMounted.current) {
-      setOpen(true);
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 0);
-      hasInitiallyMounted.current = true;
-    }
-  }, [autoFocus, setOpen]);
+    React.useEffect(() => {
+      if (autoFocus && !hasInitiallyMounted.current) {
+        setOpen(true);
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 0);
+        hasInitiallyMounted.current = true;
+      }
+    }, [autoFocus, setOpen]);
 
-  // Memoize selected option lookup
-  const selectedOption = useMemo(() => 
-    options.find(opt => opt.value === value),
-    [options, value]
-  );
+    // Memoize selected option lookup
+    const selectedOption = useMemo(
+      () => options.find((opt) => opt.value === value),
+      [options, value]
+    );
 
-  // Memoize filter function
-  const filterFn = useCallback((value: string, search: string) => {
-    if (strictSearch) {
-      return value.includes(search) ? 1 : 0;
-    }
-    return value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
-  }, [strictSearch]);
+    // Memoize filter function
+    const filterFn = useCallback(
+      (value: string, search: string) => {
+        if (strictSearch) {
+          return value.includes(search) ? 1 : 0;
+        }
+        return value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+      },
+      [strictSearch]
+    );
 
-  // Memoize option selection handler
-  const handleSelect = useCallback((optionValue: string) => {
-    onValueChange(optionValue);
-    setOpen(false);
-  }, [onValueChange, setOpen]);
+    // Memoize option selection handler
+    const handleSelect = useCallback(
+      (optionValue: string) => {
+        onValueChange(optionValue);
+        setOpen(false);
+      },
+      [onValueChange, setOpen]
+    );
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          ref={ref}
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-          disabled={disabled}
-          {...props}
-        >
-          {selectedOption ? selectedOption.label : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent 
-        className="w-[var(--radix-popover-trigger-width)] p-0"
-        align="start"
-        style={{ maxHeight: "calc(var(--vh, 1vh) * 50)" }} // Limit max height to 50vh
-      >
-        <Command className={cn(`w-full`, className)} filter={filterFn}>
-          <CommandInput 
-            ref={inputRef}
-            placeholder={searchPlaceholder} 
-            className="w-full" 
-          />
-          <CommandList 
-            className="w-full max-h-[300px] overflow-y-auto scroll-smooth"
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            ref={ref}
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+            disabled={disabled}
+            {...props}
           >
-            <CommandEmpty className="text-muted-foreground rounded-sm px-2 py-1.5">{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={`${option.value} ${option.label}`}
-                  onSelect={() => handleSelect(option.value)}
-                  className={cn("cursor-pointer", option.className)}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-});
+            {selectedOption ? selectedOption.label : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+          style={{ maxHeight: "calc(var(--vh, 1vh) * 50)" }} // Limit max height to 50vh
+        >
+          <Command className={cn(`w-full`, className)} filter={filterFn}>
+            <CommandInput
+              ref={inputRef}
+              placeholder={searchPlaceholder}
+              className="w-full"
+            />
+            <CommandList className="w-full max-h-[300px] overflow-y-auto scroll-smooth">
+              <CommandEmpty className="text-muted-foreground rounded-sm px-2 py-1.5">
+                {emptyText}
+              </CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.searchableText || `${option.value} ${option.label}`}
+                    onSelect={() => handleSelect(option.value)}
+                    className={cn("cursor-pointer", option.className)}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === option.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {option.label}{" "}
+                    <span className="text-muted-foreground text-xs">
+                      {option.add ? `(${option.add})` : null}
+                    </span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+);
 
 Combobox.displayName = "Combobox";

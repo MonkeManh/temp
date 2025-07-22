@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import LoadingState from "@/components/loading-state";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import UnitTable from "@/components/unit-table";
 import getSettings, { DEFAULT_SETTINGS } from "@/lib/utils";
 import { ISettings } from "@/models/interfaces/ISettings";
 import { Phone, Settings } from "lucide-react";
@@ -80,7 +81,7 @@ export default function DispatchPage() {
           {isLoading ? (
             <LoadingState />
           ) : settings.advancedMode ? (
-            <p>Coming Soon!</p>
+            <UnitTable />
           ) : (
             <div className="w-full flex justify-center items-center h-100">
               {CreateCallButton}

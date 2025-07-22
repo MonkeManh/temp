@@ -22,4 +22,5 @@ export interface IEMSCaseEntry {
     secureScene: boolean;
     selectableCodes: string[];
     reconfiguredFrom?: string;
+    unitsToSend: string[];
 }

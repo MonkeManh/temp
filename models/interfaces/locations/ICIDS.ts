@@ -6,5 +6,6 @@ export type ILocation = {
   mainStreet: string;
   crossStreet1: string;
   crossStreet2: string;
-  cids: string;
+  notLocation?: boolean;
+  cids?: string;
 };

@@ -176,6 +176,7 @@ export default function FireCaseEntry({
       questionsCompleted: false,
       hasCompletedDisconnect: false,
       secureScene: true,
+      unitsToSend: ["Pending"],
     };
   });
   const [isRestoring, setIsRestoring] = useState(!!initialData);
@@ -320,6 +321,7 @@ export default function FireCaseEntry({
                   questionsCompleted: false,
                   hasCompletedDisconnect: false,
                   secureScene: true,
+                  unitsToSend: ["Pending"]
                 });
                 if (!callDetails.callerNumber) {
                   setFocusedInput("callerNumber");
@@ -466,6 +468,11 @@ export default function FireCaseEntry({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Phone Alarm">Phone Alarm</SelectItem>
+                <SelectItem value="Still Alarm">Still Alarm</SelectItem>
+                <SelectItem value="Rescue">Rescue</SelectItem>
+                <SelectItem value="Marine">Marine</SelectItem>
+                <SelectItem value="High Rise">High Rise</SelectItem>
+                <SelectItem value="Hazmat">Hazmat</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -8,6 +8,7 @@ import {
 import { IFireCaseEntry } from "@/models/interfaces/IFireCaseEntry";
 import { IFireComplaint } from "@/models/interfaces/protocols/fire/IFireComplaint";
 import { ArrowLeft, ArrowRight, ChartPie } from "lucide-react";
+import { useState } from "react";
 
 interface SendFireCaseProps {
   recommendedCode: string;
@@ -41,6 +42,7 @@ export default function SendFireCase({
     codeString: string,
     suffix?: string
   ): number => {
+    const [hoverIndex, setHoverIndex] = useState<number>(0);
     // Find the code object in the protocol determinants
     const codeObj = protocol.determinants
       .flatMap((det) => det.codes)

@@ -264,6 +264,7 @@ export default function EMSCaseEntry({
       questionsCompleted: false,
       hasCompletedDisconnect: false,
       secureScene: true,
+      unitsToSend: [],
     };
   });
   const [isRestoring, setIsRestoring] = useState(!!initialData);
@@ -497,6 +498,7 @@ export default function EMSCaseEntry({
                   questionsCompleted: false,
                   hasCompletedDisconnect: false,
                   secureScene: true,
+                  unitsToSend: [],
                 });
                 setTempAge("");
                 if (!callDetails.callerNumber) {

@@ -11,10 +11,1456 @@ export const MOTOR_VEHICLE_COLLISION: IFireComplaint = {
     { name: "EMS", priority: 4 },
     { name: "Police", priority: true },
   ],
-  defaultPriority: "A",
+  defaultPriority: "B",
   defaultPlan: 474,
   defaultCode: "77B02",
-  questions: [],
+  questions: [
+    {
+      text: (
+        <p className="text-blue-400">
+          What <b className="font-bold">type</b> of caller is this?
+        </p>
+      ),
+      questionType: "select",
+      omit: true,
+      answers: [
+        {
+          answer: "First (1st) party",
+          display: "First pty caller",
+          questionDisplay: "The caller is a first (1st) party.",
+          continue: true,
+        },
+        {
+          answer: "Second (2nd) party",
+          display: "Second pty caller",
+          questionDisplay: "The caller is a second (2nd) party.",
+          continue: true,
+        },
+        {
+          answer: "Third (3rd) party",
+          display: "Third pty caller",
+          questionDisplay: "The caller is a third (3rd) party.",
+          continue: true,
+        },
+        {
+          answer: "Fourth (4th) party",
+          display: "Fourth pty caller",
+          questionDisplay: "The caller is a fourth (4th) party.",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk caller pty",
+          questionDisplay: "The caller's party is unknown.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          <span className="text-blue-400">(Not obvious)</span> Are you on scene?
+        </p>
+      ),
+      questionType: "select",
+      omit: true,
+      answers: [
+        {
+          answer: "No",
+          display: "Not on scene",
+          questionDisplay: "The caller is not on scene.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On scene",
+          questionDisplay: "The caller is on scene.",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if on scene",
+          questionDisplay: "Unknown if the caller is on scene.",
+          continue: true,
+        },
+      ],
+    },
+
+    // DELTA LEVEL QUESTIONS
+
+    // Pileup
+    {
+      text: (
+        <p>
+          How <b className="font-bold">many</b> vehicles are{" "}
+          <b className="font-bold">involved</b>?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "Single",
+          display: "Single vehicle involved",
+          questionDisplay: "A single vehicle is involved.",
+          continue: true,
+        },
+        {
+          answer: "Less than 10:",
+          display: "{input} vehicles involved",
+          questionDisplay: "Less than 10 vehicles are involved.",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "10 or more:",
+          display: "{input} vehicles involved",
+          questionDisplay: "10 or more vehicles are involved.",
+          updateCode: "77D03",
+          continue: true,
+          input: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk num of vehs involved",
+          questionDisplay: "Unknown number of vehicles are involved.",
+          updateCode: "77B02",
+          continue: true,
+        },
+      ],
+    },
+
+    // Commercial Vehicle
+    {
+      text: (
+        <p>
+          Were/are there any <b className="font-bold">commercial vehicles</b>{" "}
+          involved?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No comm vehs",
+          questionDisplay: "No commercial vehicles are involved.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Comm veh(s) involved",
+          questionDisplay: "Commercial vehicles are involved.",
+          updateCode: "77D10",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if comm vehs",
+          questionDisplay: "Unknown if any commercial vehicles are involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Ejection
+    {
+      text: (
+        <p className="text-red-400">
+          Was anyone <b className="font-bold">thrown</b> from the vehicle?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No one thrown out",
+          questionDisplay: "No one was thrown from the vehicle.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Someone thrown out",
+          questionDisplay: "Someone was thrown from the vehicle.",
+          updateCode: "77D05",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if anyone thrown out",
+          questionDisplay: "Unknown if anyone was thrown from the vehicle.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Trapped
+    {
+      text: (
+        <p className="text-red-400">
+          Is anyone <b className="font-bold">trapped</b> in the vehicle?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No one trapped/pinned",
+          questionDisplay: "No one is trapped or pinned in the vehicle.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Person trapped/pinned",
+          questionDisplay: "Someone is trapped or pinned in the vehicle.",
+          updateCode: "77D04",
+          updateSuffix: "T",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if anyone trapped/pinned",
+          questionDisplay:
+            "Unknown if anyone is trapped or pinned in the vehicle.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Rollover
+    {
+      text: (
+        <p>
+          Did any vehicle <b className="font-bold">rollover</b>?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No overturn",
+          questionDisplay: "No vehicle has rolled over.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "A vehicle overturned",
+          questionDisplay: "A vehicle has rolled over.",
+          updateCode: "77D02",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if overturn",
+          questionDisplay: "Unknown if any vehicle has rolled over.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Building Involvement
+    {
+      text: (
+        <p>
+          Did any vehicle(s) <b className="font-bold">strike</b> or{" "}
+          <b className="font-bold">hit</b> a building?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No bldgs involved",
+          questionDisplay: "No buildings are involved.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Bldg(s) involved",
+          questionDisplay: "Buildings are involved.",
+          updateCode: "77D08",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if bldgs involved",
+          questionDisplay: "Unknown if any buildings are involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          What <b className="font-bold">type</b> of building was involved?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const didStrikeBldg = answers?.find(
+          (a) => a.question === "Did any vehicle(s) strike or hit a building?"
+        )?.answer;
+        return didStrikeBldg === "Yes";
+      },
+      preRenderLogic: "a building is involved",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "HIGH LIFE HAZARD",
+          display: "HIGH LIFE HAZARD bldg",
+          questionDisplay: "A HIGH LIFE HAZARD building is involved.",
+          continue: true,
+        },
+        {
+          answer: "HIGH RISE",
+          display: "HIGH RISE bldg",
+          questionDisplay: "A HIGH RISE building is involved.",
+          continue: true,
+        },
+        {
+          answer: "Commercial/industrial building",
+          display: "Commercial/industrial bldg",
+          questionDisplay: "A commercial or industrial building is involved.",
+          continue: true,
+        },
+        {
+          answer: "Residential (multiple)",
+          display: "Residential (mult) bldg",
+          questionDisplay: "A Residential (multiple) building is involved.",
+          continue: true,
+        },
+        {
+          answer: "Residential (single)",
+          display: "Residential (single) bldg",
+          questionDisplay: "A Residential (single) building is involved.",
+          continue: true,
+        },
+        {
+          answer: "Other:",
+          display: "Other bldg: {input}",
+          questionDisplay: "Another type of building is involved: {input}.",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk bldg type",
+          questionDisplay: "Unknown what type of building is involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Motorcycle
+    {
+      text: (
+        <p>
+          Were any <b className="font-bold">motorcycles</b> involved?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No mcycles involved",
+          questionDisplay: "No motorcycles are involved.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Mcycle(s) involved",
+          questionDisplay: "Motorcycles are involved.",
+          updateCode: "77D07",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if mcycles involved",
+          questionDisplay: "Unknown if any motorcycles are involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Peds/Bikes
+    {
+      text: (
+        <p>
+          Were any <b className="font-bold">pedestrians</b> or{" "}
+          <b className="font-bold">bicyclists</b> involved?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No peds/bikes involved",
+          questionDisplay: "No pedestrians or bicyclists are involved.",
+          continue: true,
+        },
+        {
+          answer: "Pedestrian(s)",
+          display: "Ped(s) involved",
+          questionDisplay: "Pedestrian(s) are involved.",
+          updateCode: "77D06",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Bicyclist(s)",
+          display: "Bicyclist(s) involved",
+          questionDisplay: "Bicyclist(s) are involved.",
+          updateCode: "77D06",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Both",
+          display: "Peds & bikes involved",
+          questionDisplay: "Both pedestrians and bicyclists are involved.",
+          updateCode: "77D06",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if peds/bikes involved",
+          questionDisplay:
+            "Unknown if any pedestrians or bicyclists are involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    // Stable vehicle
+    {
+      text: (
+        <p>
+          Is the <b className="font-bold">vehicle</b> stable?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const callerIsOnScene = answers?.find(
+          (a) => a.question === "Are you on scene?"
+        )?.answer;
+        const numVehs = answers?.find(
+          (a) => a.question === "How many vehicles are involved?"
+        )?.answer;
+        return callerIsOnScene === "Yes" && numVehs === "Single";
+      },
+      preRenderLogic: "the caller is on scene and a single vehicle is involved",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Yes",
+          display: "Veh is stable",
+          questionDisplay: "The vehicle is stable.",
+          continue: true,
+        },
+        {
+          answer: "No",
+          display: "Veh is unstable",
+          questionDisplay: "The vehicle is unstable.",
+          updateCode: "77D09",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if veh is stable",
+          questionDisplay: "Unknown if the vehicle is stable.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Are the <b className="font-bold">vehicles</b> stable?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const callerIsOnScene = answers?.find(
+          (a) => a.question === "Are you on scene?"
+        )?.answer;
+        const numVehs = answers?.find(
+          (a) => a.question === "How many vehicles are involved?"
+        )?.answer;
+        return (
+          callerIsOnScene === "Yes" &&
+          numVehs !== "Single" &&
+          numVehs !== "Unknown"
+        );
+      },
+      preRenderLogic:
+        "the caller is on scene and multiple vehicles are involved",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Yes",
+          display: "Vehs are stable",
+          questionDisplay: "The vehicles are stable.",
+          continue: true,
+        },
+        {
+          answer: "No",
+          display: "Vehs are unstable",
+          questionDisplay: "The vehicles are unstable.",
+          updateCode: "77D09",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if vehs are stable",
+          questionDisplay: "Unknown if the vehicles are stable.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p className="text-red-400">
+          Are there any <b className="font-bold">hazardous materials</b> or{" "}
+          <b className="font-bold">chemicals</b> involved?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No chems/hazmat involved",
+          questionDisplay: "No hazardous materials or chemicals are involved.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Chems/hazmat involved",
+          questionDisplay: "Hazardous materials or chemicals are involved.",
+          updateSuffix: "H",
+          preRenderInstructions: (answers) => {
+            const trapped = answers?.find(
+              (a) => a.question === "Is anyone trapped in the vehicle?"
+            )?.answer;
+
+            return trapped !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Chems/hazmat involved",
+          questionDisplay: "Hazardous materials or chemicals are involved.",
+          updateSuffix: "N",
+          preRenderInstructions: (answers) => {
+            const trapped = answers?.find(
+              (a) => a.question === "Is anyone trapped in the vehicle?"
+            )?.answer;
+
+            return trapped === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if chems/hazmat involved",
+          questionDisplay:
+            "Unknown if hazardous materials or chemicals are involved.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p className="text-red-400">
+          Do you see any <b className="font-bold">placards</b> or{" "}
+          <b className="font-bold">chemical information</b>?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const hazmatInvolved = answers?.find(
+          (a) =>
+            a.question ===
+            "Are there any hazardous materials or chemicals involved?"
+        )?.answer;
+        return hazmatInvolved === "Yes";
+      },
+      preRenderLogic: "hazardous materials or chemicals are involved",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "No",
+          display: "No placards/chem info",
+          questionDisplay: "No placards or chemical information is visible.",
+          continue: true,
+        },
+        {
+          answer: "Yes:",
+          display: "Placards/chem info: {input}",
+          questionDisplay:
+            "Placards or chemical information is visible: {input}.",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if placards/chem info",
+          questionDisplay:
+            "Unknown if any placards or chemical information is visible.",
+          continue: true,
+        },
+      ],
+    },
+
+    // HIGH OCCUPANCY
+    {
+      text: (
+        <p>
+          How <b className="font-bold">many people</b> were inside?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const vehRoll = answers?.find(
+          (a) => a.question === "Did any vehicle rollover?"
+        )?.answer;
+        const onScene = answers?.find(
+          (a) => a.question === "Are you on scene?"
+        )?.answer;
+        return vehRoll === "Yes" || onScene === "Yes";
+      },
+      preRenderLogic: "a vehicle has rolled over or the caller is on scene",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Single",
+          display: "Single occupant",
+          questionDisplay: "A single person was inside the vehicle.",
+          continue: true,
+        },
+        {
+          answer: "Less than 4:",
+          display: "{input} occupants",
+          questionDisplay: "Less than 4 people were inside the vehicle.",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "4 or more:",
+          display: "{input} occupants",
+          questionDisplay: "4 or more people were inside the vehicle.",
+          updateCode: "77D01",
+          continue: true,
+          input: true,
+          send: true
+        },
+        {
+          answer: "Unknown",
+          display: "Unk num of occupants",
+          questionDisplay: "Unknown number of people were inside the vehicle.",
+          continue: true,
+        },
+      ],
+    },
+
+    // ON SCENE QUESTIONS
+    {
+      text: (
+        <p>
+          Is everyone <b className="font-bold">conscious</b> and{" "}
+          <b className="font-bold">breathing</b>?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "Yes",
+          display: "Everyone is conscious and breathing",
+          questionDisplay: "Everyone is conscious and breathing.",
+          continue: true,
+        },
+        {
+          answer: "Unconscious",
+          display: "Someone unconscious",
+          questionDisplay: "Someone is unconscious.",
+          updateCode: "77D12",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Not breathing",
+          display: "Someone not breathing",
+          questionDisplay: "Someone is not breathing.",
+          updateCode: "77D11",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if everyone conscious/breathing",
+          questionDisplay: "Unknown if everyone is conscious and breathing.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Is everyone <b className="font-bold">completely alert</b> (responding
+          appropriately)?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const everyoneConscious = answers?.find(
+          (a) => a.question === "Is everyone conscious and breathing?"
+        )?.answer;
+        return everyoneConscious === "Yes";
+      },
+      preRenderLogic:
+        "someone is injured and everyone is conscious and breathing",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Yes",
+          display: "Everyone completely awake",
+          questionDisplay: "Everyone is completely alert.",
+          continue: true,
+        },
+        {
+          answer: "No",
+          display: "Someone not completely awake",
+          questionDisplay: "Someone is not completely alert.",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if everyone completely awake",
+          questionDisplay: "Unknown if everyone is completely alert.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Are they <b className="font-bold">breathing</b> normally?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const isAlert = answers?.find(
+          (a) =>
+            a.question ===
+            "Is everyone completely alert (responding appropriately)?"
+        )?.answer;
+        return isAlert === "No";
+      },
+      preRenderLogic: "someone is injured and not everyone is completely alert",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Yes",
+          display: "Breathing nlly",
+          questionDisplay: "They are breathing normally.",
+          updateCode: "77D14",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "No",
+          display: "Not breathing nlly",
+          questionDisplay: "They are not breathing normally.",
+          updateCode: "77D13",
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if breathing nlly",
+          questionDisplay: "Unknown if they are breathing normally.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Is there any <b className="font-bold text-red-400">SERIOUS</b>{" "}
+          bleeding?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No SERIOUS bleeding",
+          questionDisplay: "There is no SERIOUS bleeding.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "SERIOUS bleeding",
+          questionDisplay: "There is SERIOUS bleeding.",
+          updateCode: "77B03",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if SERIOUS bleeding",
+          questionDisplay: "Unknown if there is SERIOUS bleeding.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p className="text-blue-400">
+          What <b className="font-bold">type</b> of incident is this?
+        </p>
+      ),
+      questionType: "select",
+      omit: true,
+      answers: [
+        {
+          answer: "Traffic collision",
+          display: "Traffic collision",
+          questionDisplay: "The incident is a traffic collision.",
+          continue: true,
+        },
+        {
+          answer: "Traffic incident",
+          display: "Traffic incident",
+          questionDisplay: "The incident is a traffic incident.",
+          continue: true,
+        },
+        {
+          answer: "Traffic incident (> 6hrs ago)",
+          display: "Traffic incident (previous)",
+          questionDisplay: "The incident is a traffic incident (previous).",
+          updateCode: "77A03",
+          continue: true,
+        },
+        {
+          answer: "Hit and run",
+          display: "Hit and run",
+          questionDisplay: "The incident is a hit and run.",
+          continue: true,
+        },
+        {
+          answer: "Hit and run (> 6hrs ago)",
+          display: "Hit and run (previous)",
+          questionDisplay: "The incident is a hit and run (previous).",
+          updateCode: "77A04",
+          continue: true,
+        },
+        {
+          answer: "None of these",
+          display: "None of these",
+          questionDisplay: "The incident is none of these.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Are there any <b className="font-bold">obvious injuries</b>?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const onScene = answers?.find(
+          (a) => a.question === "Are you on scene?"
+        )?.answer;
+        return onScene === "Yes";
+      },
+      preRenderLogic: "the caller is on scene",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "No",
+          display: "No one injured",
+          questionDisplay: "No one is injured.",
+          dependency: (answers) => {
+            const typeOfIncident = answers?.find(
+              (a) => a.question === "What type of incident is this?"
+            )?.answer;
+            if (typeOfIncident === "Traffic incident") {
+              return { code: "77B06" };
+            } else if (typeOfIncident === "Hit and run") {
+              return { code: "77B08" };
+            }
+          },
+          continue: true,
+          send: true,
+        },
+        {
+          answer: "Yes",
+          display: "Someone injured",
+          questionDisplay: "Someone is injured.",
+          dependency: (answers) => {
+            const typeOfIncident = answers?.find(
+              (a) => a.question === "What type of incident is this?"
+            )?.answer;
+            if (typeOfIncident === "Traffic incident") {
+              return { code: "77C03" };
+            } else if (typeOfIncident === "Hit and run") {
+              return { code: "77C04" };
+            }
+          },
+          send: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if anyone injured",
+          questionDisplay: "Unknown if anyone is injured.",
+          dependency: (answers) => {
+            const typeOfIncident = answers?.find(
+              (a) => a.question === "What type of incident is this?"
+            )?.answer;
+            if (typeOfIncident === "Traffic incident") {
+              return { code: "77B07" };
+            } else if (typeOfIncident === "Hit and run") {
+              return { code: "77B09" };
+            } else {
+              return { code: "77B02" };
+            }
+          },
+          continue: true,
+          send: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          How <b className="font-bold">many</b> people are{" "}
+          <b className="font-bold">injured</b>?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const anyoneInjured = answers?.find(
+          (a) => a.question === "Is anyone injured?"
+        )?.answer;
+        return anyoneInjured === "Yes";
+      },
+      preRenderLogic: "someone is injured",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "Single",
+          display: "Single injured person",
+          questionDisplay: "A single person is injured.",
+          continue: true,
+        },
+        {
+          answer: "Multiple (input number):",
+          display: "{input} injured persons",
+          questionDisplay: "Multiple people are injured.",
+          continue: true,
+          input: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk num of injured",
+          questionDisplay: "Unknown number of people are injured.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Are there any <b className="font-bold">hazards</b>?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No hazards present",
+          questionDisplay: "There are no hazards present.",
+          dependency: (answers) => {
+            const injs = answers?.find(
+              (a) => a.question === "Are there any obvious injuries?"
+            )?.answer;
+            if (injs === "No") {
+              return { code: "77O02" };
+            }
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes:",
+          display: "Hazards present: {input}",
+          questionDisplay: "There are hazards present: {input}.",
+          dependency: (answers) => {
+            const injs = answers?.find(
+              (a) => a.question === "Are there any obvious injuries?"
+            )?.answer;
+            if (injs === "No") {
+              return { code: "77A02" };
+            } else if (injs === "Yes") {
+              return { code: "77C01" };
+            }
+          },
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if hazards present",
+          questionDisplay: "Unknown if there are any hazards present.",
+          updateCode: "77B02",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Is the vehicle <b className="font-bold">blocking traffic</b>?
+        </p>
+      ),
+      questionType: "select",
+      preRenderInstructions: (answers) => {
+        const injs = answers?.find(
+          (a) => a.question === "Are there any obvious injuries?"
+        )?.answer;
+        const hazards = answers?.find(
+          (a) => a.question === "Are there any hazards?"
+        )?.answer;
+        return injs === "No" && hazards === "No";
+      },
+      preRenderLogic: "no one is injured and there are no hazards present",
+      preRenderDependencies: ["answers"],
+      answers: [
+        {
+          answer: "No",
+          display: "Not blocking traffic",
+          questionDisplay: "The vehicle is not blocking traffic.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Blocking traffic",
+          questionDisplay: "The vehicle is blocking traffic.",
+          updateCode: "77O01",
+          updateSuffix: "B",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if blocking traffic",
+          questionDisplay: "Unknown if the vehicle is blocking traffic.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Is there any <b className="font-bold">fuel</b> or{" "}
+          <b className="font-bold">fluid</b> leaking?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No fuel/fluid leak",
+          questionDisplay: "There is no fuel or fluid leaking.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Fuel/fluid leak",
+          questionDisplay: "There is fuel or fluid leaking.",
+          updateCode: "77C02",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if fuel/fluid leak",
+          questionDisplay: "Unknown if there is fuel or fluid leaking.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: (
+        <p>
+          Did the <b className="font-bold">airbags</b> deploy?
+        </p>
+      ),
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No airbags deployed",
+          questionDisplay: "The airbags did not deploy.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Airbags deployed",
+          questionDisplay: "The airbags deployed.",
+          updateSuffix: "D",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if airbags deployed",
+          questionDisplay: "Unknown if the airbags deployed.",
+          continue: true,
+        },
+      ],
+    },
+
+    {
+      text: <p><span className="text-blue-400">(Not obvious)</span> Is there any <b className="font-bold">fire</b> present?</p>,
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "No fire present",
+          questionDisplay: "There is no fire present.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Fire present",
+          questionDisplay: "There is fire present.",
+          updateSuffix: "F",
+          preRenderInstructions: (answers) => {
+            const hazmatInvolved = answers?.find(
+              (a) =>
+                a.question ===
+                "Are there any hazardous materials or chemicals involved?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            return hazmatInvolved !== "Yes" && isTrapped !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Fire present",
+          questionDisplay: "There is fire present.",
+          updateSuffix: "J",
+          preRenderInstructions: (answers) => {
+            const hazmatInvolved = answers?.find(
+              (a) =>
+                a.question ===
+                "Are there any hazardous materials or chemicals involved?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+
+            return hazmatInvolved === "Yes" && isTrapped !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Fire present",
+          questionDisplay: "There is fire present.",
+          updateSuffix: "L",
+          preRenderInstructions: (answers) => {
+            const hazmatInvolved = answers?.find(
+              (a) =>
+                a.question ===
+                "Are there any hazardous materials or chemicals involved?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+
+            return hazmatInvolved !== "Yes" && isTrapped === "Yes";
+          },
+        },
+        {
+          answer: "Yes",
+          display: "Fire present",
+          questionDisplay: "There is fire present.",
+          updateSuffix: "N",
+          preRenderInstructions: (answers) => {
+            const hazmatInvolved = answers?.find(
+              (a) =>
+                a.question ===
+                "Are there any hazardous materials or chemicals involved?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+
+            return hazmatInvolved === "Yes" && isTrapped === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if fire present",
+          questionDisplay: "Unknown if there is fire present.",
+          continue: true,
+        }
+      ]
+    },
+
+    {
+      text: <p className="text-blue-400">Did this occour on an interstate/highway?</p>,
+      questionType: "select",
+      answers: [
+        {
+          answer: "No",
+          display: "Not on interstate/fwy/hwy",
+          questionDisplay: "This did not occur on an interstate, freeway, or highway.",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "I",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+
+            return isFirePresent !== "Yes" && isTrapped !== "Yes" && isHazmat !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "K",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent === "Yes" && isTrapped !== "Yes" && isHazmat !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "O",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent !== "Yes" && isTrapped === "Yes" && isHazmat !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "M",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent !== "Yes" && isTrapped !== "Yes" && isHazmat === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "P",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent === "Yes" && isTrapped !== "Yes" && isHazmat === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "R",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent === "Yes" && isTrapped === "Yes" && isHazmat !== "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "S",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent !== "Yes" && isTrapped === "Yes" && isHazmat === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "On interstate/fwy/hwy",
+          questionDisplay: "This occurred on an interstate, freeway, or highway.",
+          updateSuffix: "U",
+          preRenderInstructions: (answers) => {
+            const isFirePresent = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any fire present?"
+            )?.answer;
+            const isTrapped = answers?.find(
+              (a) =>
+                a.question ===
+                "Is anyone trapped in the vehicle?"
+            )?.answer;
+            const isHazmat = answers?.find(
+              (a) =>
+                a.question ===
+                "Is there any hazardous materials present?"
+            )?.answer;
+            return isFirePresent === "Yes" && isTrapped === "Yes" && isHazmat === "Yes";
+          },
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if on interstate/fwy/hwy",
+          questionDisplay: "Unknown if this occurred on an interstate, freeway, or highway.",
+          continue: true,
+        }
+      ]
+    }
+  ],
   determinants: [
     {
       priority: "O",

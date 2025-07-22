@@ -363,6 +363,8 @@ export default function FireKeyQuestions({
         const shouldOverride = codeHasBeenSent && isHigherPriorityCode;
         return handleCodeSend(answerObj.updateCode, shouldOverride);
       }
+    } else if(answerObj.send && settings.quickSend && !answerObj.updateCode) {
+      return handleCodeSend(fireCase.currentCode);
     }
 
     if (answerObj.updateCode) {

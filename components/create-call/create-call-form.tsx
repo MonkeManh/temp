@@ -99,7 +99,7 @@ export default function CreateCallForm() {
     callerStatement: "",
     service: "Police",
   });
-  
+
   const [hasBldgSelected, setHasBldgSelected] = useState<boolean>(false);
   const [settings, setSettings] = useState<ISettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -110,10 +110,13 @@ export default function CreateCallForm() {
     undefined
   );
   const [selectedStreet, setSelectedStreet] = useState<string>("");
-  const [selectedLocation, setSelectedLocation] = useState<ILocation | undefined>(
-    undefined
-  );
-  const [isSelectingLocation, setIsSelectingLocation] = useState<boolean>(false);
+  const [selectedLocation, setSelectedLocation] = useState<
+    ILocation | undefined
+  >(undefined);
+  const [isSelectingLocation, setIsSelectingLocation] =
+    useState<boolean>(false);
+  const [isPostalDirectlyEdited, setIsPostalDirectlyEdited] =
+    useState<boolean>(false);
   const postalRef = useRef<HTMLButtonElement>(null);
   const streetRef = useRef<HTMLButtonElement>(null);
   const buildingInfoRef = useRef<HTMLInputElement>(null);
@@ -133,9 +136,11 @@ export default function CreateCallForm() {
   );
   const locationOptions = useMemo(
     () =>
-      CIDSData.map((location) => ({
+      CIDSData.filter((l) => !l.notLocation).map((location) => ({
         value: location.name,
-        label: location.name,
+        label: `${location.name}`,
+        add: `${location.postal} ${location.mainStreet} (${location.crossStreet1} / ${location.crossStreet2})`,
+        searchableText: `${location.name} ${location.postal} ${location.mainStreet} ${location.crossStreet1} ${location.crossStreet2}`.toLowerCase()
       })),
     []
   );
@@ -165,7 +170,10 @@ export default function CreateCallForm() {
     if (!postalObj) return;
     form.setValue("postal", postal);
     setSelectedPostal(postalObj);
-    
+
+    // Mark that postal was directly edited (not through location selection)
+    setIsPostalDirectlyEdited(true);
+
     // Clear location when postal is manually changed
     if (selectedLocation) {
       setSelectedLocation(undefined);
@@ -249,7 +257,9 @@ export default function CreateCallForm() {
 
     // Check if buildingInfo matches a location in CIDSData
     if (values.buildingInfo) {
-      const matchedLocation = CIDSData.find(location => location.name === values.buildingInfo);
+      const matchedLocation = CIDSData.find(
+        (location) => location.name === values.buildingInfo
+      );
       if (matchedLocation) {
         setSelectedLocation(matchedLocation);
         // Override the values with location data
@@ -257,20 +267,25 @@ export default function CreateCallForm() {
         values.street = matchedLocation.mainStreet;
         values.crossStreet1 = matchedLocation.crossStreet1;
         values.crossStreet2 = matchedLocation.crossStreet2;
-        
+
         // Set the selected postal as well
         const postalObj = getPostal(matchedLocation.postal);
         if (postalObj) {
           setSelectedPostal(postalObj);
         }
         setSelectedStreet(matchedLocation.mainStreet);
+        // Since this is from a location, postal wasn't directly edited
+        setIsPostalDirectlyEdited(false);
+      } else if (values.postal) {
+        // If postal exists but no location match, it was directly edited
+        setIsPostalDirectlyEdited(true);
       }
     }
 
     setInitialValues(values);
     setSelectedPostal(getPostal(values.postal));
     setSelectedStreet(values.street);
-    
+
     form.reset(values);
     setIsFormValid(validateForm(values));
     setIsLoading(false);
@@ -316,29 +331,51 @@ export default function CreateCallForm() {
   const handleLocationChange = (locationName: string): void => {
     const locationObj = getLocation(locationName);
     if (!locationObj) return;
-    
+
     setIsSelectingLocation(true);
     setSelectedLocation(locationObj);
-    
+
+    // Reset postal directly edited flag when location is selected
+    setIsPostalDirectlyEdited(false);
+
     // Set form values from location data
     form.setValue("postal", locationObj.postal);
     form.setValue("street", locationObj.mainStreet);
     form.setValue("crossStreet1", locationObj.crossStreet1);
     form.setValue("crossStreet2", locationObj.crossStreet2);
     form.setValue("buildingInfo", locationObj.name);
-    
+
     // Set the selected postal and street as well
     const postalObj = getPostal(locationObj.postal);
     if (postalObj) {
       setSelectedPostal(postalObj);
     }
     setSelectedStreet(locationObj.mainStreet);
-    
+
     // Focus on caller name field after a brief delay to ensure state is updated
     setTimeout(() => {
       setIsSelectingLocation(false);
       callerNameRef.current?.focus();
     }, 0);
+  };
+
+  // Handle clearing the postal field
+  const handleClearPostal = (): void => {
+    form.setValue("postal", "");
+    form.setValue("street", "");
+    form.setValue("crossStreet1", "");
+    form.setValue("crossStreet2", "");
+    form.setValue("buildingInfo", "");
+    setSelectedPostal(undefined);
+    setSelectedStreet("");
+    setIsPostalDirectlyEdited(false);
+
+    // Focus back on location field if in advanced mode
+    if (settings.advancedMode) {
+      locationRef.current?.focus();
+    } else {
+      postalRef.current?.focus();
+    }
   };
 
   //   Handle form changes and validation
@@ -417,8 +454,8 @@ export default function CreateCallForm() {
                 className="space-y-6"
               >
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {/* Location Selector - shows only when advanced mode is enabled */}
-                  {settings.advancedMode && (
+                  {/* Location Selector - shows only when advanced mode is enabled AND postal hasn't been directly edited */}
+                  {settings.advancedMode && !isPostalDirectlyEdited && (
                     <div className="md:col-span-2">
                       <FormItem>
                         <FormLabel>Location (Optional)</FormLabel>
@@ -447,6 +484,7 @@ export default function CreateCallForm() {
                                 onClick={() => {
                                   setSelectedLocation(undefined);
                                   setSelectedPostal(undefined);
+                                  setIsPostalDirectlyEdited(false);
                                   form.setValue("postal", "");
                                   form.setValue("street", "");
                                   form.setValue("crossStreet1", "");
@@ -454,8 +492,8 @@ export default function CreateCallForm() {
                                   form.setValue("buildingInfo", "");
                                   // Clear the streets when location is cleared
                                   setSelectedStreet("");
-                                  // Focus back on postal field
-                                  postalRef.current?.focus();
+                                  // Focus back on location field
+                                  locationRef.current?.focus();
                                 }}
                               >
                                 Clear Location
@@ -464,10 +502,9 @@ export default function CreateCallForm() {
                           )}
                         </FormControl>
                         <FormDescription>
-                          {!selectedLocation 
+                          {!selectedLocation
                             ? "Select a pre-configured location or enter postal code below"
-                            : "Location selected - postal and street information auto-filled"
-                          }
+                            : "Location selected - postal and street information auto-filled"}
                         </FormDescription>
                       </FormItem>
                     </div>
@@ -480,15 +517,30 @@ export default function CreateCallForm() {
                       <FormItem>
                         <FormLabel>Postal Code</FormLabel>
                         <FormControl>
-                          <Combobox
-                            options={postalOptions}
-                            value={field.value ?? ""}
-                            autoFocus={!settings.advancedMode && !initialValues.postal}
-                            onValueChange={handlePostalChange}
-                            placeholder="Select postal code"
-                            searchPlaceholder="Search postal codes..."
-                            ref={postalRef}
-                          />
+                          <div className="flex items-center gap-2 w-full">
+                            <Combobox
+                              options={postalOptions}
+                              value={field.value ?? ""}
+                              autoFocus={
+                                !settings.advancedMode && !initialValues.postal
+                              }
+                              onValueChange={handlePostalChange}
+                              placeholder="Select postal code"
+                              searchPlaceholder="Search postal codes..."
+                              ref={postalRef}
+                              style={{ width: "fit-content", flexGrow: 1 }}
+                            />
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={handleClearPostal}
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -555,7 +607,8 @@ export default function CreateCallForm() {
                               placeholder="Select street"
                               searchPlaceholder="Search streets..."
                               disabled={Boolean(
-                                currentPostal?.streets?.autoFill || selectedLocation
+                                currentPostal?.streets?.autoFill ||
+                                  selectedLocation
                               )}
                               ref={streetRef}
                             />

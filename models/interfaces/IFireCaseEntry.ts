@@ -18,4 +18,5 @@ export interface IFireCaseEntry {
     secureScene: boolean;
     selectableCodes: string[];
     reconfiguredFrom?: string;
+    unitsToSend: string[];
 }

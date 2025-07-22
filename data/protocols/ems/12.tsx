@@ -112,9 +112,7 @@ export const SEIZURES: IEMSComplaint = {
           patientProximity: prox,
         } = patient;
         if (prox === "first" && con === "no") return false;
-        if (gender !== "female") return false;
-        if (unit === "years" && age >= 12 && age <= 50) return true;
-        return false;
+        return gender === "female" && unit === "year" && age >= 12 && age <= 50;
       },
       preRenderLogic:
         "pt is a female between 12 and 50. If pt is caller, they must be conscious",
@@ -339,13 +337,12 @@ export const SEIZURES: IEMSComplaint = {
           preRenderInstructions: (patient, answers) => {
             const seizureDisorderAnswer = answers.find(
               (a) =>
-                a.questionDisplay ===
-                "**pronoun** is epileptic or has a seizure disorder"
+                a.question === "Is **pronoun** an epileptic (diagnosed with a seizure disorder)?"
             )?.answer;
             return (
               seizureDisorderAnswer === "No" &&
               patient.patientAge > 6 &&
-              patient.ageUnit === "years"
+              patient.ageUnit === "year"
             );
           },
         },
@@ -358,8 +355,7 @@ export const SEIZURES: IEMSComplaint = {
           preRenderInstructions: (_patient, answers) => {
             const seizureDisorderAnswer = answers.find(
               (a) =>
-                a.questionDisplay ===
-                "**pronoun** is epileptic or has a seizure disorder"
+                a.question === "Is **pronoun** an epileptic (diagnosed with a seizure disorder)?"
             )?.answer;
             return seizureDisorderAnswer === "Yes";
           },
@@ -373,8 +369,7 @@ export const SEIZURES: IEMSComplaint = {
           preRenderInstructions: (_patient, answers) => {
             const seizureDisorderAnswer = answers.find(
               (a) =>
-                a.questionDisplay ===
-                "**pronoun** is epileptic or has a seizure disorder"
+                a.question === "Is **pronoun** an epileptic (diagnosed with a seizure disorder)?"
             )?.answer;
             return seizureDisorderAnswer === "Unknown";
           },
@@ -388,14 +383,14 @@ export const SEIZURES: IEMSComplaint = {
           preRenderInstructions: (patient, answers) => {
             const seizureDisorderAnswer = answers.find(
               (a) =>
-                a.questionDisplay ===
-                "**pronoun** is epileptic or has a seizure disorder"
+                a.question ===
+                "Is **pronoun** an epileptic (diagnosed with a seizure disorder)?"
             )?.answer;
             return (
               seizureDisorderAnswer === "No" &&
-              ((patient.patientAge < 6 && patient.ageUnit === "years") ||
-                patient.ageUnit === "months" ||
-                patient.ageUnit === "days")
+              ((patient.patientAge < 6 && patient.ageUnit === "year") ||
+                patient.ageUnit === "month" ||
+                patient.ageUnit === "day")
             );
           },
         },

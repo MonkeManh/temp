@@ -189,7 +189,7 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
     },
 
     {
-      text: <p>Is there any <b className="font-bold">SERIOUS</b> bleeding (spurting or pouring)?</p>,
+      text: <p>Is there any <b className="font-bold text-red-400">SERIOUS</b> bleeding (spurting or pouring)?</p>,
       questionType: "select",
       answers: [
         {
@@ -345,12 +345,12 @@ export const STAB_SHOT_TRAUMA: IEMSComplaint = {
           answer: "No",
           display: "Single wound",
           questionDisplay: "There is a single wound",
-          updateCode: "27B04",
+          updateCode: "27D04",
           continue: true,
           preRenderInstructions: (_patient, answers) => {
             const timeAnswer = answers.find((a) => a.question === "When did this happen?")?.answer;
             const locationAnswer = answers.find((a) => a.question === "What part of the body was injured?")?.answer;
-            return !(timeAnswer === "More than 6 hours ago" && locationAnswer === "Central:") && !(locationAnswer === "Peripheral:");
+            return !(timeAnswer === "More than 6 hours ago" && locationAnswer === "Central:") && locationAnswer === "Central:";
           },
         },
         {

@@ -520,8 +520,19 @@ export default function CreateCallEMS() {
   );
 
   const handleSummaryClick = useCallback(
-    (text: string, navigateTo?: string) => {
+    (text: string, navigateTo?: string, unitsToSend?: string[]) => {
       navigator.clipboard.writeText(text);
+      if(unitsToSend) {
+        setEmsCase((prevCase) => {
+          if (!prevCase) return prevCase;
+          const updatedCase = {
+            ...prevCase,
+            unitsToSend: unitsToSend,
+          };
+          localStorage.setItem("FIRE_CASE", JSON.stringify(updatedCase));
+          return updatedCase;
+        });
+      }
       if (emsCase?.questionsCompleted) {
         toast.success("Summary copied, send case to units now!");
         if (settings.soundEffects) {
@@ -537,6 +548,10 @@ export default function CreateCallEMS() {
         setCallBackOnSummary(false);
       } else if (navigateTo === "police") {
         alert("This feature is not yet implemented.");
+      } else if(navigateTo === "fire") {
+        handleClearCase();
+        toast.success("Switching to Fire case entry.");
+        router.push("/create-call/fire");
       } else {
         if (navigateTo === "pdi-cei" && settings.giveInstructions === false) {
           handleCompleteCase();
@@ -545,7 +560,7 @@ export default function CreateCallEMS() {
         }
       }
     },
-    [callbackOnSummary]
+    [callbackOnSummary, emsCase, settings, router]
   );
 
   const handleCompleteCase = useCallback(() => {
@@ -594,6 +609,7 @@ export default function CreateCallEMS() {
       questionsCompleted: false,
       hasCompletedDisconnect: false,
       secureScene: true,
+      unitsToSend: [],
     });
     setProtocol(undefined);
     setAnswers([]);
@@ -604,6 +620,12 @@ export default function CreateCallEMS() {
     localStorage.removeItem("EMS_CASE");
     window.dispatchEvent(new CustomEvent("timer-reset"));
     toast.success("Re-started EMS case successfully!");
+  }, []);
+
+  const handleClearCase = useCallback(() => {
+    localStorage.removeItem("EMS_CASE");
+    localStorage.setItem("CASE_TIME", "0");
+    window.dispatchEvent(new CustomEvent("timer-reset"));
   }, []);
 
   return (

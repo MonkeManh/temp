@@ -14,7 +14,6 @@ export const UNCO_FAINTING: IEMSComplaint = {
   defaultPriority: "A",
   defaultPlan: 194,
   defaultCode: "31A01",
-  preSend: true,
   questions: [
     {
       text: (
@@ -37,6 +36,7 @@ export const UNCO_FAINTING: IEMSComplaint = {
           questionDisplay: "**pronoun** is NOT breathing completely normally",
           updateCode: "31D02",
           continue: true,
+          send: true,
         },
         {
           answer: "Not Breathing/Obvious Arrest",
@@ -52,6 +52,7 @@ export const UNCO_FAINTING: IEMSComplaint = {
           questionDisplay: "Unk if **pronoun** is breathing normally",
           updateCode: "31D02",
           continue: true,
+          send: true,
         },
       ],
     },
@@ -75,12 +76,12 @@ export const UNCO_FAINTING: IEMSComplaint = {
                 patient.patientBreathing === "agonal/ineffective")
             )
               return { code: "31E01", send: true };
-            const lastAnswer = answers[answers.length - 1].answer;
+            const lastAnswer = answers[answers.length - 1]?.answer;
             if (lastAnswer === "Not Breathing/Obvious Arrest")
               return { code: "31E01", send: true };
-            if (lastAnswer === "No") return { code: "31D02" };
-            if (lastAnswer === "Yes") return { code: "31D03" };
-            return { code: "31D02" };
+            if (lastAnswer === "No") return { code: "31D02", send: true };
+            if (lastAnswer === "Yes") return { code: "31D03", send: true };
+            return { code: "31D02", send: true };
           },
         },
         {
@@ -101,12 +102,12 @@ export const UNCO_FAINTING: IEMSComplaint = {
                 patient.patientBreathing === "agonal/ineffective")
             )
               return { code: "31E01", send: true };
-            const lastAnswer = answers[answers.length - 1].answer;
+            const lastAnswer = answers[answers.length - 1]?.answer;
             if (lastAnswer === "Not Breathing/Obvious Arrest")
               return { code: "31E01", send: true };
-            if (lastAnswer === "No") return { code: "31D02" };
-            if (lastAnswer === "Yes") return { code: "31D03" };
-            return { code: "31D02" };
+            if (lastAnswer === "No") return { code: "31D02", send: true };
+            if (lastAnswer === "Yes") return { code: "31D03", send: true };
+            return { code: "31D02", send: true };
           },
         },
       ],
@@ -121,10 +122,8 @@ export const UNCO_FAINTING: IEMSComplaint = {
       ),
       questionType: "select",
       preRenderInstructions: (_patient, answers) => {
-        const isStillUnconscious = answers.find(
-          (a) => a.questionDisplay === "**pronoun** is still unconscious"
-        )?.answer;
-        return isStillUnconscious !== "Yes";
+        const lastAnswer = answers[answers.length - 1]?.answer;
+        return lastAnswer === "No";
       },
       preRenderLogic: "pt is now conscious",
       preRenderDependencies: ["answers"],
@@ -173,14 +172,50 @@ export const UNCO_FAINTING: IEMSComplaint = {
       ),
       questionType: "select",
       preRenderInstructions: (patient, answers) => {
-        const isStillUnconscious = answers.find(
-          (a) => a.questionDisplay === "**pronoun** is still unconscious"
-        )?.answer;
+        const lastAnswer = answers[answers.length - 2]?.answer;
         return (
-          isStillUnconscious !== "Yes" && patient.patientProximity !== "first"
+          lastAnswer !== "Yes" && patient.patientProximity !== "first"
         );
       },
       preRenderLogic: "Pt is now conscious and not caller",
+      preRenderDependencies: ["answers", "proximity"],
+      answers: [
+        {
+          answer: "No",
+          display: "Not changing color",
+          questionDisplay: "**pronoun** is NOT changing color",
+          continue: true,
+        },
+        {
+          answer: "Yes",
+          display: "Changing color",
+          questionDisplay: "**pronoun** is changing color",
+          continue: true,
+        },
+        {
+          answer: "Unknown",
+          display: "Unk if changing color",
+          questionDisplay: "Unkown if **pronoun** is changing color",
+          continue: true,
+        }
+      ]
+    },
+
+    {
+      text: <p><b className="font-bold">Describe</b> the <b className="font-bold">change</b>?</p>,
+      questionType: "select",
+      preRenderInstructions: (patient, answers) => {
+        const isStillUnconscious = answers.find(
+          (a) => a.question === "Is **pronoun** still unconscious?"
+        )?.answer;
+        const changingColor = answers.find(
+          (a) => a.question === "Is **pronoun** changing color?"
+        )?.answer;
+        return (
+          isStillUnconscious !== "Yes" && patient.patientProximity !== "first" && changingColor === "Yes"
+        );
+      },
+      preRenderLogic: "Pt is now conscious, not caller, and is changing color",
       preRenderDependencies: ["answers", "proximity"],
       additionalInstructions: <AI.ChangingColor />,
       defaultTab: "ai",
@@ -266,7 +301,7 @@ export const UNCO_FAINTING: IEMSComplaint = {
       questionType: "select",
       preRenderInstructions: (_patient, answers) => {
         const isStillUnconscious = answers.find(
-          (a) => a.questionDisplay === "**pronoun** is still unconscious"
+          (a) => a.question === "Is **pronoun** still unconscious?"
         )?.answer;
         return isStillUnconscious !== "Yes";
       },
@@ -324,7 +359,7 @@ export const UNCO_FAINTING: IEMSComplaint = {
       questionType: "select",
       preRenderInstructions: (patient, answers) => {
         const isStillUnconscious = answers.find(
-          (a) => a.questionDisplay === "**pronoun** is still unconscious"
+          (a) => a.question === "Is **pronoun** still unconscious?"
         )?.answer;
         return isStillUnconscious !== "Yes" && patient.patientGender === "female" && patient.ageUnit === "year" && patient.patientAge >= 12 && patient.patientAge <= 50;
       },

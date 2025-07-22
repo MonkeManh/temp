@@ -279,7 +279,8 @@ export const FUEL_SPILL_ODOR: IFireComplaint = {
           answer: "Unknown",
           display: "Unk if spill is contained",
           questionDisplay: "It is unk if the fuel spill is contained",
-          updateCode: "59C03"
+          updateCode: "59C03",
+          continue: true,
         }
       ]
     },
@@ -301,7 +302,7 @@ export const FUEL_SPILL_ODOR: IFireComplaint = {
           display: "Not threatening waterway",
           questionDisplay: "The fuel spill is not threatening a waterway",
           continue: true,
-          send: true
+          send: true,
         },
         {
           answer: "Yes",

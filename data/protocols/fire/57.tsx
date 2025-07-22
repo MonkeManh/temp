@@ -213,7 +213,7 @@ export const EXPLOSION: IFireComplaint = {
           display: "No structures threatened",
           questionDisplay: "No structures are threatened",
           continue: true,
-          send: true
+          send: true,
         },
         {
           answer: "Yes",
@@ -226,7 +226,7 @@ export const EXPLOSION: IFireComplaint = {
           display: "Unk if structures threatened",
           questionDisplay: "It is unknown if structures are threatened",
           continue: true,
-          send: true
+          send: true,
         }
       ]
     },
@@ -243,10 +243,18 @@ export const EXPLOSION: IFireComplaint = {
       preRenderDependencies: ["answers"],
       answers: [
         {
-          answer: "Residential (single-family)",
-          display: "Residential (single-family) bldg",
-          questionDisplay: "The building is a residential (single-family) structure",
-          updateCode: "57D06",
+          answer: "HIGH LIFE RISK",
+          display: "HIGH LIFE RISK bldg",
+          questionDisplay: "The building is a HIGH LIFE RISK structure",
+          updateCode: "57D01",
+          continue: true,
+          send: true
+        },
+        {
+          answer: "HIGH RISE",
+          display: "HIGH RISE bldg",
+          questionDisplay: "The building is a HIGH RISE structure",
+          updateCode: "57D02",
           continue: true,
           send: true
         },
@@ -267,18 +275,18 @@ export const EXPLOSION: IFireComplaint = {
           send: true
         },
         {
+          answer: "Residential (single-family)",
+          display: "Residential (single-family) bldg",
+          questionDisplay: "The building is a residential (single-family) structure",
+          updateCode: "57D06",
+          continue: true,
+          send: true
+        },
+        {
           answer: "Non-dwelling structure",
           display: "Non-dwelling structure bldg",
           questionDisplay: "The building is a non-dwelling structure",
           continue: true,
-        },
-        {
-          answer: "HIGH RISE",
-          display: "HIGH RISE bldg",
-          questionDisplay: "The building is a HIGH RISE structure",
-          updateCode: "57D02",
-          continue: true,
-          send: true
         },
         {
           answer: "Mobile home",
@@ -442,33 +450,6 @@ export const EXPLOSION: IFireComplaint = {
     },
 
     {
-      text: <p className="text-blue-400">Is there a <b className="font-bold">HIGH LIFE RISK</b>?</p>,
-      questionType: 'select',
-      answers: [
-        {
-          answer: "No",
-          display: "No HIGH LIFE RISK ID'd",
-          questionDisplay: "No HIGH LIFE RISK identified",
-          continue: true,
-        },
-        {
-          answer: "Yes",
-          display: "HIGH LIFE RISK ID'd",
-          questionDisplay: "HIGH LIFE RISK identified",
-          updateCode: "57D01",
-          continue: true,
-          send: true
-        },
-        {
-          answer: "Unknown",
-          display: "Unk if HIGH LIFE RISK",
-          questionDisplay: "It is unknown if there is a HIGH LIFE RISK",
-          continue: true,
-        }
-      ]
-    },
-
-    {
       text: <p>Is anyone <b className="font-bold">injured</b>?</p>,
       questionType: 'select',
       answers: [
@@ -553,6 +534,7 @@ export const EXPLOSION: IFireComplaint = {
           questionDisplay: "There are {input} injured persons",
           updateSuffix: "X",
           continue: true,
+          input: true,
         },
         {
           answer: "9-20 persons (input amount):",
@@ -560,6 +542,7 @@ export const EXPLOSION: IFireComplaint = {
           questionDisplay: "There are {input} injured persons",
           updateSuffix: "Y",
           continue: true,
+          input: true,
         },
         {
           answer: "21+ persons (input amount):",
@@ -567,6 +550,7 @@ export const EXPLOSION: IFireComplaint = {
           questionDisplay: "There are {input} injured persons",
           updateSuffix: "Z",
           continue: true,
+          input: true,
         },
         {
           answer: "Unknown",

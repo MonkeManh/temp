@@ -472,61 +472,64 @@ export default function EMSKeyQuestions({
   }, [currentQuestion]);
 
   useEffect(() => {
-    if (
-      emsCase.patientBreathing === "no" ||
-      emsCase.patientBreathing === "agonal/ineffective"
-    ) {
-      // Find the code in the protocol that has the property notBreathing
-      const notBreathingCode = protocol.determinants
-        .flatMap((det) => det.codes)
-        .find((code) => code.notBreathing);
+    if(protocol.preSend && settings.quickSend) {
 
       if (
-        notBreathingCode &&
-        higherCode(notBreathingCode.code, currentCode) === notBreathingCode.code
+        emsCase.patientBreathing === "no" ||
+        emsCase.patientBreathing === "agonal/ineffective"
       ) {
-        handleCodeSend(notBreathingCode.code, true, true);
-      }
-    } else if (emsCase.patientConsciousness === "no") {
-      // Find the code in the protocol that has the property notConscious
-      const notConsciousCode = protocol.determinants
-        .flatMap((det) => det.codes)
-        .find((code) => code.notConscious);
-      if (
-        notConsciousCode &&
-        higherCode(notConsciousCode.code, currentCode) === notConsciousCode.code
+        // Find the code in the protocol that has the property notBreathing
+        const notBreathingCode = protocol.determinants
+          .flatMap((det) => det.codes)
+          .find((code) => code.notBreathing);
+  
+        if (
+          notBreathingCode &&
+          higherCode(notBreathingCode.code, currentCode) === notBreathingCode.code
+        ) {
+          handleCodeSend(notBreathingCode.code, true, true);
+        }
+      } else if (emsCase.patientConsciousness === "no") {
+        // Find the code in the protocol that has the property notConscious
+        const notConsciousCode = protocol.determinants
+          .flatMap((det) => det.codes)
+          .find((code) => code.notConscious);
+        if (
+          notConsciousCode &&
+          higherCode(notConsciousCode.code, currentCode) === notConsciousCode.code
+        ) {
+          handleCodeSend(notConsciousCode.code, true, true);
+        }
+      } else if (
+        (emsCase.patientConsciousness === "no" &&
+          emsCase.patientBreathing === "unknown") ||
+        emsCase.patientBreathing === "uncertain"
       ) {
-        handleCodeSend(notConsciousCode.code, true, true);
-      }
-    } else if (
-      (emsCase.patientConsciousness === "no" &&
-        emsCase.patientBreathing === "unknown") ||
-      emsCase.patientBreathing === "uncertain"
-    ) {
-      const uncertainBreathingCode = protocol.determinants
-        .flatMap((det) => det.codes)
-        .find((code) => code.uncertainBreathing);
-      if (
-        uncertainBreathingCode &&
-        higherCode(uncertainBreathingCode.code, currentCode) ===
-          uncertainBreathingCode.code
-      ) {
-        handleCodeSend(uncertainBreathingCode.code, true, true);
-      }
-    } else if (emsCase.numPatients > 1) {
-      // Find the code in the protocol that has the property multiplePatients
-      const multiplePatientsCode = protocol.determinants
-        .flatMap((det) => det.codes)
-        .find((code) => code.multPatient);
-      if (
-        multiplePatientsCode &&
-        higherCode(multiplePatientsCode.code, currentCode) ===
-          multiplePatientsCode.code
-      ) {
-        handleCodeSend(multiplePatientsCode.code, true, true);
+        const uncertainBreathingCode = protocol.determinants
+          .flatMap((det) => det.codes)
+          .find((code) => code.uncertainBreathing);
+        if (
+          uncertainBreathingCode &&
+          higherCode(uncertainBreathingCode.code, currentCode) ===
+            uncertainBreathingCode.code
+        ) {
+          handleCodeSend(uncertainBreathingCode.code, true, true);
+        }
+      } else if (emsCase.numPatients > 1) {
+        // Find the code in the protocol that has the property multiplePatients
+        const multiplePatientsCode = protocol.determinants
+          .flatMap((det) => det.codes)
+          .find((code) => code.multPatient);
+        if (
+          multiplePatientsCode &&
+          higherCode(multiplePatientsCode.code, currentCode) ===
+            multiplePatientsCode.code
+        ) {
+          handleCodeSend(multiplePatientsCode.code, true, true);
+        }
       }
     }
-  }, [currentQuestionIndex, emsCase, protocol, currentCode, handleCodeSend]);
+  }, [currentQuestionIndex, emsCase, protocol, currentCode, settings]);
 
   // If no current question, there might be no valid questions
   if (!currentQuestion) {
